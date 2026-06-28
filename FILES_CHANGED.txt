@@ -1,0 +1,38 @@
+==== קבצים שתוכו שונו ====
+
+BACKEND:
+- src/config/upload.ts (הרחבת סוגי קבצים לתמיכה Word/Excel)
+- create_engine_courses.js (יצירת קורסים + פרקים)
+- create_engine_content.js (יצירת תוכן — צריך תיקון)
+
+FRONTEND:
+- src/components/RichTextEditor.tsx (עורך טקסט חדש)
+- src/components/ContentViewer.tsx (HTML rendering + export funcs)
+- src/components/Navbar.tsx (לוגו קליק)
+- src/context/ThemeContext.tsx (פחתנו ל-light/dark בלבד)
+- src/pages/AdminChaptersPage.tsx (RichTextEditor בתיאור)
+- src/pages/AdminContentPage.tsx (סוגי קבצים + editor)
+- src/pages/CoursePage.tsx (Udemy layout + כפתור חומר)
+- src/pages/ChapterPage.tsx (HTML rendering)
+- src/App.css (סגנון Udemy מלא)
+- src/App.tsx (לא שונה)
+
+SESSION DOCS:
+- SESSION_SUMMARY.md (סיכום מלא)
+- STARTUP.md (הפעלה מהירה)
+- FILES_CHANGED.txt (קובץ זה)
+
+==== קבצים שלא שונו ====
+- package.json / tsconfig.json / vite.config.ts
+- routes בשרת (כל הנתיבים עובדים)
+- schema דיטא בייס (יצירת פרקים/תוכן בסקריפטים בלבד)
+
+==== בדיקות מסקנה ====
+✅ Frontend type-check: No errors
+✅ Backend type-check: No errors
+✅ Vite build: Success
+✅ קורסים נוצרו בDB: IDs 8 & 9
+
+==== בעיות קיימות ====
+⚠️ קורסי מנועים: תוכן לא נכנס לDB (צריך תיקון בID של פרקים)
+⚠️ ארכיטקטורה מגמות: דורשת מיגרציה (לסשן הבא)

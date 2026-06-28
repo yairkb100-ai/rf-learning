@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ספר המערכת - לומדת ענף 71</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.8;
+            color: #1c1d1f;
+            background: #f9f9f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #a435f0;
+            font-size: 2.5em;
+            margin: 40px 0 10px 0;
+            text-align: center;
+            page-break-after: avoid;
+        }
+
+        h2 {
+            color: #a435f0;
+            font-size: 1.8em;
+            margin: 40px 0 15px 0;
+            border-bottom: 3px solid #a435f0;
+            padding-bottom: 10px;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            color: #1c1d1f;
+            font-size: 1.3em;
+            margin: 25px 0 10px 0;
+            page-break-after: avoid;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.1em;
+            margin: 15px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-right: 4px solid #a435f0;
+            direction: ltr;
+            text-align: left;
+            page-break-inside: avoid;
+        }
+
+        pre code {
+            color: #1c1d1f;
+            background: none;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+
+        th {
+            background: #a435f0;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        strong {
+            color: #a435f0;
+            font-weight: 700;
+        }
+
+        em {
+            font-style: italic;
+            color: #666;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .toc {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 30px 0;
+            page-break-inside: avoid;
+        }
+
+        .toc a {
+            color: #a435f0;
+            text-decoration: none;
+            display: block;
+            margin: 8px 0;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            page-break-inside: avoid;
+            margin-bottom: 30px;
+        }
+
+        blockquote {
+            border-right: 4px solid #a435f0;
+            padding: 15px;
+            margin: 20px 0;
+            background: #f9f9f9;
+            border-radius: 3px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            page-break-before: always;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            h2 {
+                page-break-before: always;
+            }
+            a {
+                color: #a435f0;
+            }
+        }
+
+        /* Code syntax highlighting */
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>🚀 מדריך Deployment — העברת לומדת ענף 71</h1>
+<h2>איך להעביר את הלומדה לכל מקום בעולם</h2>
+<hr>
+<h2>📖 תוכן עניינים</h2>
+<ol>
+<li><a href="#%D7%A1%D7%A7%D7%99%D7%A8%D7%94-%D7%9B%D7%9C%D7%9C%D7%99%D7%AA">סקירה כללית</a></li>
+<li><a href="#%D7%93%D7%A8%D7%99%D7%A9%D7%95%D7%AA-%D7%9E%D7%A7%D7%93%D7%99%D7%9E%D7%95%D7%AA">דרישות מקדימות</a></li>
+<li><a href="#scenario-1-cloud-deployment-%D7%A2%D7%9D-%D7%92%D7%99%D7%A9%D7%94-%D7%9C%D7%A8%D7%A9%D7%AA">Scenario 1: Cloud Deployment (עם גישה לרשת)</a></li>
+<li><a href="#scenario-2-local-network-deployment-%D7%9C%D7%9C%D7%90-%D7%90%D7%99%D7%A0%D7%98%D7%A8%D7%A0%D7%98">Scenario 2: Local Network Deployment (ללא אינטרנט)</a></li>
+<li><a href="#backup--migration">Backup &amp; Migration</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+</ol>
+<hr>
+<h2>סקירה כללית</h2>
+<h3>שלוש אפשרויות Deployment:</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                    שלוש דרכים להפעיל לומדה                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 1️⃣  CLOUD (גישה לרשת אינטרנט)                                   │
+│   ├─ AWS, Heroku, DigitalOcean, Linode                          │
+│   ├─ + יותר נגיש מחו&quot;ל                                          │
+│   ├─ + קל להתקנה                                                 │
+│   └─ - עלויות חודשיות                                             │
+│                                                                 │
+│ 2️⃣  LOCAL NETWORK (ללא אינטרנט, רק רשת מקומית)                  │
+│   ├─ Server בתוך הבית / משרד                                    │
+│   ├─ + ללא עלויות חודשיות                                        │
+│   ├─ + שליטה מלאה                                                │
+│   └─ - צריך שרת פיזי                                            │
+│                                                                 │
+│ 3️⃣  HYBRID (Cloud + Local)                                      │
+│   ├─ Cloud לגישה מרחוק, Local לנתונים                           │
+│   ├─ + הטוב משניהם                                              │
+│   └─ - מורכב יותר                                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2>דרישות מקדימות</h2>
+<h3>סיוג על קבצים ודאטה</h3>
+<p><strong>קבצים שצריך להעביר:</strong></p>
+<pre><code>rf-learning-system/
+├── backend/
+│   ├── src/                  # קוד
+│   ├── uploads/              # קבצים שהעלו
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── .env                  # משתנים סביבה (חשוב!)
+│
+├── frontend/
+│   ├── src/                  # קוד
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── dist/                 # Build מוכן
+│
+└── database/
+    ├── rf_learning.sql       # Backup של DB
+    └── restore.sql           # Script להשחזור
+</code></pre>
+<h3>כלים שתצטרך:</h3>
+<p><strong>ל-Cloud:</strong></p>
+<ul>
+<li>🌐 חשבון Cloud (AWS, Heroku, DigitalOcean וכו’)</li>
+<li>🔑 SSH keys</li>
+<li>🐳 Docker (optional but recommended)</li>
+</ul>
+<p><strong>ל-Local Network:</strong></p>
+<ul>
+<li>🖥️ שרת פיזי (או NAS)</li>
+<li>💾 PostgreSQL installed</li>
+<li>🟢 Node.js installed</li>
+<li>🔌 כבל Ethernet</li>
+</ul>
+<hr>
+<h1>Scenario 1: Cloud Deployment (עם גישה לרשת)</h1>
+<h2>דרך א: DigitalOcean (הפשוטה ביותר)</h2>
+<h3>שלב 1: הגדרה בDigitalOcean</h3>
+<pre><code>1. הרשמה ל-DigitalOcean (www.digitalocean.com)
+2. צור Droplet חדש:
+   - Image: Ubuntu 22.04
+   - Size: Basic $5/month (כافי לתחילה)
+   - Region: בקרוב ליוצרים
+   - Authentication: SSH Key
+
+3. אחרי יצירה, תקבל IP כמו: 192.168.1.100
+</code></pre>
+<h3>שלב 2: Prepare Backend for Cloud</h3>
+<p><strong>1. צור Production <code>.env</code>:</strong></p>
+<pre><code class="language-bash"># .env בתיקיית backend/
+NODE_ENV=production
+SERVER_PORT=3000
+
+DB_HOST=your-digitalocean-db-ip
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=secure-password-here
+DB_NAME=rf_learning
+
+JWT_SECRET=your-super-secret-key-change-this
+UPLOAD_DIR=/var/uploads
+</code></pre>
+<p><strong>2. Build Backend:</strong></p>
+<pre><code class="language-bash">cd backend
+npm install --production  # Production dependencies only
+npm run build             # If you have a build script
+</code></pre>
+<p><strong>3. Package for Upload:</strong></p>
+<pre><code class="language-bash"># Create tar archive
+tar -czf backend.tar.gz \
+  backend/src \
+  backend/node_modules \
+  backend/package.json \
+  backend/.env
+</code></pre>
+<h3>שלב 3: Prepare Frontend for Cloud</h3>
+<p><strong>1. Build Frontend:</strong></p>
+<pre><code class="language-bash">cd frontend
+npm install
+npm run build
+# יוצר תיקיית dist/ עם קבצים סטטיים
+</code></pre>
+<p><strong>2. Package Frontend:</strong></p>
+<pre><code class="language-bash">tar -czf frontend-dist.tar.gz frontend/dist/
+</code></pre>
+<h3>שלב 4: Upload to DigitalOcean</h3>
+<p><strong>1. Connect via SSH:</strong></p>
+<pre><code class="language-bash">ssh root@your-digitalocean-ip
+</code></pre>
+<p><strong>2. Install Requirements:</strong></p>
+<pre><code class="language-bash"># Update system
+apt-get update &amp;&amp; apt-get upgrade -y
+
+# Install Node.js
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+apt-get install -y nodejs
+
+# Install PostgreSQL
+apt-get install -y postgresql postgresql-contrib
+
+# Install Nginx (as reverse proxy)
+apt-get install -y nginx
+
+# Install PM2 (for background processes)
+npm install -g pm2
+</code></pre>
+<p><strong>3. Extract Files:</strong></p>
+<pre><code class="language-bash"># Create directories
+mkdir -p /var/www/rf-learning
+mkdir -p /var/uploads
+
+# Upload files using SCP from your computer:
+scp backend.tar.gz root@your-ip:/var/www/
+scp frontend-dist.tar.gz root@your-ip:/var/www/
+
+# Extract on server
+cd /var/www
+tar -xzf backend.tar.gz
+tar -xzf frontend-dist.tar.gz
+</code></pre>
+<p><strong>4. Setup Database:</strong></p>
+<pre><code class="language-bash"># Enter PostgreSQL
+sudo -u postgres psql
+
+# Create database
+CREATE DATABASE rf_learning;
+
+# Create user with password
+CREATE USER postgres WITH PASSWORD 'your-secure-password';
+
+# Grant privileges
+GRANT ALL PRIVILEGES ON DATABASE rf_learning TO postgres;
+
+# Exit
+\q
+
+# Restore database from backup (if you have one)
+psql -U postgres -d rf_learning &lt; rf_learning_backup.sql
+</code></pre>
+<p><strong>5. Configure Nginx as Reverse Proxy:</strong></p>
+<pre><code class="language-bash"># Edit Nginx config
+nano /etc/nginx/sites-available/default
+</code></pre>
+<p><strong>Replace content with:</strong></p>
+<pre><code class="language-nginx">upstream backend {
+    server 127.0.0.1:3000;
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    server_name _;
+    root /var/www/rf-learning/frontend/dist;
+
+    # Frontend routing (SPA)
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Backend API
+    location /api/ {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # File uploads
+    location /uploads/ {
+        alias /var/uploads/;
+    }
+}
+</code></pre>
+<p><strong>Test Nginx:</strong></p>
+<pre><code class="language-bash">nginx -t
+systemctl reload nginx
+</code></pre>
+<p><strong>6. Start Backend with PM2:</strong></p>
+<pre><code class="language-bash">cd /var/www/backend
+npm install  # Install remaining dependencies
+
+# Start with PM2
+pm2 start src/server.ts --name &quot;rf-learning-backend&quot;
+
+# Save PM2 process list
+pm2 save
+
+# Restart on reboot
+pm2 startup
+</code></pre>
+<p><strong>7. Test Everything:</strong></p>
+<pre><code class="language-bash"># Check if backend is running
+curl http://localhost:3000/api/courses
+
+# Check if frontend is accessible
+curl http://localhost
+</code></pre>
+<h3>שלב 5: Domain &amp; SSL (Optional but Recommended)</h3>
+<p><strong>1. Point Domain:</strong></p>
+<pre><code>בקטע DNS של דומיין שלך:
+A Record: your-domain.com → your-digitalocean-ip
+</code></pre>
+<p><strong>2. Setup SSL with Let’s Encrypt:</strong></p>
+<pre><code class="language-bash">apt-get install certbot python3-certbot-nginx
+certbot --nginx -d your-domain.com
+
+# Auto-renewal
+systemctl enable certbot.timer
+</code></pre>
+<h3>URL הנתקלה בחיים:</h3>
+<pre><code>https://your-domain.com      → Frontend
+https://your-domain.com/api/ → Backend
+</code></pre>
+<hr>
+<h2>דרך ב: Heroku (ללא DevOps)</h2>
+<h3>שלב 1: Heroku Setup</h3>
+<pre><code class="language-bash"># Install Heroku CLI
+# Windows: Download from heroku.com/download
+
+# Login
+heroku login
+
+# Create app
+heroku create my-rf-learning
+</code></pre>
+<h3>שלב 2: Database Setup</h3>
+<pre><code class="language-bash"># Add PostgreSQL addon
+heroku addons:create heroku-postgresql:hobby-dev -a my-rf-learning
+
+# Get connection string
+heroku config -a my-rf-learning
+# Copy DATABASE_URL value
+</code></pre>
+<h3>שלב 3: Deploy</h3>
+<p><strong>Create Procfile in root:</strong></p>
+<pre><code>web: cd backend &amp;&amp; npm start
+</code></pre>
+<p><strong>Push to Heroku:</strong></p>
+<pre><code class="language-bash">git push heroku main
+</code></pre>
+<p><strong>That’s it!</strong> Your app is live at: <code>https://my-rf-learning.herokuapp.com</code></p>
+<hr>
+<h1>Scenario 2: Local Network Deployment (ללא אינטרנט)</h1>
+<h2>סקירה: איך זה עובד</h2>
+<pre><code>┌──────────────────────────────────────────────────────────┐
+│                   Local Network Setup                    │
+├──────────────────────────────────────────────────────────┤
+│                                                          │
+│  Your Home/Office Network (192.168.1.x)                │
+│                                                          │
+│  ┌────────────────┐         ┌────────────────┐         │
+│  │  Laptop #1     │ WiFi    │  Server/NAS    │         │
+│  │ (192.168.1.5)  │◄────────│ (192.168.1.100)│         │
+│  └────────────────┘         │                │         │
+│                              │ - Backend      │         │
+│  ┌────────────────┐         │ - Frontend     │         │
+│  │  Desktop       │ LAN     │ - PostgreSQL   │         │
+│  │ (192.168.1.10) │◄────────│ - Nginx        │         │
+│  └────────────────┘         └────────────────┘         │
+│                                                          │
+│  No Internet Required!                                  │
+│  Only internal 192.168.1.* addresses                    │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+</code></pre>
+<h2>שלב 1: בחר שרת מקומי</h2>
+<h3>אפשרות 1: Old Computer as Server</h3>
+<p><strong>תמונה:</strong></p>
+<pre><code>Old Win7 PC / Old Mac → Repurpose as Server
+</code></pre>
+<p><strong>יתרונות:</strong></p>
+<ul>
+<li>✅ חינם</li>
+<li>✅ בקרה מלאה</li>
+<li>❌ צריך משהו שרץ 24/7</li>
+</ul>
+<p><strong>צעדים:</strong></p>
+<pre><code class="language-bash"># Install Node.js &amp; PostgreSQL on the server computer
+# Copy backend/ and frontend/ directories
+# Start with npm run dev or PM2
+</code></pre>
+<h3>אפשרות 2: Raspberry Pi / Mini PC</h3>
+<p><strong>מחיר:</strong> $35-100<br>
+<strong>צריכת חשמל:</strong> 5-15W (זול!)</p>
+<p><strong>מה שתצטרך:</strong></p>
+<ul>
+<li>Raspberry Pi 4 (4GB RAM) = $55</li>
+<li>מכרטס SD 64GB = $15</li>
+<li>Ethernet cable</li>
+<li>Power supply</li>
+</ul>
+<p><strong>סה&quot;כ:</strong> ~$80 יחד עם צריכה חשמלית נמוכה</p>
+<h3>אפשרות 3: NAS (Network Attached Storage)</h3>
+<p><strong>מחיר:</strong> $200-500<br>
+<strong>דוגמה:</strong> Synology DS220j</p>
+<p><strong>יתרונות:</strong></p>
+<ul>
+<li>✅ Built-in RAID (backup אוטומטי)</li>
+<li>✅ Web interface</li>
+<li>✅ Stable &amp; reliable</li>
+<li>❌ יקר</li>
+</ul>
+<h2>שלב 2: Setup Server (Ubuntu/Raspberry Pi OS)</h2>
+<h3>Installation Steps:</h3>
+<pre><code class="language-bash"># 1. Update system
+sudo apt-get update &amp;&amp; sudo apt-get upgrade -y
+
+# 2. Install Node.js
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# 3. Install PostgreSQL
+sudo apt-get install -y postgresql postgresql-contrib
+
+# 4. Install Nginx
+sudo apt-get install -y nginx
+
+# 5. Install PM2
+sudo npm install -g pm2
+
+# 6. Clone/Copy project
+git clone &lt;your-repo&gt; /opt/rf-learning
+# OR
+sudo cp -r /path/to/rf-learning /opt/rf-learning
+</code></pre>
+<h3>שלב 3: Configure Database</h3>
+<pre><code class="language-bash"># Start PostgreSQL
+sudo systemctl start postgresql
+
+# Switch to postgres user
+sudo -u postgres psql
+
+# Create database
+CREATE DATABASE rf_learning;
+
+# Set password
+ALTER USER postgres WITH PASSWORD 'your-local-password';
+
+# Exit
+\q
+
+# Restore from backup (if available)
+psql -U postgres -d rf_learning &lt; rf_learning_backup.sql
+</code></pre>
+<h3>שלב 4: Setup Backend</h3>
+<p><strong>Create .env file:</strong></p>
+<pre><code class="language-bash">sudo nano /opt/rf-learning/backend/.env
+</code></pre>
+<p><strong>Content:</strong></p>
+<pre><code>NODE_ENV=production
+SERVER_PORT=3000
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your-local-password
+DB_NAME=rf_learning
+
+JWT_SECRET=change-this-to-something-secure
+UPLOAD_DIR=/opt/rf-learning/backend/uploads
+</code></pre>
+<p><strong>Install &amp; Start:</strong></p>
+<pre><code class="language-bash">cd /opt/rf-learning/backend
+npm install
+pm2 start src/server.ts --name &quot;rf-learning-backend&quot;
+pm2 save
+pm2 startup
+</code></pre>
+<h3>שלב 5: Build Frontend</h3>
+<pre><code class="language-bash">cd /opt/rf-learning/frontend
+npm install
+npm run build
+
+# Copy to Nginx
+sudo cp -r dist/* /var/www/html/
+</code></pre>
+<h3>שלב 6: Configure Nginx</h3>
+<pre><code class="language-bash">sudo nano /etc/nginx/sites-available/default
+</code></pre>
+<p><strong>Same config as Cloud setup above</strong></p>
+<h3>שלב 7: Access from Network</h3>
+<p><strong>Find Server IP:</strong></p>
+<pre><code class="language-bash">hostname -I
+# Output: 192.168.1.100
+</code></pre>
+<p><strong>Access from any device on network:</strong></p>
+<pre><code>http://192.168.1.100  (Frontend)
+http://192.168.1.100/api/courses  (API)
+</code></pre>
+<h3>שלב 8: Enable Wake-on-LAN (Optional)</h3>
+<p><strong>Goal:</strong> Turn on server remotely from another computer</p>
+<p><strong>Setup:</strong></p>
+<pre><code class="language-bash"># BIOS: Enable Wake-on-LAN
+# Linux: sudo apt-get install wakeonlan
+
+# From laptop:
+wakeonlan 00:11:22:33:44:55  # Server MAC address
+</code></pre>
+<hr>
+<h1>Backup &amp; Migration</h1>
+<h2>איך לעשות Backup של הכל</h2>
+<h3>1. Backup Database</h3>
+<pre><code class="language-bash"># From server
+pg_dump -U postgres rf_learning &gt; rf_learning_backup.sql
+
+# Compress for storage
+gzip rf_learning_backup.sql
+# Output: rf_learning_backup.sql.gz
+</code></pre>
+<h3>2. Backup Uploads Folder</h3>
+<pre><code class="language-bash">tar -czf uploads_backup.tar.gz /opt/rf-learning/backend/uploads/
+</code></pre>
+<h3>3. Backup Everything</h3>
+<pre><code class="language-bash"># Create full backup
+tar -czf rf-learning-full-backup-$(date +%Y%m%d).tar.gz \
+  /opt/rf-learning/ \
+  rf_learning_backup.sql
+</code></pre>
+<h3>4. Store Backup</h3>
+<p><strong>אפשרויות:</strong></p>
+<pre><code>1. External Hard Drive
+   - Connect to server
+   - Copy backup files
+   - Disconnect &amp; store
+
+2. Cloud Storage
+   - Dropbox, Google Drive
+   - AWS S3
+   - Synology C2
+
+3. NAS
+   - If you have one
+</code></pre>
+<hr>
+<h2>איך להחזיר מ-Backup</h2>
+<h3>Scenario: Moving to New Server</h3>
+<pre><code class="language-bash"># 1. On new server, setup everything (see above)
+
+# 2. Download backup
+scp user@old-server:rf_learning_backup.sql.gz .
+gunzip rf_learning_backup.sql.gz
+
+# 3. Restore database
+psql -U postgres -d rf_learning &lt; rf_learning_backup.sql
+
+# 4. Copy uploads
+scp -r user@old-server:/opt/rf-learning/backend/uploads/* \
+    /opt/rf-learning/backend/uploads/
+
+# 5. Restart backend
+pm2 restart rf-learning-backend
+</code></pre>
+<hr>
+<h1>Troubleshooting</h1>
+<h2>Cloud Issues</h2>
+<h3>“Backend not connecting to Database”</h3>
+<pre><code class="language-bash"># Check if DB is up
+psql -h your-db-ip -U postgres -d rf_learning
+
+# Check backend logs
+pm2 logs rf-learning-backend
+
+# Verify .env has correct DB_HOST
+cat backend/.env | grep DB_HOST
+</code></pre>
+<h3>“Frontend shows 404 on page refresh”</h3>
+<pre><code class="language-bash"># Nginx needs SPA config
+# Make sure your nginx config has:
+location / {
+    try_files $uri $uri/ /index.html;
+}
+</code></pre>
+<h3>“SSL Certificate Error”</h3>
+<pre><code class="language-bash"># Renew certificate
+sudo certbot renew
+
+# Force renewal
+sudo certbot renew --force-renewal
+</code></pre>
+<h2>Local Network Issues</h2>
+<h3>“Can’t access server from laptop”</h3>
+<pre><code class="language-bash"># 1. Check server is on same network
+ping 192.168.1.100
+
+# 2. Check if Nginx is running
+sudo systemctl status nginx
+
+# 3. Check firewall
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw allow 3000
+</code></pre>
+<h3>“Database connection refused”</h3>
+<pre><code class="language-bash"># Check if PostgreSQL is running
+sudo systemctl status postgresql
+
+# Check if listening on localhost
+sudo -u postgres psql -c &quot;SELECT version();&quot;
+</code></pre>
+<h3>“PM2 not restarting after reboot”</h3>
+<pre><code class="language-bash"># Reinstall startup
+pm2 save
+pm2 startup
+sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup
+</code></pre>
+<hr>
+<h1>Comparison Table</h1>
+<h2>Cloud vs Local Network</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Cloud</th>
+<th>Local Network</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>צריכת אינטרנט</strong></td>
+<td>חובה</td>
+<td>לא צריך</td>
+</tr>
+<tr>
+<td><strong>עלות חודשית</strong></td>
+<td>$5-20</td>
+<td>ללא</td>
+</tr>
+<tr>
+<td><strong>גישה מחו&quot;ל</strong></td>
+<td>✅ כן</td>
+<td>❌ לא</td>
+</tr>
+<tr>
+<td><strong>בקרה</strong></td>
+<td>מוגבלת</td>
+<td>מלאה</td>
+</tr>
+<tr>
+<td><strong>סטיביליות</strong></td>
+<td>גבוהה</td>
+<td>בינונית</td>
+</tr>
+<tr>
+<td><strong>יציאה</strong></td>
+<td>✅ קל</td>
+<td>⚠️ צריך IT</td>
+</tr>
+<tr>
+<td><strong>עבור תחילה</strong></td>
+<td>✅ מומלץ</td>
+<td>לא כל כך</td>
+</tr>
+<tr>
+<td><strong>עבור חברה</strong></td>
+<td>מומלץ</td>
+<td>✅ מומלץ</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1>Checklist — לפני Deployment</h1>
+<h2>Before Going Live</h2>
+<pre><code>□ Database backup created
+□ .env file with secure secrets
+□ Frontend built (npm run build)
+□ Backend dependencies installed
+□ SSL certificate (if using domain)
+□ Nginx/reverse proxy configured
+□ PM2/supervisor setup for auto-restart
+□ Firewall rules configured
+□ IP whitelisting (if needed)
+□ Email notifications for errors
+□ Monitoring setup
+□ Documentation for admin
+□ Training for users
+</code></pre>
+<h2>After Going Live</h2>
+<pre><code>□ Daily backup schedule
+□ Weekly database verification
+□ Monitor server logs
+□ Update Node.js/PostgreSQL monthly
+□ Security patches ASAP
+□ User feedback collection
+□ Performance monitoring
+</code></pre>
+<hr>
+<h1>Quick Start Scripts</h1>
+<h2>Cloud Quick Deploy (DigitalOcean)</h2>
+<p><strong>save as: <a href="http://deploy-cloud.sh">deploy-cloud.sh</a></strong></p>
+<pre><code class="language-bash">#!/bin/bash
+
+echo &quot;🚀 Building frontend...&quot;
+cd frontend &amp;&amp; npm run build &amp;&amp; cd ..
+
+echo &quot;📦 Creating archives...&quot;
+tar -czf backend.tar.gz backend/src backend/package.json backend/.env
+tar -czf frontend-dist.tar.gz frontend/dist
+
+echo &quot;📤 Uploading to server...&quot;
+scp backend.tar.gz root@$1:/var/www/
+scp frontend-dist.tar.gz root@$1:/var/www/
+
+echo &quot;✅ Deployment ready!&quot;
+echo &quot;Next: SSH to server and extract files&quot;
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-bash">chmod +x deploy-cloud.sh
+./deploy-cloud.sh your-server-ip
+</code></pre>
+<h2>Local Network Quick Deploy (Raspberry Pi)</h2>
+<p><strong>save as: <a href="http://deploy-local.sh">deploy-local.sh</a></strong></p>
+<pre><code class="language-bash">#!/bin/bash
+
+echo &quot;🚀 Building...&quot;
+cd frontend &amp;&amp; npm install &amp;&amp; npm run build &amp;&amp; cd ..
+cd backend &amp;&amp; npm install &amp;&amp; cd ..
+
+echo &quot;📂 Copying to server...&quot;
+ssh pi@192.168.1.100 &quot;rm -rf /opt/rf-learning&quot;
+scp -r . pi@192.168.1.100:/opt/rf-learning
+
+echo &quot;🔄 Restarting services...&quot;
+ssh pi@192.168.1.100 &quot;pm2 restart rf-learning-backend&quot;
+
+echo &quot;✅ Done! Access at http://192.168.1.100&quot;
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-bash">chmod +x deploy-local.sh
+./deploy-local.sh
+</code></pre>
+<hr>
+<h2>סיכום</h2>
+<h3>בחר את האפשרות שלך:</h3>
+<p><strong>🌐 Cloud (עם אינטרנט):</strong></p>
+<pre><code>1. דלוג ל-DigitalOcean ($5/month)
+2. בצע את שלבים 1-7 above
+3. אתה חי ב-1 שעה
+</code></pre>
+<p><strong>🏠 Local Network (ללא אינטרנט):</strong></p>
+<pre><code>1. קנה Raspberry Pi ($55)
+2. בצע את שלבים 1-8 above
+3. גישה מ-כל מכשיר ברשת
+4. ללא עלויות חודשיות
+</code></pre>
+<p><strong>🎯 Hybrid:</strong></p>
+<pre><code>Cloud + Local Network
+Best of both worlds!
+</code></pre>
+<hr>
+<p><strong>עדכון:</strong> 2026-06-28<br>
+<strong>גרסה:</strong> 1.0<br>
+<strong>סטטוס:</strong> Ready for Production</p>
+
+        <div class="footer">
+            <p>ספר המערכת - לומדת ענף 71</p>
+            <p>עדכון אחרון: 2026-06-28</p>
+            <p>גרסה: 1.0 Extended</p>
+        </div>
+    </div>
+</body>
+</html>

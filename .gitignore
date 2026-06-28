@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Production
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Uploads (don't store in git, use cloud storage)
+backend/uploads/
+
+# Temp
+.tmp/
+temp/
+
+# Screenshots
+screenshots/
+
+# Build output
+backend/dist/

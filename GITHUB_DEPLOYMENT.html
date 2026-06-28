@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ספר המערכת - לומדת ענף 71</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.8;
+            color: #1c1d1f;
+            background: #f9f9f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #a435f0;
+            font-size: 2.5em;
+            margin: 40px 0 10px 0;
+            text-align: center;
+            page-break-after: avoid;
+        }
+
+        h2 {
+            color: #a435f0;
+            font-size: 1.8em;
+            margin: 40px 0 15px 0;
+            border-bottom: 3px solid #a435f0;
+            padding-bottom: 10px;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            color: #1c1d1f;
+            font-size: 1.3em;
+            margin: 25px 0 10px 0;
+            page-break-after: avoid;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.1em;
+            margin: 15px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-right: 4px solid #a435f0;
+            direction: ltr;
+            text-align: left;
+            page-break-inside: avoid;
+        }
+
+        pre code {
+            color: #1c1d1f;
+            background: none;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+
+        th {
+            background: #a435f0;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        strong {
+            color: #a435f0;
+            font-weight: 700;
+        }
+
+        em {
+            font-style: italic;
+            color: #666;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .toc {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 30px 0;
+            page-break-inside: avoid;
+        }
+
+        .toc a {
+            color: #a435f0;
+            text-decoration: none;
+            display: block;
+            margin: 8px 0;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            page-break-inside: avoid;
+            margin-bottom: 30px;
+        }
+
+        blockquote {
+            border-right: 4px solid #a435f0;
+            padding: 15px;
+            margin: 20px 0;
+            background: #f9f9f9;
+            border-radius: 3px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            page-break-before: always;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            h2 {
+                page-break-before: always;
+            }
+            a {
+                color: #a435f0;
+            }
+        }
+
+        /* Code syntax highlighting */
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>🚀 GitHub Deployment — הפתרון החינם!</h1>
+<h2>איך להריץ את הלומדה חינם על GitHub</h2>
+<hr>
+<h2>📖 תוכן עניינים</h2>
+<ol>
+<li><a href="#%D7%A1%D7%A7%D7%99%D7%A8%D7%94">סקירה</a></li>
+<li><a href="#github-pages--actions">GitHub Pages + Actions</a></li>
+<li><a href="#railwayapp-backend--db-%D7%97%D7%99%D7%A0%D7%9D">Railway.app (Backend + DB חינם)</a></li>
+<li><a href="#vercel-frontend-%D7%97%D7%99%D7%A0%D7%9D">Vercel (Frontend חינם)</a></li>
+<li><a href="#setup-%D7%A9%D7%9C%D7%9D-step-by-step">Setup שלם (Step-by-Step)</a></li>
+<li><a href="#cicd-pipeline">CI/CD Pipeline</a></li>
+</ol>
+<hr>
+<h2>סקירה</h2>
+<h3>שתי אפשרויות חינמיות:</h3>
+<pre><code>┌─────────────────────────────────────────────────────┐
+│          GitHub + Free Hosting = $0/month          │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│ אפשרות 1: Vercel (Frontend) + Railway (Backend)    │
+│   Frontend:  Vercel (חינם, מהיר)                   │
+│   Backend:   Railway.app (חינם, $5/month בהתחלה)   │
+│   DB:        Railway PostgreSQL (חינם)              │
+│   → https://my-app.vercel.app                       │
+│   → סדר גודל: 5000 requests/day                     │
+│                                                     │
+│ אפשרות 2: GitHub Pages + GitHub Actions            │
+│   Frontend:  GitHub Pages (חינם!)                  │
+│   Backend:   Railway (חינם)                        │
+│   DB:        Railway (חינם)                        │
+│   → https://username.github.io/rf-learning         │
+│   → מובנה בGitHub, אין צורך בשרתים                |
+│                                                     │
+└─────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2>GitHub Pages + Actions</h2>
+<h3>מה זה GitHub Pages?</h3>
+<p><strong>GitHub Pages</strong> = אחסון אתרים סטטיים <strong>חינם</strong> ישירות מGitHub repository!</p>
+<pre><code>Your Repository
+    ↓
+Push to GitHub
+    ↓
+GitHub Actions (CI/CD)
+    ↓
+Build Frontend → dist/
+    ↓
+GitHub Pages
+    ↓
+https://username.github.io/rf-learning (חינם!)
+</code></pre>
+<h3>יתרונות GitHub Pages:</h3>
+<p>✅ <strong>חינם לגמרי</strong> — אין עלויות חודשיות<br>
+✅ <strong>טעון בGit</strong> — version control מובנה<br>
+✅ <strong>CI/CD אוטומטי</strong> — GitHub Actions<br>
+✅ <strong>SSL/HTTPS</strong> — בחינם מטעם GitHub<br>
+✅ <strong>דומיין משלך</strong> — אפשר להוסיף custom domain<br>
+✅ <strong>Unlimited bandwidth</strong> — ללא הגבלה</p>
+<h3>חסרונות GitHub Pages:</h3>
+<p>❌ <strong>רק Frontend סטטי</strong> — צריך Backend אחרת (Railway)<br>
+❌ <strong>אין Node.js בצד שלהם</strong> — להריץ backend צריך Railway/Heroku<br>
+❌ <strong>אין database</strong> — צריך Railway PostgreSQL</p>
+<hr>
+<h2>Railway.app (Backend + DB חינם!)</h2>
+<h3>מה זה Railway?</h3>
+<p><strong>Railway</strong> = Platform לDeployment עם <strong>חינם $5/month credit</strong> (כמעט חינם!)</p>
+<pre><code>Git Push
+    ↓
+Railway (detects Node.js project)
+    ↓
+Builds automatically
+    ↓
+Deploys to https://api.railway.app
+    ↓
+PostgreSQL included (free tier!)
+</code></pre>
+<h3>יתרונות Railway:</h3>
+<p>✅ <strong>מעט CLI</strong> — כמעט כמו Heroku<br>
+✅ <strong>PostgreSQL included</strong> — Database בחינם<br>
+✅ <strong>$5/month credit</strong> — מספיק לרוב בחינם<br>
+✅ <strong>Environment variables</strong> — חביב לסודות<br>
+✅ <strong>Auto-deploy from Git</strong> — דחוף וזה עובד</p>
+<h3>מחירים Railway:</h3>
+<pre><code>$5/month Free Credit = enough for:
+- 1x Backend (Node.js)
+- 1x PostgreSQL Database
+- ~1000 API requests/day
+
+לכן = כמעט חינם!
+</code></pre>
+<hr>
+<h2>Vercel (Frontend חינם)</h2>
+<h3>מה זה Vercel?</h3>
+<p><strong>Vercel</strong> = אחסון Frontend <strong>חינם</strong> (עשה את Next.js)</p>
+<pre><code>Frontend Build
+    ↓
+Push to GitHub
+    ↓
+Vercel (auto-detects Vite)
+    ↓
+Builds &amp; Deploys
+    ↓
+https://my-app.vercel.app (חינם!)
+</code></pre>
+<h3>יתרונות Vercel:</h3>
+<p>✅ <strong>חינם לגמרי</strong> — אחסון, bandwidth, SSL<br>
+✅ <strong>מהיר מאוד</strong> — CDN עולמי<br>
+✅ <strong>Auto-deploy from GitHub</strong> — push and done<br>
+✅ <strong>Environment variables</strong> — טוב לAPI secrets<br>
+✅ <strong>Custom domains</strong> — רק אתה שלך</p>
+<hr>
+<h1>Setup שלם (Step-by-Step)</h1>
+<h2>שלב 1: סידור GitHub</h2>
+<h3>1.1 צור Repository</h3>
+<pre><code class="language-bash"># Create new repo on GitHub
+# Name: rf-learning
+# Description: Learning management system
+# Public (כדי להשתמש בGitHub Pages)
+</code></pre>
+<h3>1.2 Push Code to GitHub</h3>
+<pre><code class="language-bash"># In your local project
+git init
+git add .
+git commit -m &quot;Initial commit: rf-learning system&quot;
+git branch -M main
+git remote add origin https://github.com/YOUR-USERNAME/rf-learning.git
+git push -u origin main
+</code></pre>
+<p><strong>After:</strong></p>
+<pre><code>Your repo is on GitHub!
+https://github.com/YOUR-USERNAME/rf-learning
+</code></pre>
+<hr>
+<h2>שלב 2: Setup Frontend on Vercel</h2>
+<h3>2.1 Connect to Vercel</h3>
+<pre><code class="language-bash"># Option 1: Via Web
+# 1. Go to https://vercel.com
+# 2. Sign in with GitHub
+# 3. Import project → select rf-learning
+# 4. Click Deploy
+
+# Option 2: Via CLI
+npm install -g vercel
+cd frontend
+vercel
+# Follow prompts
+</code></pre>
+<h3>2.2 Configure Frontend</h3>
+<p><strong>Create <code>frontend/.env.production</code>:</strong></p>
+<pre><code>VITE_API_URL=https://api.railway.app
+# Later: replace with your Railway backend URL
+</code></pre>
+<p><strong>Update <code>frontend/src/services/api.ts</code>:</strong></p>
+<pre><code class="language-typescript">const API_URL = process.env.VITE_API_URL || 'http://localhost:3000/api';
+
+export const apiService = {
+  async fetch(endpoint: string, options?: RequestInit) {
+    const response = await fetch(`${API_URL}${endpoint}`, options);
+    return response.json();
+  }
+};
+</code></pre>
+<h3>2.3 Deploy Frontend</h3>
+<pre><code class="language-bash"># Push to GitHub
+git add .
+git commit -m &quot;Setup Vercel deployment&quot;
+git push
+
+# Vercel auto-detects and deploys!
+# Check: https://dashboard.vercel.com/projects
+</code></pre>
+<p><strong>Your Frontend is now live at:</strong></p>
+<pre><code>https://rf-learning.vercel.app
+</code></pre>
+<hr>
+<h2>שלב 3: Setup Backend on Railway</h2>
+<h3>3.1 Create Railway Account</h3>
+<pre><code>1. Go to https://railway.app
+2. Sign up with GitHub
+3. Authorize
+</code></pre>
+<h3>3.2 Create New Project</h3>
+<pre><code>1. Dashboard → New Project
+2. Deploy from GitHub repo
+3. Select: rf-learning
+4. Choose: backend directory
+</code></pre>
+<h3>3.3 Add PostgreSQL</h3>
+<pre><code>1. Add Service → Add from Marketplace
+2. Select PostgreSQL
+3. Click Add
+</code></pre>
+<h3>3.4 Configure Environment Variables</h3>
+<p><strong>In Railway Dashboard:</strong></p>
+<pre><code>Backend service:
+NODE_ENV = production
+SERVER_PORT = 3000
+DB_HOST = (auto-filled from PostgreSQL)
+DB_PORT = (auto-filled)
+DB_USER = postgres
+DB_PASSWORD = (auto-generated)
+DB_NAME = rf_learning
+JWT_SECRET = your-super-secret-key-change-this
+UPLOAD_DIR = /tmp/uploads
+</code></pre>
+<h3>3.5 Railway Auto-Deploy</h3>
+<pre><code>Push to GitHub → Railway detects → Auto builds → Auto deploys!
+</code></pre>
+<p><strong>Your Backend is now live at:</strong></p>
+<pre><code>https://api.railway.app/api/courses
+(Railway gives you exact URL)
+</code></pre>
+<hr>
+<h2>שלב 4: Connect Frontend to Backend</h2>
+<h3>4.1 Get Backend URL from Railway</h3>
+<pre><code>Railway Dashboard → Backend Service → Domain
+Copy: https://rf-learning-api.railway.app
+</code></pre>
+<h3>4.2 Update Frontend .env</h3>
+<p><strong><code>frontend/.env.production</code>:</strong></p>
+<pre><code>VITE_API_URL=https://rf-learning-api.railway.app/api
+</code></pre>
+<h3>4.3 Redeploy Frontend</h3>
+<pre><code class="language-bash">git add frontend/.env.production
+git commit -m &quot;Update API URL for Railway backend&quot;
+git push
+# Vercel auto-redeploys!
+</code></pre>
+<hr>
+<h2>שלב 5: Database Setup on Railway</h2>
+<h3>5.1 Connect to PostgreSQL</h3>
+<pre><code class="language-bash"># Get connection string from Railway
+# Railway Dashboard → PostgreSQL → Database URL
+
+# Copy the URL, looks like:
+# postgresql://user:pass@host:port/dbname
+</code></pre>
+<h3>5.2 Create Tables</h3>
+<p><strong>Option A: Via Railway Console</strong></p>
+<pre><code>1. Railway Dashboard → PostgreSQL
+2. Click &quot;Connect&quot; → Query
+3. Paste SQL from backend/src/db.sql
+4. Run
+</code></pre>
+<p><strong>Option B: Via CLI</strong></p>
+<pre><code class="language-bash">psql &quot;postgresql://user:pass@host:port/dbname&quot; &lt; backend/src/db.sql
+</code></pre>
+<h3>5.3 Verify Database</h3>
+<pre><code class="language-bash">psql &quot;postgresql://user:pass@host:port/dbname&quot;
+
+# Check tables
+\dt
+
+# Should show: users, courses, chapters, learning_content, etc.
+</code></pre>
+<hr>
+<h2>שלב 6: CI/CD Pipeline (GitHub Actions)</h2>
+<h3>6.1 Auto-Run Tests on Push</h3>
+<p><strong>Create <code>.github/workflows/test.yml</code>:</strong></p>
+<pre><code class="language-yaml">name: Run Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Build Frontend
+        run: cd frontend &amp;&amp; npm run build
+      
+      - name: Build Backend
+        run: cd backend &amp;&amp; npm run build
+</code></pre>
+<h3>6.2 Auto-Deploy on Merge to Main</h3>
+<pre><code class="language-yaml"># Railway auto-deploys when you push to main
+# No extra setup needed!
+</code></pre>
+<hr>
+<h1>עלויות — Comparison</h1>
+<h2>Free Tier Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Free</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GitHub</strong></td>
+<td>✅ Yes</td>
+<td>$0</td>
+</tr>
+<tr>
+<td><strong>Vercel Frontend</strong></td>
+<td>✅ Yes</td>
+<td>$0</td>
+</tr>
+<tr>
+<td><strong>Railway Backend</strong></td>
+<td>✅ Yes ($5 credit/month)</td>
+<td>~$0</td>
+</tr>
+<tr>
+<td><strong>Railway PostgreSQL</strong></td>
+<td>✅ Yes</td>
+<td>$0</td>
+</tr>
+<tr>
+<td><strong>SSL/HTTPS</strong></td>
+<td>✅ Yes</td>
+<td>$0</td>
+</tr>
+<tr>
+<td><strong>Custom Domain</strong></td>
+<td>✅ Yes</td>
+<td>$0</td>
+</tr>
+<tr>
+<td><strong>Monthly Total</strong></td>
+<td></td>
+<td><strong>$0!</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>הצעות ניתוחים עתידיות (Upscale)</h2>
+<h3>כשאתה גדל:</h3>
+<pre><code>Tier 1 (0-1000 users): FREE
+  - Vercel Free
+  - Railway $5/month
+  - GitHub Free
+  Total: $0-5/month
+
+Tier 2 (1000-10,000 users): $20-50/month
+  - Vercel Pro ($20)
+  - Railway upgrade ($25)
+  - GitHub Pro ($4)
+  Total: $49/month
+
+Tier 3 (10,000+ users): $100+/month
+  - Move to AWS/DigitalOcean
+  - Load balancing
+  - CDN optimization
+</code></pre>
+<hr>
+<h2>Quick Checklist — להפעלה</h2>
+<pre><code>□ GitHub Repository created &amp; code pushed
+□ Vercel connected &amp; Frontend deployed
+□ Railway connected &amp; Backend deployed
+□ PostgreSQL database created on Railway
+□ Tables created (db.sql ran)
+□ Environment variables set
+□ Backend URL updated in Frontend
+□ Frontend redeployed
+□ Test: Frontend loads at https://rf-learning.vercel.app
+□ Test: API responds at https://api.railway.app/api/courses
+□ Test: Login works
+□ Test: View courses works
+</code></pre>
+<hr>
+<h2>יתרונות GitHub Deployment</h2>
+<h3>בהשוואה לDigitalOcean ($5/month):</h3>
+<pre><code>DigitalOcean          GitHub + Vercel + Railway
+─────────────────────────────────────────────────
+$5/month              $0-5/month
+צריך SSH              Git push only
+צריך DevOps           Fully automated
+צריך backup           Git IS backup
+צריך מוניטורינג      Built-in
+שליטה מלאה          Less control
+</code></pre>
+<h3>GitHub Deployment יתרונות:</h3>
+<p>✅ <strong>חינם לגמרי</strong> (עם Railway credit)<br>
+✅ <strong>Git-based</strong> — כל פעם שאתה pushדש, זה מדפיס<br>
+✅ <strong>CI/CD אוטומטי</strong> — GitHub Actions<br>
+✅ <strong>Version control built-in</strong> — rollback קל<br>
+✅ <strong>Collaboration</strong> — שתף עם team<br>
+✅ <strong>Comments on commits</strong> — דוקומנטציה<br>
+✅ <strong>Pull requests</strong> — code review</p>
+<hr>
+<h2>Deployment Flow Diagram</h2>
+<pre><code>┌────────────────────────────────────────────────────┐
+│          You Work Locally                          │
+│  npm run dev, make changes, test                   │
+└────────────────────────────────────────────────────┘
+                        ↓
+                   git push origin main
+                        ↓
+        ┌───────────────────────────────┐
+        │    GitHub Receives Push       │
+        │  (monitoring both frontend/   │
+        │   backend directories)        │
+        └───────────────────────────────┘
+         ↓                      ↓
+    ┌─────────┐          ┌──────────┐
+    │ Vercel  │          │ Railway  │
+    ├─────────┤          ├──────────┤
+    │ Detected│          │ Detected │
+    │frontend/│          │backend/  │
+    │build    │          │build     │
+    └────┬────┘          └────┬─────┘
+         │                    │
+    ┌────▼────┐          ┌────▼─────┐
+    │ npm run │          │ npm run   │
+    │ build   │          │ dev       │
+    │         │          │ + PM2     │
+    └────┬────┘          └────┬─────┘
+         │                    │
+    ┌────▼────────────────────▼──────┐
+    │  Tests run (GitHub Actions)     │
+    └────┬─────────────────────────────┘
+         │ ✅ if pass
+    ┌────▼─────────────────────────────┐
+    │  Deploy to Production             │
+    │  Frontend: Vercel                 │
+    │  Backend: Railway                 │
+    └─────────────────────────────────┘
+         │
+    ┌────▼──────────────────────────┐
+    │  Live! 🎉                     │
+    │  https://app.vercel.app       │
+    │  https://api.railway.app      │
+    └───────────────────────────────┘
+</code></pre>
+<hr>
+<h2>פקודות בסיסיות — Day-to-Day</h2>
+<pre><code class="language-bash"># כל יום, אתה רק עושה:
+git add .
+git commit -m &quot;Fix login bug&quot;
+git push
+
+# The rest is automatic! 🎉
+# Vercel + Railway handle deployment
+# GitHub Actions handle testing
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>“Frontend can’t connect to Backend”</h3>
+<pre><code>1. Check Railway backend URL is correct
+2. Update frontend/.env.production
+3. Push to GitHub
+4. Vercel will rebuild automatically
+</code></pre>
+<h3>“Database not found on Railway”</h3>
+<pre><code>1. Go to Railway Dashboard
+2. PostgreSQL service → Connect
+3. Paste connection string in Railway Backend env vars
+4. Run db.sql via Railway console
+</code></pre>
+<h3>“Build fails on Vercel”</h3>
+<pre><code>1. Check: npm run build works locally
+2. Check: frontend/package.json has all dependencies
+3. Check: No hardcoded paths or localhost references
+4. Push again (Vercel will retry)
+</code></pre>
+<hr>
+<h1>סיכום — התוכנית המוצלחת</h1>
+<h2>המדריך הקצר ביותר:</h2>
+<pre><code>Step 1: git push your code to GitHub
+Step 2: Connect Vercel (5 minutes)
+Step 3: Connect Railway (5 minutes)
+Step 4: Add PostgreSQL on Railway (1 minute)
+Step 5: Create tables (1 minute)
+Step 6: Update API URL in Frontend (1 minute)
+Step 7: Push again
+Step 8: Done! ✅
+
+Total time: 20 minutes
+Cost: $0/month
+
+Your app is live and auto-updating!
+</code></pre>
+<hr>
+<h2>Free Hosting + Git Version Control = 🚀</h2>
+<pre><code>GitHub Pages (Frontend)     ← Free
+Railway (Backend + DB)      ← Free
+Auto-Deploy on Push         ← Free
+SSL/HTTPS                   ← Free
+Version Control             ← Free
+CI/CD Pipeline              ← Free
+</code></pre>
+<p><strong>כל מה שצריך לך = FREE! ✅</strong></p>
+<hr>
+<p><strong>עדכון:</strong> 2026-06-28<br>
+<strong>גרסה:</strong> 1.0<br>
+<strong>עלות:</strong> $0/month<br>
+<strong>סטטוס:</strong> Production Ready</p>
+
+        <div class="footer">
+            <p>ספר המערכת - לומדת ענף 71</p>
+            <p>עדכון אחרון: 2026-06-28</p>
+            <p>גרסה: 1.0 Extended</p>
+        </div>
+    </div>
+</body>
+</html>

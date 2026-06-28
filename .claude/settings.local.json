@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat)",
+      "Bash(chmod +x /tmp/create_engine_courses.sh)",
+      "Bash(bash /tmp/create_engine_courses.sh)",
+      "Bash(node create_engine_courses.js)",
+      "Bash(taskkill /F /IM node.exe /T)",
+      "Bash(curl -s http://localhost:3000/courses)",
+      "Bash(node html-to-pdf.js)"
+    ]
+  }
+}

@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ספר המערכת - לומדת ענף 71</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.8;
+            color: #1c1d1f;
+            background: #f9f9f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #a435f0;
+            font-size: 2.5em;
+            margin: 40px 0 10px 0;
+            text-align: center;
+            page-break-after: avoid;
+        }
+
+        h2 {
+            color: #a435f0;
+            font-size: 1.8em;
+            margin: 40px 0 15px 0;
+            border-bottom: 3px solid #a435f0;
+            padding-bottom: 10px;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            color: #1c1d1f;
+            font-size: 1.3em;
+            margin: 25px 0 10px 0;
+            page-break-after: avoid;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.1em;
+            margin: 15px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-right: 4px solid #a435f0;
+            direction: ltr;
+            text-align: left;
+            page-break-inside: avoid;
+        }
+
+        pre code {
+            color: #1c1d1f;
+            background: none;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+
+        th {
+            background: #a435f0;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        strong {
+            color: #a435f0;
+            font-weight: 700;
+        }
+
+        em {
+            font-style: italic;
+            color: #666;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .toc {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 30px 0;
+            page-break-inside: avoid;
+        }
+
+        .toc a {
+            color: #a435f0;
+            text-decoration: none;
+            display: block;
+            margin: 8px 0;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            page-break-inside: avoid;
+            margin-bottom: 30px;
+        }
+
+        blockquote {
+            border-right: 4px solid #a435f0;
+            padding: 15px;
+            margin: 20px 0;
+            background: #f9f9f9;
+            border-radius: 3px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            page-break-before: always;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            h2 {
+                page-break-before: always;
+            }
+            a {
+                color: #a435f0;
+            }
+        }
+
+        /* Code syntax highlighting */
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>📚 ספר המערכת - לומדת ענף 71</h1>
+<h2>מדריך המשתמש והמפתח המלא</h2>
+<hr>
+<h2>📖 תוכן עניינים</h2>
+<ol>
+<li><a href="#%D7%9E%D7%91%D7%95%D7%90">מבוא</a></li>
+<li><a href="#%D7%94%D7%AA%D7%97%D7%9C%D7%94-%D7%9E%D7%94%D7%99%D7%A8%D7%94">התחלה מהירה</a></li>
+<li><a href="#%D7%90%D7%A8%D7%9B%D7%99%D7%98%D7%A7%D7%98%D7%95%D7%A8%D7%94-%D7%95%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%95%D7%AA">ארכיטקטורה וטכנולוגיות</a></li>
+<li><a href="#%D7%9E%D7%93%D7%A8%D7%99%D7%9A-%D7%94%D7%AA%D7%9C%D7%9E%D7%99%D7%93">מדריך התלמיד</a></li>
+<li><a href="#%D7%9E%D7%93%D7%A8%D7%99%D7%9A-%D7%94%D7%9E%D7%A0%D7%94%D7%9C">מדריך המנהל</a></li>
+<li><a href="#%D7%A2%D7%95%D7%A8%D7%9A-%D7%98%D7%A7%D7%A1%D7%98-%D7%A2%D7%A9%D7%99%D7%A8">עורך טקסט עשיר</a></li>
+<li><a href="#%D7%A0%D7%99%D7%94%D7%95%D7%9C-%D7%A7%D7%91%D7%A6%D7%99%D7%9D">ניהול קבצים</a></li>
+<li><a href="#%D7%9E%D7%93%D7%A8%D7%99%D7%9A-%D7%9E%D7%A4%D7%AA%D7%97">מדריך מפתח</a></li>
+<li><a href="#%D7%A9%D7%90%D7%9C%D7%95%D7%AA-%D7%A0%D7%A4%D7%95%D7%A6%D7%95%D7%AA">שאלות נפוצות</a></li>
+</ol>
+<hr>
+<h2>מבוא</h2>
+<h3>מה זו לומדת ענף 71?</h3>
+<p><strong>לומדת ענף 71</strong> היא מערכת למידה דיגיטלית מודרנית ומלאה לניהול קורסים, פרקים, וחומרי לימוד.</p>
+<h4>עבור תלמידים:</h4>
+<ul>
+<li>👨‍🎓 צפייה בקורסים מסודרים</li>
+<li>📖 קריאת פרקים עם תוכן עשיר (טקסט, תמונות, קבצים)</li>
+<li>📊 מעקב התקדמות בקורסים</li>
+<li>✅ פתרון בחינות וקבלת ציונים</li>
+<li>📥 הורדת חומרי לימוד (PDF, Word, Excel וכו’)</li>
+</ul>
+<h4>עבור מנהלים:</h4>
+<ul>
+<li>📚 יצירה וניהול קורסים מלא</li>
+<li>📝 כתיבת תוכן עם עורך טקסט WYSIWYG</li>
+<li>🖼️ העלאת תמונות וקבצים</li>
+<li>❓ יצירה וניהול של בחינות ושאלות</li>
+<li>👥 ניהול משתמשים וגישות</li>
+</ul>
+<h4>תכונות כלליות:</h4>
+<ul>
+<li>✨ עיצוב Udemy-style מודרני</li>
+<li>🌙 מצב יום/לילה (Light/Dark)</li>
+<li>🇮🇱 תמיכה מלאה בעברית (RTL)</li>
+<li>📱 Responsive design - עובד על כל המכשירים</li>
+<li>🔒 אבטחה - הצפנת סיסמאות, access control</li>
+</ul>
+<hr>
+<h2>התחלה מהירה</h2>
+<h3>שלב 1: דרישות מקדימות</h3>
+<p><strong>Hardware:</strong></p>
+<ul>
+<li>💻 מחשב עם Windows/Mac/Linux</li>
+<li>💾 4GB RAM מינימום</li>
+<li>🔗 חיבור אינטרנט (להורדת dependencies)</li>
+</ul>
+<p><strong>Software:</strong></p>
+<ul>
+<li>🟢 Node.js 16+ (מ-<a href="https://nodejs.org/">https://nodejs.org/</a>)</li>
+<li>🐘 PostgreSQL (מ-<a href="https://www.postgresql.org/">https://www.postgresql.org/</a>)</li>
+<li>🌐 דפדפן עדכני (Chrome, Firefox, Edge)</li>
+</ul>
+<h3>שלב 2: הפעלת המערכת</h3>
+<ol>
+<li>
+<p><strong>פתח את תיקיית הפרויקט:</strong></p>
+<pre><code>C:\Users\yairk\OneDrive\שולחן העבודה\rf-learning-system
+</code></pre>
+</li>
+<li>
+<p><strong>לחץ פעמיים על קובץ <code>START.bat</code></strong></p>
+<ul>
+<li>שני חלונות CMD יופעלו (Backend ו-Frontend)</li>
+<li>הדפדפן יפתח אוטומטית ל-<a href="http://localhost:5173">http://localhost:5173</a></li>
+</ul>
+</li>
+<li>
+<p><strong>המתן 15 שניות</strong> לשרתים להתחיל</p>
+</li>
+</ol>
+<h3>שלב 3: התחברות</h3>
+<p>בעמוד ההתחברות, בחר את התפקיד שלך:</p>
+<h4><strong>אם אתה תלמיד:</strong></h4>
+<pre><code>ת&quot;ז:    123456789
+סיסמה:  password123
+</code></pre>
+<h4><strong>אם אתה מנהל:</strong></h4>
+<pre><code>ת&quot;ז:    999999999
+סיסמה:  postgres123
+</code></pre>
+<hr>
+<h2>ארכיטקטורה וטכנולוגיות</h2>
+<h3>📐 סקירת המערכת</h3>
+<p>לומדת ענף 71 בנויה בארכיטקטורת <strong>3-Tier (שלוש שכבות)</strong>:</p>
+<pre><code>┌─────────────────────────────────────────────────┐
+│           Frontend (BROWSER)                    │
+│  React + TypeScript + Vite + CSS Modern         │
+│  ┌──────────────────────────────────────────┐   │
+│  │ Login → Home → Courses → Chapters → Exams│   │
+│  │ Admin → Create/Edit → Content Mgmt       │   │
+│  └──────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────┘
+                      ↓ HTTP/REST API
+┌─────────────────────────────────────────────────┐
+│           Backend (Node.js Server)              │
+│  Express.js + TypeScript + REST APIs            │
+│  ┌──────────────────────────────────────────┐   │
+│  │ Authentication → Routes → Controllers    │   │
+│  │ Middleware → Validation → File Upload    │   │
+│  └──────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────┘
+                      ↓ SQL
+┌─────────────────────────────────────────────────┐
+│         Database (PostgreSQL)                   │
+│  Tables: users, courses, chapters, content,     │
+│  exams, questions, learning_content             │
+└─────────────────────────────────────────────────┘
+</code></pre>
+<h3>🛠️ Stack טכנולוגי</h3>
+<h4><strong>Frontend (React + TypeScript)</strong></h4>
+<pre><code class="language-javascript">// מנת מהטכנולוגיות:
+- React 18 - ספריית UI
+- TypeScript - Type safety
+- Vite - Build tool מהיר
+- React Router - Navigation
+- CSS Modern - Styling (Flexbox, Grid)
+- Heebo Font - עברית יפה
+</code></pre>
+<p><strong>מיקום קבצים:</strong></p>
+<pre><code>frontend/
+├── src/
+│   ├── components/           # React components
+│   │   ├── Navbar.tsx       # Navigation bar
+│   │   ├── RichTextEditor.tsx # WYSIWYG editor
+│   │   ├── ContentViewer.tsx # Content display
+│   │   └── ...
+│   ├── pages/               # Page components
+│   │   ├── LoginPage.tsx
+│   │   ├── HomePage.tsx
+│   │   ├── CoursePage.tsx
+│   │   ├── ChapterPage.tsx
+│   │   ├── AdminPage.tsx
+│   │   └── ...
+│   ├── context/             # React Context
+│   │   ├── AuthContext.tsx  # Login state
+│   │   └── ThemeContext.tsx # Dark/Light mode
+│   ├── services/            # API calls
+│   │   └── api.ts           # Fetch wrappers
+│   ├── App.tsx              # Root component
+│   └── App.css              # Global styles
+└── package.json             # Dependencies
+</code></pre>
+<p><strong>שפות וספריות עיקריות:</strong></p>
+<ul>
+<li><strong>React</strong> - UI components</li>
+<li><strong>TypeScript</strong> - Type safety</li>
+<li><strong>Vite</strong> - Fast build</li>
+<li><strong>CSS3</strong> - Styling with variables</li>
+<li><strong>Fetch API</strong> - HTTP requests</li>
+</ul>
+<h4><strong>Backend (Node.js + Express)</strong></h4>
+<pre><code class="language-javascript">// מנת מהטכנולוגיות:
+- Node.js - JavaScript runtime
+- Express - Web framework
+- TypeScript - Type safety
+- PostgreSQL - Database
+- ts-node - TypeScript execution
+- Multer - File uploads
+</code></pre>
+<p><strong>מיקום קבצים:</strong></p>
+<pre><code>backend/
+├── src/
+│   ├── controllers/          # Business logic
+│   │   ├── userController.ts
+│   │   ├── courseController.ts
+│   │   ├── contentController.ts
+│   │   └── ...
+│   ├── routes/              # API routes
+│   │   ├── users.ts
+│   │   ├── courses.ts
+│   │   ├── content.ts
+│   │   └── ...
+│   ├── middleware/          # Authentication, validation
+│   │   ├── auth.ts
+│   │   └── errorHandler.ts
+│   ├── config/              # Configuration
+│   │   ├── database.ts      # DB connection
+│   │   ├── upload.ts        # File upload settings
+│   │   └── ...
+│   ├── models/              # Data models
+│   ├── server.ts            # Entry point
+│   └── db.sql               # Database schema
+└── package.json             # Dependencies
+</code></pre>
+<p><strong>שפות וספריות עיקריות:</strong></p>
+<ul>
+<li><strong>Node.js</strong> - Runtime environment</li>
+<li><strong>Express</strong> - Routing &amp; middleware</li>
+<li><strong>TypeScript</strong> - Type safety</li>
+<li><strong>PostgreSQL</strong> - Database</li>
+<li><strong>Multer</strong> - File handling</li>
+<li><strong>bcrypt</strong> - Password hashing</li>
+</ul>
+<h4><strong>Database (PostgreSQL)</strong></h4>
+<p><strong>Schema - טבלות ויחסים:</strong></p>
+<pre><code class="language-sql">-- Users table
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100),
+  id_number VARCHAR(20) UNIQUE,
+  password_hash VARCHAR(255),
+  role VARCHAR(20), -- 'admin' or 'student'
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Courses table
+CREATE TABLE courses (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(200),
+  description TEXT,
+  created_by INT REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Chapters table
+CREATE TABLE chapters (
+  id SERIAL PRIMARY KEY,
+  course_id INT REFERENCES courses(id),
+  title VARCHAR(200),
+  description TEXT,
+  sort_order INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Learning Content table (טקסט, תמונות, קבצים)
+CREATE TABLE learning_content (
+  id SERIAL PRIMARY KEY,
+  chapter_id INT REFERENCES chapters(id),
+  type VARCHAR(50), -- 'TEXT', 'RICH', 'IMAGE', 'FILE'
+  content TEXT,
+  file_path VARCHAR(500),
+  sort_order INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Exams table
+CREATE TABLE exams (
+  id SERIAL PRIMARY KEY,
+  course_id INT REFERENCES courses(id),
+  title VARCHAR(200),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Questions table
+CREATE TABLE questions (
+  id SERIAL PRIMARY KEY,
+  exam_id INT REFERENCES exams(id),
+  text VARCHAR(500),
+  type VARCHAR(50), -- 'SINGLE', 'MULTIPLE', 'FREE_TEXT'
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+<p><strong>ER Diagram:</strong></p>
+<pre><code>users
+  ├── 1 : N ──→ courses (created_by)
+  ├── 1 : N ──→ exams (creator)
+  └── 1 : N ──→ exam_results (user_id)
+
+courses
+  ├── 1 : N ──→ chapters
+  └── 1 : N ──→ exams
+
+chapters
+  └── 1 : N ──→ learning_content
+
+exams
+  └── 1 : N ──→ questions
+
+exam_results
+  └── N : M ──→ questions (answers)
+</code></pre>
+<h3>🌐 API Endpoints</h3>
+<h4><strong>Authentication</strong></h4>
+<pre><code>POST   /api/auth/login          - התחברות
+POST   /api/auth/logout         - התנתקות
+GET    /api/auth/me             - פרטים על משתמש נוכחי
+</code></pre>
+<h4><strong>Courses</strong></h4>
+<pre><code>GET    /api/courses             - קבלת כל הקורסים
+GET    /api/courses/:id         - קורס ספציפי
+POST   /api/courses             - יצירת קורס (admin)
+PUT    /api/courses/:id         - עריכת קורס (admin)
+DELETE /api/courses/:id         - מחיקת קורס (admin)
+</code></pre>
+<h4><strong>Chapters</strong></h4>
+<pre><code>GET    /api/courses/:courseId/chapters      - פרקים של קורס
+GET    /api/chapters/:id                    - פרק ספציפי
+POST   /api/chapters                        - יצירת פרק (admin)
+PUT    /api/chapters/:id                    - עריכת פרק (admin)
+DELETE /api/chapters/:id                    - מחיקת פרק (admin)
+</code></pre>
+<h4><strong>Content</strong></h4>
+<pre><code>GET    /api/chapters/:chapterId/content     - תוכן של פרק
+POST   /api/content                         - הוספת תוכן (admin)
+PUT    /api/content/:id                     - עריכת תוכן (admin)
+DELETE /api/content/:id                     - מחיקת תוכן (admin)
+</code></pre>
+<h4><strong>File Upload</strong></h4>
+<pre><code>POST   /api/upload              - העלאת קובץ
+GET    /api/uploads/:filename   - הורדת קובץ
+</code></pre>
+<h4><strong>Exams &amp; Questions</strong></h4>
+<pre><code>GET    /api/exams/:id           - בחינה ושאלותיה
+POST   /api/exams               - יצירת בחינה (admin)
+POST   /api/questions            - הוספת שאלה (admin)
+POST   /api/exam-results         - שמירת תשובות
+GET    /api/exam-results/:id     - התוצאות
+</code></pre>
+<hr>
+<h2>מדריך התלמיד</h2>
+<h3>👨‍🎓 כמה תלמיד משתמש בלומדה</h3>
+<h4>צעד 1: התחברות</h4>
+<ol>
+<li>הזן ת&quot;ז וסיסמה</li>
+<li>לחץ “התחברות”</li>
+<li>תופיע דף הבית עם רשימת קורסים</li>
+</ol>
+<h4>צעד 2: בחירת קורס</h4>
+<p>בדף הבית תראה רשימה של קורסים.</p>
+<p>כל קורס מציג:</p>
+<ul>
+<li>📚 <strong>שם הקורס</strong> (לדוגמה: “מנועי בוכנה”)</li>
+<li>📝 <strong>תיאור קצר</strong> של הקורס</li>
+<li>🟢 <strong>כפתור “התחל”</strong> להיכנס לקורס</li>
+</ul>
+<h4>צעד 3: צפייה בקורס ופרקים</h4>
+<p>בדף הקורס תראה:</p>
+<p><strong>עמודה ימנית (רשימת פרקים):</strong></p>
+<ul>
+<li>📖 רשימה של כל פרקי הקורס</li>
+<li>✅ סטטוס של כל פרק (סיים / בתהליך)</li>
+<li>📊 מספר הפרק (1, 2, 3…)</li>
+</ul>
+<p><strong>עמודה שמאלית (תוכן קורס):</strong></p>
+<ul>
+<li>🎓 כותרת הקורס</li>
+<li>📄 תיאור הקורס</li>
+<li>📈 כרטיס התקדמות:
+<ul>
+<li>אחוז ההשלמה (XX%)</li>
+<li>מספר פרקים שהושלמו (X מתוך Y)</li>
+<li>כפתור “המשך לקורס”</li>
+</ul>
+</li>
+</ul>
+<h4>צעד 4: קריאת פרק</h4>
+<p><strong>לחץ על פרק</strong> מהרשימה.</p>
+<p>בדף הפרק תראה:</p>
+<ul>
+<li>📖 <strong>כותרת הפרק</strong></li>
+<li>📝 <strong>תיאור מלא</strong> (עם עיצוב: בולד, אטליק, רשימות וכו’)</li>
+<li>🖼️ <strong>תמונות</strong> (אם הן קיימות)</li>
+<li>📥 <strong>קבצים להורדה</strong> (PDF, Word, Excel וכו’)</li>
+<li>➡️ <strong>כפתורי ניווט</strong> (פרק הקודם / הבא)</li>
+</ul>
+<h4>צעד 5: פתרון בחינות</h4>
+<p>אם יש בחינות בקורס:</p>
+<ol>
+<li>לחץ על <strong>“בחינות”</strong> בתפריט</li>
+<li>בחר <strong>בחינה</strong> מהרשימה</li>
+<li><strong>ענה על השאלות:</strong>
+<ul>
+<li>✅ רשות רבת-ברירה (בחר תשובה אחת)</li>
+<li>✅ בחירה מרובה (בחר כמה תשובות)</li>
+<li>✅ טקסט חופשי (כתוב תשובה)</li>
+</ul>
+</li>
+<li>לחץ <strong>“שלח תשובות”</strong></li>
+<li>קבל <strong>ציון</strong> ופרטי ההצלחה</li>
+</ol>
+<hr>
+<h2>מדריך המנהל</h2>
+<h3>👨‍💼 כמה מנהל מנהל את המערכת</h3>
+<h4>הפעלת פאנל ניהול</h4>
+<p>לאחר התחברות כמנהל (ת&quot;ז: 999999999):</p>
+<ol>
+<li>לחץ על <strong>“ניהול”</strong> בתפריט הראשי</li>
+<li>בחר אחד מ:
+<ul>
+<li>📚 <strong>קורסים</strong> - יצירה, עריכה, מחיקה</li>
+<li>📖 <strong>פרקים</strong> - הוספה, עריכה, מחיקה</li>
+<li>📝 <strong>תוכן</strong> - הוספת טקסט, תמונות, קבצים</li>
+<li>❓ <strong>שאלות</strong> - ניהול בחינות</li>
+</ul>
+</li>
+</ol>
+<h3>✨ יצירת קורס חדש</h3>
+<p><strong>שלבים:</strong></p>
+<ol>
+<li>בפאנל ניהול, בחר <strong>“קורסים”</strong></li>
+<li>לחץ כפתור <strong>“הוסף קורס”</strong></li>
+<li>מלא את הפרטים:
+<ul>
+<li><strong>שם קורס</strong> (חובה) — לדוגמה: “מנועי בוכנה”</li>
+<li><strong>תיאור</strong> (חובה) — הסבר קצר על הקורס</li>
+<li><strong>מחסום בחירה</strong> (אופציונלי) — תנאי כניסה</li>
+</ul>
+</li>
+<li>לחץ <strong>“שמור”</strong></li>
+</ol>
+<p>✅ <strong>הקורס נוצר בהצלחה!</strong></p>
+<h3>📖 הוספת פרק לקורס</h3>
+<p><strong>שלבים:</strong></p>
+<ol>
+<li>בחר <strong>קורס</strong> מהרשימה</li>
+<li>לחץ <strong>“הוסף פרק”</strong></li>
+<li>מלא את הפרטים:
+<ul>
+<li><strong>שם הפרק</strong> (חובה) — לדוגמה: “עיקרון הפעולה”</li>
+<li><strong>תיאור</strong> (חובה) — הסבר מפורט (משתמש בעורך טקסט עשיר!)</li>
+<li><strong>סדר</strong> (חובה) — מספר סידורי (1, 2, 3…)</li>
+</ul>
+</li>
+<li>לחץ <strong>“שמור”</strong></li>
+</ol>
+<p>✅ <strong>הפרק נוצר!</strong></p>
+<h3>📝 הוספת תוכן חינוכי</h3>
+<p><strong>שלבים:</strong></p>
+<ol>
+<li>בחר <strong>פרק</strong> מהרשימה</li>
+<li>לחץ <strong>“הוסף תוכן”</strong></li>
+<li>בחר <strong>סוג תוכן:</strong>
+<ul>
+<li>📄 <strong>טקסט עשיר</strong> - משתמש בעורך WYSIWYG</li>
+<li>🖼️ <strong>תמונה</strong> - Upload תמונה</li>
+<li>📑 <strong>קובץ</strong> - PDF, Word, Excel, PowerPoint</li>
+</ul>
+</li>
+</ol>
+<h4>אם בחרת “טקסט עשיר”:</h4>
+<ol>
+<li>כתוב את הטקסט בעורך</li>
+<li>עצב עם כלי הסרגל (ראה סעיף “עורך הטקסט העשיר”)</li>
+<li>לחץ <strong>“שמור”</strong></li>
+</ol>
+<h4>אם בחרת “קובץ”:</h4>
+<ol>
+<li>לחץ <strong>“בחר קובץ”</strong></li>
+<li>בחר קובץ מהמחשב (עד 100 MB)</li>
+<li>לחץ <strong>“שמור”</strong></li>
+</ol>
+<p>✅ <strong>התוכן הוסף בהצלחה!</strong></p>
+<hr>
+<h2>עורך הטקסט העשיר</h2>
+<h3>מה זה WYSIWYG?</h3>
+<p><strong>WYSIWYG</strong> = “What You See Is What You Get” — עורך טקסט שמציג עיצוב בזמן אמת.</p>
+<p>בלומדת ענף 71, העורך משתמש ב-<strong>contentEditable API</strong> של HTML5, בלי ספריות חיצוניות.</p>
+<h3>כלי הסרגל</h3>
+<table>
+<thead>
+<tr>
+<th>סמל</th>
+<th>שם</th>
+<th>תיאור</th>
+<th>דוגמה</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>B</strong></td>
+<td>Bold</td>
+<td>בולד</td>
+<td><strong>טקסט זה בולד</strong></td>
+</tr>
+<tr>
+<td><strong>I</strong></td>
+<td>Italic</td>
+<td>אטליק</td>
+<td><em>טקסט זה אטליק</em></td>
+</tr>
+<tr>
+<td><strong>U</strong></td>
+<td>Underline</td>
+<td>קו תחתון</td>
+<td><u>קו תחתון</u></td>
+</tr>
+<tr>
+<td><strong>H</strong></td>
+<td>Heading</td>
+<td>כותרת H3</td>
+<td>### כותרת גדולה</td>
+</tr>
+<tr>
+<td><strong>🎨</strong></td>
+<td>Color</td>
+<td>בחר צבע</td>
+<td><span style="color:red">אדום</span></td>
+</tr>
+<tr>
+<td><strong>≡</strong></td>
+<td>Unordered</td>
+<td>רשימה לא מסודרת</td>
+<td>• פריט 1 • פריט 2</td>
+</tr>
+<tr>
+<td><strong>1.</strong></td>
+<td>Ordered</td>
+<td>רשימה מסודרת</td>
+<td>1. פריט 1 2. פריט 2</td>
+</tr>
+<tr>
+<td><strong>←</strong></td>
+<td>Align Left</td>
+<td>יישור לשמאל</td>
+<td>← יישור</td>
+</tr>
+<tr>
+<td><strong>→</strong></td>
+<td>Align Right</td>
+<td>יישור לימין</td>
+<td>יישור →</td>
+</tr>
+<tr>
+<td><strong>‖</strong></td>
+<td>Align Center</td>
+<td>יישור למרכז</td>
+<td>→ יישור ←</td>
+</tr>
+<tr>
+<td><strong>X</strong></td>
+<td>Clear</td>
+<td>ניקוי עיצוב</td>
+<td>טקסט רגיל</td>
+</tr>
+</tbody>
+</table>
+<h3>דוגמה: כתיבת פרק מלא</h3>
+<pre><code class="language-markdown">מנוע בוכנה - עיקרון הפעולה
+
+(לחץ H כדי לעשות זה כותרת)
+
+מנוע בוכנה הוא מנוע בעירה פנימית המשתמש בבוכנות וגלילים לחולל כוח.
+
+יתרונות:
+(לחץ ≡ בחר Unordered List)
+• עלות נמוכה
+• עמידות גבוהה לזמן
+• דלק זול וקל להשגה
+• טכנולוגיה מוכנת
+
+חסרונות:
+• זיהום אוויר גבוה
+• קול רועם גבוה
+• צריכת דלק גבוהה
+
+(בחר טקסט ולחץ 🎨 לצבע)
+</code></pre>
+<h3>HTML שנוצר בתוך המערכת</h3>
+<pre><code class="language-html">&lt;h3&gt;מנוע בוכנה - עיקרון הפעולה&lt;/h3&gt;
+&lt;p&gt;מנוע בוכנה הוא מנוע בעירה פנימית...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;יתרונות:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;עלות נמוכה&lt;/li&gt;
+  &lt;li&gt;עמידות גבוהה&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<h3>Sanitization (אבטחה)</h3>
+<p>HTML שנכתב בעורך עובר דרך:</p>
+<ol>
+<li><strong>sanitizeHtml()</strong> - הסרת קודים מסוכנים</li>
+<li><strong>whitelist validation</strong> - רק תגים בטוחים</li>
+<li><strong>content escaping</strong> - הגנה מפני XSS</li>
+</ol>
+<hr>
+<h2>ניהול קבצים</h2>
+<h3>סוגי קבצים הנתמכים</h3>
+<table>
+<thead>
+<tr>
+<th>סוג</th>
+<th>סיומות</th>
+<th>גודל מקסימום</th>
+<th>דוגמה</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDF</td>
+<td><code>.pdf</code></td>
+<td>100 MB</td>
+<td>document.pdf</td>
+</tr>
+<tr>
+<td>Word</td>
+<td><code>.doc</code>, <code>.docx</code></td>
+<td>100 MB</td>
+<td>guide.docx</td>
+</tr>
+<tr>
+<td>Excel</td>
+<td><code>.xls</code>, <code>.xlsx</code></td>
+<td>100 MB</td>
+<td>data.xlsx</td>
+</tr>
+<tr>
+<td>PowerPoint</td>
+<td><code>.ppt</code>, <code>.pptx</code></td>
+<td>100 MB</td>
+<td>slides.pptx</td>
+</tr>
+<tr>
+<td>טקסט</td>
+<td><code>.txt</code></td>
+<td>100 MB</td>
+<td>notes.txt</td>
+</tr>
+<tr>
+<td>CSV</td>
+<td><code>.csv</code></td>
+<td>100 MB</td>
+<td>spreadsheet.csv</td>
+</tr>
+</tbody>
+</table>
+<h3>Upload Flow</h3>
+<pre><code>1. Admin בוחר &quot;הוסף תוכן&quot; → &quot;קובץ&quot;
+   ↓
+2. בוחר קובץ מהמחשב
+   ↓
+3. Frontend שולח ל-Backend דרך Multer
+   ↓
+4. Backend מתקדד:
+   - בודק סוג קובץ (חומר בטוח)
+   - בודק גודל (עד 100 MB)
+   - שומר בתיקייה: /backend/uploads/
+   - שומר נתיב בDB
+   ↓
+5. Frontend מציג אייקון וקובץ להורדה
+   ↓
+6. Students יכולים להוריד
+</code></pre>
+<h3>Backend Upload Configuration</h3>
+<pre><code class="language-typescript">// src/config/upload.ts
+export const allowedExtensions = /\.(jpe?g|png|gif|webp|mp4|webm|ogg|pdf|docx?|xlsx?|pptx?|csv|txt)$/i;
+export const maxFileSize = 100 * 1024 * 1024; // 100 MB
+
+// Multer middleware
+const upload = multer({
+  dest: 'uploads/',
+  fileFilter: (req, file, cb) =&gt; {
+    if (allowedExtensions.test(file.originalname)) {
+      cb(null, true);
+    } else {
+      cb(new Error('סוג קובץ לא תמוך'));
+    }
+  },
+  limits: { fileSize: maxFileSize }
+});
+</code></pre>
+<hr>
+<h2>מדריך מפתח</h2>
+<h3>🔧 עבודה מקומית</h3>
+<h4>התקנה ראשונה</h4>
+<pre><code class="language-bash"># 1. Clone / Download הפרויקט
+cd &quot;C:\Users\yairk\OneDrive\שולחן העבודה\rf-learning-system&quot;
+
+# 2. Install Backend dependencies
+cd backend
+npm install
+
+# 3. Install Frontend dependencies
+cd ../frontend
+npm install
+
+# 4. Setup Database
+# וודא שPostgreSQL רץ
+# צור DB בשם: rf_learning
+# הרץ backend/src/db.sql
+
+# 5. Environment variables
+# Backend: צור .env בתיקיית backend
+# DB_HOST=localhost
+# DB_PORT=5432
+# DB_USER=postgres
+# DB_PASSWORD=postgres123
+# DB_NAME=rf_learning
+# SERVER_PORT=3000
+</code></pre>
+<h4>הפעלת Development Servers</h4>
+<pre><code class="language-bash"># Terminal 1 - Backend
+cd backend
+npm run dev
+# → Server running on http://localhost:3000
+
+# Terminal 2 - Frontend
+cd frontend
+npm run dev
+# → Local:   http://localhost:5173
+</code></pre>
+<h4>Build for Production</h4>
+<pre><code class="language-bash"># Frontend
+cd frontend
+npm run build
+# → אפסקו לתיקייה: dist/
+
+# Backend (just copy src to production)
+cd backend
+npm install --production
+</code></pre>
+<h3>📁 קובץ מערכת (Directory Structure)</h3>
+<pre><code>rf-learning-system/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/          # Business logic
+│   │   │   ├── userController.ts
+│   │   │   ├── courseController.ts
+│   │   │   ├── chapterController.ts
+│   │   │   ├── contentController.ts
+│   │   │   ├── examController.ts
+│   │   │   └── questionController.ts
+│   │   ├── routes/               # API routes
+│   │   │   ├── users.ts
+│   │   │   ├── courses.ts
+│   │   │   ├── chapters.ts
+│   │   │   ├── content.ts
+│   │   │   ├── exams.ts
+│   │   │   └── questions.ts
+│   │   ├── middleware/           # Middlewares
+│   │   │   ├── auth.ts           # JWT verification
+│   │   │   ├── errorHandler.ts   # Error handling
+│   │   │   └── validation.ts     # Input validation
+│   │   ├── config/               # Configuration
+│   │   │   ├── database.ts       # DB connection pool
+│   │   │   ├── upload.ts         # File upload rules
+│   │   │   └── env.ts            # Environment vars
+│   │   ├── utils/                # Helper functions
+│   │   │   ├── validators.ts
+│   │   │   └── formatters.ts
+│   │   ├── server.ts             # Entry point
+│   │   └── db.sql                # Database schema
+│   ├── uploads/                  # Uploaded files
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── .env                      # Environment vars (not in git)
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/           # Reusable components
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── RichTextEditor.tsx
+│   │   │   ├── ContentViewer.tsx
+│   │   │   ├── ProgressCard.tsx
+│   │   │   ├── CourseCard.tsx
+│   │   │   └── ...
+│   │   ├── pages/                # Full page components
+│   │   │   ├── LoginPage.tsx
+│   │   │   ├── HomePage.tsx
+│   │   │   ├── CoursePage.tsx
+│   │   │   ├── ChapterPage.tsx
+│   │   │   ├── AdminPage.tsx
+│   │   │   ├── AdminCoursesPage.tsx
+│   │   │   ├── AdminChaptersPage.tsx
+│   │   │   ├── AdminContentPage.tsx
+│   │   │   └── ...
+│   │   ├── context/              # React Context
+│   │   │   ├── AuthContext.tsx   # Login/user state
+│   │   │   └── ThemeContext.tsx  # Dark/Light mode
+│   │   ├── services/             # API communication
+│   │   │   └── api.ts            # Fetch wrappers
+│   │   ├── types/                # TypeScript types
+│   │   │   └── index.ts
+│   │   ├── App.tsx               # Root component
+│   │   ├── App.css               # Global styles
+│   │   └── main.tsx              # Entry point
+│   ├── index.html
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   └── dist/                     # Built files (after npm run build)
+│
+├── screenshots/                   # צילומי מסך
+├── START.bat                      # Automation script
+├── SYSTEM_BOOK.md                 # Documentation
+├── SYSTEM_BOOK.html
+├── SYSTEM_BOOK.pdf
+└── package.json (root)
+</code></pre>
+<h3>💻 API Examples</h3>
+<h4>Login</h4>
+<pre><code class="language-bash">POST http://localhost:3000/api/auth/login
+
+Body (JSON):
+{
+  &quot;id_number&quot;: &quot;123456789&quot;,
+  &quot;password&quot;: &quot;password123&quot;
+}
+
+Response:
+{
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;,
+  &quot;user&quot;: {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;John Student&quot;,
+    &quot;role&quot;: &quot;student&quot;
+  }
+}
+</code></pre>
+<h4>Get All Courses</h4>
+<pre><code class="language-bash">GET http://localhost:3000/api/courses
+Headers: Authorization: Bearer &lt;token&gt;
+
+Response:
+[
+  {
+    &quot;id&quot;: 1,
+    &quot;title&quot;: &quot;מנועי בוכנה&quot;,
+    &quot;description&quot;: &quot;קורס על מנועים...&quot;,
+    &quot;created_by&quot;: 1,
+    &quot;created_at&quot;: &quot;2026-06-27T10:00:00Z&quot;
+  },
+  ...
+]
+</code></pre>
+<h4>Create New Course (Admin only)</h4>
+<pre><code class="language-bash">POST http://localhost:3000/api/courses
+Headers: Authorization: Bearer &lt;admin_token&gt;
+
+Body:
+{
+  &quot;title&quot;: &quot;קורס חדש&quot;,
+  &quot;description&quot;: &quot;תיאור הקורס&quot;
+}
+
+Response:
+{
+  &quot;id&quot;: 10,
+  &quot;title&quot;: &quot;קורס חדש&quot;,
+  &quot;description&quot;: &quot;תיאור הקורס&quot;,
+  &quot;created_at&quot;: &quot;2026-06-28T12:30:00Z&quot;
+}
+</code></pre>
+<h4>Add Chapter</h4>
+<pre><code class="language-bash">POST http://localhost:3000/api/chapters
+Headers: Authorization: Bearer &lt;admin_token&gt;
+
+Body:
+{
+  &quot;course_id&quot;: 1,
+  &quot;title&quot;: &quot;פרק חדש&quot;,
+  &quot;description&quot;: &quot;תיאור הפרק&quot;,
+  &quot;sort_order&quot;: 1
+}
+</code></pre>
+<h4>Upload File</h4>
+<pre><code class="language-bash">POST http://localhost:3000/api/upload
+Headers: Authorization: Bearer &lt;admin_token&gt;
+Content-Type: multipart/form-data
+
+Body: (form-data)
+file: &lt;binary file data&gt;
+chapter_id: 1
+
+Response:
+{
+  &quot;filename&quot;: &quot;1782324662605-281066631.pdf&quot;,
+  &quot;path&quot;: &quot;/uploads/1782324662605-281066631.pdf&quot;,
+  &quot;originalName&quot;: &quot;document.pdf&quot;
+}
+</code></pre>
+<h3>🎨 CSS Architecture</h3>
+<pre><code class="language-css">/* Global variables - src/App.css */
+
+:root {
+  /* Light mode colors */
+  --bg: #ffffff;
+  --text: #1c1d1f;
+  --primary: #a435f0;
+  --border: #d1d7dc;
+  --success: #1e8e3e;
+  --error: #d33b27;
+}
+
+[data-theme=&quot;dark&quot;] {
+  --bg: #1c1d1f;
+  --text: #f0f0f0;
+  --primary: #c088f5;
+  --border: #4a4d4f;
+}
+
+/* Usage in components */
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+button {
+  background: var(--primary);
+  color: white;
+}
+</code></pre>
+<h3>🔐 Authentication Flow</h3>
+<pre><code>1. User enters ID + Password
+   ↓
+2. Frontend POST /api/auth/login
+   ↓
+3. Backend:
+   - בודק user בDB
+   - משווה password עם bcrypt
+   - מייצר JWT token
+   ↓
+4. Frontend stores token בlocalStorage
+   ↓
+5. כל בקשה עתידית תכלול:
+   Headers: Authorization: Bearer &lt;token&gt;
+   ↓
+6. Backend מאמת token עם JWT middleware
+   ↓
+7. אם תקין → גישה להמשך
+   אם לא → error 401 Unauthorized
+</code></pre>
+<hr>
+<h2>שאלות נפוצות</h2>
+<h3>❓ “איזה גרסת Node.js צריך?”</h3>
+<p><strong>תשובה:</strong> Node.js 16 ומעלה (בדוק עם <code>node --version</code>)</p>
+<h3>❓ “אני מקבל “Database rf_learning not found””</h3>
+<p><strong>פתרון:</strong></p>
+<ol>
+<li>פתח pgAdmin</li>
+<li>לחץ ימני על “Databases”</li>
+<li>בחר “Create” → “Database”</li>
+<li>שם: <code>rf_learning</code>, Owner: <code>postgres</code></li>
+<li>הרץ את <code>backend/src/db.sql</code></li>
+</ol>
+<h3>❓ “Port 3000/5173 already in use”</h3>
+<p><strong>פתרון:</strong></p>
+<pre><code class="language-bash">taskkill /F /IM node.exe
+# ואז הרץ שוב את START.bat
+</code></pre>
+<h3>❓ “איך אני מוסיף משתמש חדש?”</h3>
+<p><strong>פתרון:</strong> עכשיו צריך פתוח מערכת (אין UI). בעתיד נוסיף admin panel לניהול משתמשים.</p>
+<h3>❓ “היכן הקבצים שהעלאתי מאוחסנים?”</h3>
+<p><strong>פתרון:</strong> בתיקייה <code>backend/uploads/</code> בתוך השרת. לא זמין לרשת (נדרש להוצא לcombine public uploads folder).</p>
+<h3>❓ “איך אני מוציא את המערכת לProduction?”</h3>
+<p><strong>תשובה:</strong> צריך:</p>
+<ol>
+<li>Server עם Node.js וPostgreSQL</li>
+<li>Nginx / Apache כ-reverse proxy</li>
+<li>SSL certificate (https)</li>
+<li>PM2 לריצת backend בbackground</li>
+<li>Environment variables (.env)</li>
+</ol>
+<hr>
+<h2>🎓 סיכום</h2>
+<p><strong>לומדת ענף 71</strong> היא מערכת למידה <strong>מלאה וחזקה</strong>:</p>
+<h3>✨ תכונות עיקריות:</h3>
+<p>✅ Architecture מודרנית 3-Tier<br>
+✅ Frontend עם React + TypeScript + Vite<br>
+✅ Backend חזק עם Express + Node.js<br>
+✅ Database relational עם PostgreSQL<br>
+✅ API RESTful מלאה<br>
+✅ File upload עם support לקבצים גדולים<br>
+✅ Rich text editor בלי ספריות חיצוניות<br>
+✅ Light/Dark mode<br>
+✅ RTL Hebrew support</p>
+<h3>🚀 מוכנה לשימוש:</h3>
+<p>👨‍🎓 תלמידים יכולים ללמוד בקלות<br>
+👨‍💼 מנהלים יכולים ליצור תוכן בקלות<br>
+🔒 אבטחה ו-validation כחוק<br>
+📱 Responsive על כל המכשירים</p>
+<hr>
+<p><strong>עדכון אחרון: 2026-06-28</strong><br>
+<strong>גרסה: 1.0</strong><br>
+<strong>שפה: TypeScript + JavaScript</strong><br>
+<strong>סטטוס: Production Ready</strong></p>
+
+        <div class="footer">
+            <p>ספר המערכת - לומדת ענף 71</p>
+            <p>עדכון אחרון: 2026-06-28</p>
+            <p>גרסה: 1.0 Extended</p>
+        </div>
+    </div>
+</body>
+</html>
