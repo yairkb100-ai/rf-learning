@@ -13,6 +13,9 @@ import AdminPage from './pages/AdminPage'
 import AdminQuestionsPage from './pages/AdminQuestionsPage'
 import AdminContentPage from './pages/AdminContentPage'
 import AdminChaptersPage from './pages/AdminChaptersPage'
+import AdminUsersPage from './pages/AdminUsersPage'
+import AdminDashboardPage from './pages/AdminDashboardPage'
+import StudentProgressPage from './pages/StudentProgressPage'
 import './App.css'
 
 function App() {
@@ -28,6 +31,9 @@ function App() {
             <Route path="/courses/:courseId/chapters/:chapterId" element={<PrivateRoute><ChapterPage /></PrivateRoute>} />
             <Route path="/courses/:courseId/chapters/:chapterId/exam" element={<PrivateRoute><ExamPage /></PrivateRoute>} />
             <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
+            <Route path="/admin/dashboard" element={<PrivateRoute><AdminDashboardPage /></PrivateRoute>} />
+            <Route path="/admin/users" element={<PrivateRoute><AdminUsersPage /></PrivateRoute>} />
+            <Route path="/admin/students/:id" element={<PrivateRoute><StudentProgressPage /></PrivateRoute>} />
             <Route path="/admin/courses/:courseId/chapters" element={<PrivateRoute><AdminChaptersPage /></PrivateRoute>} />
             <Route path="/admin/courses/:courseId/chapters/:chapterId/questions" element={<PrivateRoute><AdminQuestionsPage /></PrivateRoute>} />
             <Route path="/admin/courses/:courseId/chapters/:chapterId/content" element={<PrivateRoute><AdminContentPage /></PrivateRoute>} />

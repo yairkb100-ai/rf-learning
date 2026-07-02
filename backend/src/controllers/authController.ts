@@ -2,11 +2,28 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { pool } from "../config/db";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 const ACCESS_SECRET = process.env.JWT_SECRET!;
 const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET!;
 const ACCESS_EXPIRES = process.env.JWT_EXPIRES_IN || "15m";
 const REFRESH_EXPIRES = process.env.REFRESH_TOKEN_EXPIRES_IN || "7d";
+
+// תבנית שם משתמש: OA + 9 ספרות (תעודת זהות). לדוגמה OA123456789
+const USERNAME_RE = /^OA\d{9}$/;
+
+// כללי סיסמה: אות גדולה + אות קטנה + מספר, אורך 6–8 תווים.
+export const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,8}$/;
+
+function validateCredentials(username: string, password: string): string | null {
+  if (!USERNAME_RE.test(username)) {
+    return 'שם המשתמש חייב להיות בתבנית OA ואחריו 9 ספרות (לדוגמה OA123456789)';
+  }
+  if (!PASSWORD_RE.test(password)) {
+    return 'הסיסמה חייבת להכיל אות גדולה, אות קטנה ומספר, באורך 6 עד 8 תווים';
+  }
+  return null;
+}
 
 function generateTokens(userId: number, role: string) {
   const accessToken = jwt.sign({ userId, role }, ACCESS_SECRET, {
@@ -20,67 +37,114 @@ function generateTokens(userId: number, role: string) {
   return { accessToken, refreshToken };
 }
 
-// רק Admin יוצר משתמשים — POST /api/auth/register
-export async function register(req: Request, res: Response) {
-  const { full_name, national_id, password, role } = req.body;
+// פונקציית עזר ליצירת משתמש (תלמיד או מנהל) עם ולידציה מלאה.
+// creatorId נשמר ב-created_by לצורך שרשרת ההרשאות.
+async function createUser(opts: {
+  full_name: string;
+  username: string;
+  password: string;
+  role: "STUDENT" | "ADMIN";
+  title?: string;
+  specialization_id?: number | null;
+  creatorId?: number | null;
+}): Promise<{ ok: true; user: any } | { ok: false; status: number; error: string }> {
+  const { full_name, username, password, role, title, specialization_id, creatorId } = opts;
 
-  if (!full_name || !national_id || !password) {
-    res.status(400).json({ error: "שם מלא, תעודת זהות וסיסמה חובה" });
-    return;
+  if (!full_name || !username || !password) {
+    return { ok: false, status: 400, error: "שם מלא, שם משתמש וסיסמה חובה" };
+  }
+  const vErr = validateCredentials(username, password);
+  if (vErr) return { ok: false, status: 400, error: vErr };
+
+  // כל מנהל (פרט ל-root, שנוצר ישירות ב-DB) חייב טייטל/תפקיד
+  if (role === "ADMIN" && !title?.trim()) {
+    return { ok: false, status: 400, error: "חובה להזין תפקיד (טייטל) למנהל" };
   }
 
-  try {
-    const existing = await pool.query(
-      "SELECT id FROM users WHERE national_id = $1",
-      [national_id]
-    );
+  const national_id = username.slice(2); // 9 הספרות אחרי OA
 
-    if (existing.rows.length > 0) {
-      res.status(409).json({ error: "משתמש עם תעודת זהות זו כבר קיים" });
-      return;
-    }
-
-    const password_hash = await bcrypt.hash(password, 10);
-    const userRole = role === "ADMIN" ? "ADMIN" : "STUDENT";
-
-    const result = await pool.query(
-      `INSERT INTO users (full_name, national_id, password_hash, role)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, full_name, national_id, role`,
-      [full_name, national_id, password_hash, userRole]
-    );
-
-    const user = result.rows[0];
-    const { accessToken, refreshToken } = generateTokens(user.id, user.role);
-
-    res.status(201).json({
-      user: { id: user.id, full_name: user.full_name, national_id: user.national_id, role: user.role },
-      accessToken,
-      refreshToken,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "שגיאת שרת" });
+  const existing = await pool.query(
+    "SELECT id FROM users WHERE username = $1 OR national_id = $2",
+    [username, national_id]
+  );
+  if (existing.rows.length > 0) {
+    return { ok: false, status: 409, error: "משתמש עם שם משתמש או ת\"ז זו כבר קיים" };
   }
+
+  const password_hash = await bcrypt.hash(password, 10);
+  const result = await pool.query(
+    `INSERT INTO users (full_name, national_id, username, password_hash, role, title, specialization_id, created_by)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+     RETURNING id, full_name, national_id, username, role, title, specialization_id`,
+    [full_name, national_id, username, password_hash, role, role === "ADMIN" ? title!.trim() : null, specialization_id ?? null, creatorId ?? null]
+  );
+  return { ok: true, user: result.rows[0] };
 }
 
-// כניסה עם תעודת זהות + סיסמה
-export async function login(req: Request, res: Response) {
-  const { national_id, password } = req.body;
+// POST /api/auth/register — הרשמה עצמית של תלמיד בלבד (לא ניתן ליצור מנהל כאן)
+export async function register(req: Request, res: Response) {
+  const { full_name, username, password, specialization_id } = req.body;
 
-  if (!national_id || !password) {
-    res.status(400).json({ error: "תעודת זהות וסיסמה חובה" });
+  const result = await createUser({
+    full_name,
+    username,
+    password,
+    role: "STUDENT",
+    specialization_id,
+  });
+
+  if (!result.ok) {
+    res.status(result.status).json({ error: result.error });
+    return;
+  }
+
+  const user = result.user;
+  const { accessToken, refreshToken } = generateTokens(user.id, user.role);
+  res.status(201).json({ user, accessToken, refreshToken });
+}
+
+// POST /api/admin/users — מנהל יוצר תלמיד או מנהל (שרשרת הרשאות).
+// יצירת מנהל מותרת רק למנהל מחובר. נשמר created_by.
+export async function adminCreateUser(req: AuthRequest, res: Response) {
+  const { full_name, username, password, role, title, specialization_id } = req.body;
+  const requestedRole = role === "ADMIN" ? "ADMIN" : "STUDENT";
+
+  const result = await createUser({
+    full_name,
+    username,
+    password,
+    role: requestedRole,
+    title,
+    specialization_id,
+    creatorId: req.user!.userId,
+  });
+
+  if (!result.ok) {
+    res.status(result.status).json({ error: result.error });
+    return;
+  }
+  res.status(201).json({ user: result.user, message: requestedRole === "ADMIN" ? "מנהל נוצר בהצלחה" : "תלמיד נוצר בהצלחה" });
+}
+
+// כניסה עם שם משתמש (OA+ת"ז) + סיסמה
+export async function login(req: Request, res: Response) {
+  // תומך גם בשדה username וגם בשדה national_id (תאימות לאחור — מומר ל-OA+ת"ז)
+  const rawUsername = req.body.username || (req.body.national_id ? `OA${req.body.national_id}` : "");
+  const { password } = req.body;
+
+  if (!rawUsername || !password) {
+    res.status(400).json({ error: "שם משתמש וסיסמה חובה" });
     return;
   }
 
   try {
     const result = await pool.query(
-      "SELECT id, full_name, national_id, role, password_hash FROM users WHERE national_id = $1",
-      [national_id]
+      "SELECT id, full_name, national_id, username, role, password_hash FROM users WHERE username = $1",
+      [rawUsername]
     );
 
     if (result.rows.length === 0) {
-      res.status(401).json({ error: "תעודת זהות או סיסמה שגויים" });
+      res.status(401).json({ error: "שם משתמש או סיסמה שגויים" });
       return;
     }
 
@@ -88,14 +152,14 @@ export async function login(req: Request, res: Response) {
     const valid = await bcrypt.compare(password, user.password_hash);
 
     if (!valid) {
-      res.status(401).json({ error: "תעודת זהות או סיסמה שגויים" });
+      res.status(401).json({ error: "שם משתמש או סיסמה שגויים" });
       return;
     }
 
     const { accessToken, refreshToken } = generateTokens(user.id, user.role);
 
     res.json({
-      user: { id: user.id, full_name: user.full_name, national_id: user.national_id, role: user.role },
+      user: { id: user.id, full_name: user.full_name, national_id: user.national_id, username: user.username, role: user.role },
       accessToken,
       refreshToken,
     });
