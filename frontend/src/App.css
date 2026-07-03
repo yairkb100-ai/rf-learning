@@ -1740,3 +1740,34 @@ input[type="file"] {
   color: var(--text-muted);
   margin-top: 6px;
 }
+
+/* ===== FILE UPLOAD ===== */
+.file-upload-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  display: inline-block;
+  padding: 12px 24px;
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-weight: 600;
+}
+
+.file-label:hover {
+  background: var(--primary-hover);
+}
+
+.file-input:checked + .file-label {
+  background: var(--success);
+}

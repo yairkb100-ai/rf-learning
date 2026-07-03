@@ -1,9 +1,10 @@
-import { useEffect, useState, FormEvent } from 'react'
+import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
 
-type QuestionType = 'MULTIPLE_CHOICE' | 'MULTIPLE_SELECT' | 'FREE_TEXT'
+type QuestionType = 'MULTIPLE_CHOICE' | 'MULTIPLE_SELECT' | 'FREE_TEXT' | 'FILE_UPLOAD'
 
 interface Option {
   id?: number
@@ -26,6 +27,7 @@ const TYPE_LABELS: Record<QuestionType, string> = {
   MULTIPLE_CHOICE: 'אמריקאית (תשובה אחת נכונה)',
   MULTIPLE_SELECT: 'בחירה מרובה (כמה נכונות)',
   FREE_TEXT: 'שאלה פתוחה (בדיקה ידנית)',
+  FILE_UPLOAD: 'העלאת קובץ (סטודנט מעלה קובץ)',
 }
 
 function emptyOptions(): Option[] {

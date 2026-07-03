@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
 
-type QuestionType = 'MULTIPLE_CHOICE' | 'MULTIPLE_SELECT' | 'FREE_TEXT'
+type QuestionType = 'MULTIPLE_CHOICE' | 'MULTIPLE_SELECT' | 'FREE_TEXT' | 'FILE_UPLOAD'
 
 interface Option {
   id: number
@@ -37,9 +37,10 @@ export default function ExamPage() {
   const { courseId, chapterId } = useParams()
   const navigate = useNavigate()
   const [questions, setQuestions] = useState<Question[]>([])
-  // לכל שאלה: מערך מזהי אפשרויות שנבחרו (אמריקאית/בחירה מרובה) או טקסט (פתוחה)
+  // לכל שאלה: מערך מזהי אפשרויות שנבחרו (אמריקאית/בחירה מרובה) או טקסט (פתוחה) או קובץ (עלייה)
   const [selected, setSelected] = useState<Record<number, number[]>>({})
   const [freeText, setFreeText] = useState<Record<number, string>>({})
+  const [uploadedFiles, setUploadedFiles] = useState<Record<number, File>>({})
   const [result, setResult] = useState<ExamResult | null>(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -72,6 +73,7 @@ export default function ExamPage() {
 
   function isAnswered(q: Question): boolean {
     if (q.question_type === 'FREE_TEXT') return !!(freeText[q.id] && freeText[q.id].trim())
+    if (q.question_type === 'FILE_UPLOAD') return !!(uploadedFiles[q.id])
     return (selected[q.id] || []).length > 0
   }
 
@@ -84,11 +86,25 @@ export default function ExamPage() {
     }
     setSubmitting(true)
     try {
-      const payload = questions.map((q) => ({
-        question_id: q.id,
-        selected_option_ids: q.question_type === 'FREE_TEXT' ? [] : (selected[q.id] || []),
-        free_text: q.question_type === 'FREE_TEXT' ? (freeText[q.id] || '') : undefined,
-      }))
+      const payload = questions.map((q) => {
+        const ans: any = {
+          question_id: q.id,
+        }
+
+        if (q.question_type === 'FREE_TEXT') {
+          ans.free_text = freeText[q.id] || ''
+        } else if (q.question_type === 'FILE_UPLOAD') {
+          const file = uploadedFiles[q.id]
+          if (file) {
+            ans.file_path = file.name
+            ans.file_name = file.name
+          }
+        } else {
+          ans.selected_option_ids = selected[q.id] || []
+        }
+
+        return ans
+      })
       const res = await api.post(`${base}/exam/submit`, { answers: payload })
       setResult(res.data)
     } catch (err: any) {
@@ -180,6 +196,21 @@ export default function ExamPage() {
                   placeholder="כתוב את תשובתך כאן..."
                   rows={4}
                 />
+              ) : q.question_type === 'FILE_UPLOAD' ? (
+                <div className="file-upload-box">
+                  <input
+                    type="file"
+                    id={`file-${q.id}`}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) setUploadedFiles({ ...uploadedFiles, [q.id]: file })
+                    }}
+                    className="file-input"
+                  />
+                  <label htmlFor={`file-${q.id}`} className="file-label">
+                    {uploadedFiles[q.id] ? `✅ ${uploadedFiles[q.id].name}` : '📎 בחר קובץ להעלאה'}
+                  </label>
+                </div>
               ) : (
                 <div className="options-list">
                   {q.options.map((opt) => {

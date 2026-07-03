@@ -15,6 +15,7 @@ import AdminContentPage from './pages/AdminContentPage'
 import AdminChaptersPage from './pages/AdminChaptersPage'
 import AdminUsersPage from './pages/AdminUsersPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+import AdminGradingPage from './pages/AdminGradingPage'
 import StudentProgressPage from './pages/StudentProgressPage'
 import './App.css'
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
             <Route path="/admin/dashboard" element={<PrivateRoute><AdminDashboardPage /></PrivateRoute>} />
             <Route path="/admin/users" element={<PrivateRoute><AdminUsersPage /></PrivateRoute>} />
+            <Route path="/admin/grading" element={<PrivateRoute><AdminGradingPage /></PrivateRoute>} />
             <Route path="/admin/students/:id" element={<PrivateRoute><StudentProgressPage /></PrivateRoute>} />
             <Route path="/admin/courses/:courseId/chapters" element={<PrivateRoute><AdminChaptersPage /></PrivateRoute>} />
             <Route path="/admin/courses/:courseId/chapters/:chapterId/questions" element={<PrivateRoute><AdminQuestionsPage /></PrivateRoute>} />

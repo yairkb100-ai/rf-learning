@@ -15,6 +15,13 @@ import {
   studentProgressDetail,
   dashboardStats,
 } from "../controllers/adminUsersController";
+import {
+  getPendingGrading,
+  submitGrade,
+  getGradingHistory,
+  assignStudentToAdmin,
+  getMyStudents,
+} from "../controllers/gradingController";
 import { authenticate, requireAdmin } from "../middleware/authMiddleware";
 
 const router = Router();
@@ -35,6 +42,13 @@ router.get("/dashboard", dashboardStats);
 // מעקב התקדמות תלמידים
 router.get("/students/progress", studentsProgressSummary);
 router.get("/students/:id/progress", studentProgressDetail);
+router.get("/my-students", getMyStudents);
+router.post("/students/:studentId/assign", assignStudentToAdmin);
+router.get("/grading/history/:studentId", getGradingHistory);
+
+// ניקוד שאלות פתוחות וקבצים
+router.get("/grading/pending", getPendingGrading);
+router.post("/grading/:gradeId/submit", submitGrade);
 
 router.post("/specializations/:id/duplicate", duplicateSpecialization);
 router.post("/courses/:id/duplicate", duplicateCourse);
