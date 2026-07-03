@@ -292,7 +292,7 @@ export default function AdminPage() {
                   </button>
                   <button
                     className="btn-outline"
-                    onClick={() => navigate(`/admin/courses/${course.id}/chapters`)}
+                    onClick={() => navigate(`/admin/courses/${course.id}/questions`)}
                   >
                     ניהול שאלות
                   </button>

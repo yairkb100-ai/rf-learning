@@ -39,6 +39,7 @@ function App() {
             <Route path="/admin/courses/:courseId/chapters" element={<PrivateRoute><AdminChaptersPage /></PrivateRoute>} />
             <Route path="/admin/courses/:courseId/chapters/:chapterId/questions" element={<PrivateRoute><AdminQuestionsPage /></PrivateRoute>} />
             <Route path="/admin/courses/:courseId/chapters/:chapterId/content" element={<PrivateRoute><AdminContentPage /></PrivateRoute>} />
+            <Route path="/admin/courses/:courseId/questions" element={<PrivateRoute><AdminQuestionsPage /></PrivateRoute>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <Footer />

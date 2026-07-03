@@ -37,10 +37,14 @@ function emptyOptions(): Option[] {
   ]
 }
 
+interface ChapterRef { id: number; title: string }
+
 export default function AdminQuestionsPage() {
-  const { courseId, chapterId } = useParams()
+  const { courseId, chapterId: chapterIdParam } = useParams()
   const navigate = useNavigate()
-  const [chapterTitle, setChapterTitle] = useState('')
+  const [chapters, setChapters] = useState<ChapterRef[]>([])
+  // הפרק הנבחר: מגיע מה-URL אם קיים, אחרת נבחר הראשון ברשימה
+  const [chapterId, setChapterId] = useState<string>(chapterIdParam || '')
   const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -55,18 +59,30 @@ export default function AdminQuestionsPage() {
 
   const base = `/courses/${courseId}/chapters/${chapterId}`
   const isChoice = qType === 'MULTIPLE_CHOICE' || qType === 'MULTIPLE_SELECT'
+  const chapterTitle = chapters.find((c) => String(c.id) === chapterId)?.title || ''
 
   function loadQuestions() {
+    if (!chapterId) { setQuestions([]); setLoading(false); return }
+    setLoading(true)
     api.get(`${base}/questions`)
       .then((res) => setQuestions(res.data))
       .catch(() => setError('שגיאה בטעינת השאלות'))
       .finally(() => setLoading(false))
   }
 
+  // טעינת רשימת הפרקים של הקורס; אם אין פרק נבחר — בחר את הראשון
   useEffect(() => {
-    api.get(`${base}`).then((res) => setChapterTitle(res.data.title)).catch(() => {})
+    api.get(`/courses/${courseId}/chapters`)
+      .then((res) => {
+        setChapters(res.data)
+        if (!chapterId && res.data.length > 0) setChapterId(String(res.data[0].id))
+      })
+      .catch(() => setError('שגיאה בטעינת הפרקים'))
+  }, [courseId])
+
+  useEffect(() => {
     loadQuestions()
-  }, [courseId, chapterId])
+  }, [chapterId])
 
   function updateOption(index: number, field: keyof Option, value: string | boolean) {
     const newOptions = [...options]
@@ -157,10 +173,28 @@ export default function AdminQuestionsPage() {
     <div className="page">
       <Navbar
         subtitle={chapterTitle ? `שאלות: ${chapterTitle}` : 'ניהול שאלות'}
-        back={<button className="btn-back" onClick={() => navigate(`/admin/courses/${courseId}/chapters`)}>← חזרה לפרקים</button>}
+        back={chapterIdParam
+          ? <button className="btn-back" onClick={() => navigate(`/admin/courses/${courseId}/chapters`)}>← חזרה לפרקים</button>
+          : <button className="btn-back" onClick={() => navigate('/admin')}>← חזרה לניהול</button>}
       />
 
       <main className="main-content">
+        <section className="admin-section">
+          <div className="form-group">
+            <label>פרק</label>
+            <select className="select-input" value={chapterId} onChange={(e) => setChapterId(e.target.value)}>
+              {chapters.length === 0 && <option value="">— אין פרקים בקורס —</option>}
+              {chapters.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
+            </select>
+          </div>
+        </section>
+
+        {!chapterId ? (
+          <section className="admin-section">
+            <p className="empty-state">יש ליצור פרק בקורס לפני הוספת שאלות.</p>
+          </section>
+        ) : (
+        <>
         <section className="admin-section">
           <h2>הוספת שאלה חדשה</h2>
           <form onSubmit={handleAddQuestion} className="admin-form">
@@ -290,6 +324,8 @@ export default function AdminQuestionsPage() {
             ))}
           </div>
         </section>
+        </>
+        )}
       </main>
     </div>
   )
