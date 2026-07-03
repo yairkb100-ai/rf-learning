@@ -183,11 +183,10 @@ export default function AdminQuestionsPage() {
             </div>
 
             <div className="form-group">
-              <label>נוסח השאלה</label>
+              <label>הזן שאלה</label>
               <textarea
                 value={questionText}
                 onChange={(e) => setQuestionText(e.target.value)}
-                placeholder="לדוגמה: מהו תחום התדרים של VHF?"
                 rows={2}
                 required
               />
@@ -198,16 +197,14 @@ export default function AdminQuestionsPage() {
               <input
                 value={hint}
                 onChange={(e) => setHint(e.target.value)}
-                placeholder="רמז שיעזור לתלמיד"
               />
             </div>
 
             <div className="form-group">
-              <label>קישור וידאו לשאלה (אופציונלי — YouTube)</label>
+              <label>קישור וידאו לשאלה (אופציונלי)</label>
               <input
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
-                placeholder="https://youtube.com/watch?v=..."
                 dir="ltr"
               />
             </div>
@@ -230,7 +227,6 @@ export default function AdminQuestionsPage() {
                       className="option-text-input"
                       value={opt.answer_text}
                       onChange={(e) => updateOption(idx, 'answer_text', e.target.value)}
-                      placeholder={`תשובה ${idx + 1}`}
                     />
                     {options.length > 2 && (
                       <button type="button" className="btn-remove" onClick={() => removeOptionField(idx)}>
@@ -251,7 +247,6 @@ export default function AdminQuestionsPage() {
                 <textarea
                   value={modelAnswer}
                   onChange={(e) => setModelAnswer(e.target.value)}
-                  placeholder="התשובה הרצויה / נקודות עיקריות לבדיקה"
                   rows={3}
                 />
               </div>

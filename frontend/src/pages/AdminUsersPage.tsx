@@ -51,7 +51,7 @@ export default function AdminUsersPage() {
   async function handleCreate(e: FormEvent) {
     e.preventDefault()
     setError(''); setOk('')
-    if (!/^\d{9}$/.test(idNum)) { setError('תעודת הזהות חייבת להיות 9 ספרות'); return }
+    if (!/^OA\d{9}$/.test(idNum)) { setError('שם המשתמש חייב להיות בתבנית OA ואחריו 9 ספרות (לדוגמה OA123456789)'); return }
     if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,8}$/.test(password)) {
       setError('הסיסמה חייבת להכיל אות גדולה, אות קטנה ומספר, באורך 6 עד 8 תווים'); return
     }
@@ -59,13 +59,13 @@ export default function AdminUsersPage() {
     try {
       await api.post('/admin/users', {
         full_name: fullName,
-        username: `OA${idNum}`,
+        username: idNum,
         password,
         role,
         title: role === 'ADMIN' ? title : undefined,
         specialization_id: role === 'STUDENT' && specId ? Number(specId) : undefined,
       })
-      setOk(`נוצר בהצלחה: OA${idNum}`)
+      setOk(`נוצר בהצלחה: ${idNum}`)
       setFullName(''); setIdNum(''); setPassword(''); setTitle(''); setSpecId('')
       load()
     } catch (err: any) {
@@ -116,20 +116,20 @@ export default function AdminUsersPage() {
             </div>
             <div className="form-group">
               <label>שם מלא</label>
-              <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="ישראל ישראלי" required />
+              <input value={fullName} onChange={(e) => setFullName(e.target.value)} required />
             </div>
             <div className="form-group">
-              <label>תעודת זהות (9 ספרות) — שם המשתמש יהיה OA + ת"ז</label>
-              <input value={idNum} onChange={(e) => setIdNum(e.target.value.replace(/\D/g, ''))} placeholder="123456789" dir="ltr" maxLength={9} required />
+              <label>שם משתמש — OA ואחריו 9 ספרות (לדוגמה OA123456789)</label>
+              <input value={idNum} onChange={(e) => setIdNum(e.target.value.toUpperCase())} dir="ltr" maxLength={11} required />
             </div>
             <div className="form-group">
               <label>סיסמה (אות גדולה+קטנה+מספר, 6–8 תווים)</label>
-              <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Abc123" dir="ltr" maxLength={8} required />
+              <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} dir="ltr" maxLength={8} required />
             </div>
             {role === 'ADMIN' && (
               <div className="form-group">
                 <label>תפקיד / טייטל (חובה למנהל)</label>
-                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="לדוגמה: רכז מגמת מנועים" required />
+                <input value={title} onChange={(e) => setTitle(e.target.value)} required />
               </div>
             )}
             {role === 'STUDENT' && (

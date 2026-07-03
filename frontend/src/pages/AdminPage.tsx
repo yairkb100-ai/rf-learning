@@ -170,6 +170,9 @@ export default function AdminPage() {
           <button className="btn-primary" style={{ width: 'auto' }} onClick={() => navigate('/admin/users')}>
             👥 ניהול משתמשים ומעקב תלמידים
           </button>
+          <button className="btn-primary" style={{ width: 'auto' }} onClick={() => navigate('/admin/grading')}>
+            ✅ ניקוד ובדיקה
+          </button>
         </section>
 
         {/* ===== ניהול מגמות ===== */}
@@ -283,13 +286,13 @@ export default function AdminPage() {
                   </button>
                   <button
                     className="btn-outline"
-                    onClick={() => navigate(`/admin/courses/${course.id}/content`)}
+                    onClick={() => navigate(`/admin/courses/${course.id}/chapters`)}
                   >
                     חומר לימוד
                   </button>
                   <button
                     className="btn-outline"
-                    onClick={() => navigate(`/admin/courses/${course.id}/questions`)}
+                    onClick={() => navigate(`/admin/courses/${course.id}/chapters`)}
                   >
                     ניהול שאלות
                   </button>
