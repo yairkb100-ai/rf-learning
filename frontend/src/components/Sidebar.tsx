@@ -2,6 +2,24 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../api/axios'
 
+// ============================================================================
+// תפריט צד — עץ קורסים ופרקים (Sidebar)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   תפריט ניווט צדדי המציג את רשימת הקורסים כעץ נפתח. לחיצה על קורס פותחת
+//   את רשימת הפרקים שלו, ולחיצה על פרק מנווטת לדף הפרק. הקורס/פרק הנוכחיים
+//   (לפי ה-URL) מסומנים כפעילים. בנייד התפריט נפתח/נסגר בכפתור המבורגר.
+//
+// מבנה עיקרי / state:
+//   • courses          — רשימת הקורסים (נטענת מ-GET /courses).
+//   • openCourseId     — הקורס הפתוח כרגע בעץ.
+//   • chaptersByCourse — מטמון פרקים לכל קורס שכבר נפתח (מונע קריאות חוזרות).
+//   • mobileOpen       — האם התפריט פתוח במסך צר.
+//
+// הקשר במערכת:
+//   פונה ל-GET /courses ו-GET /courses/:id/chapters. משמש בדפי הלומד.
+// ============================================================================
+
 interface Course {
   id: number
   title: string
@@ -24,6 +42,7 @@ export default function Sidebar() {
   const [chaptersByCourse, setChaptersByCourse] = useState<Record<number, Chapter[]>>({})
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  // בטעינה ראשונית: טוען את רשימת הקורסים מהשרת (GET /courses).
   useEffect(() => {
     api.get('/courses')
       .then((res) => setCourses(res.data))
@@ -39,6 +58,7 @@ export default function Sidebar() {
     }
   }, [courseId])
 
+  // טוען את פרקי הקורס מהשרת (GET /courses/:id/chapters) ושומר במטמון.
   function loadChapters(id: number) {
     if (chaptersByCourse[id]) return // כבר נטען
     api.get(`/courses/${id}/chapters`)
@@ -46,6 +66,7 @@ export default function Sidebar() {
       .catch(() => {})
   }
 
+  // פותח/סוגר קורס בעץ. בפתיחה — טוען את הפרקים אם עוד לא נטענו.
   function toggleCourse(id: number) {
     if (openCourseId === id) {
       setOpenCourseId(null)

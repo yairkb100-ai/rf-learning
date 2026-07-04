@@ -5,6 +5,24 @@ import Navbar from '../components/Navbar'
 import Sidebar from '../components/Sidebar'
 import api from '../api/axios'
 
+// ============================================================================
+// דף הבית (HomePage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   המסך הראשי לאחר התחברות. מציג את רשימת המגמות (התמחויות) ואת הקורסים
+//   הכלליים (ללא שיוך למגמה). המשתמש בוחר מגמה כדי לצפות בקורסים שלה, או
+//   נכנס ישירות לקורס כללי. מנהל רואה גם כפתור "ניהול".
+//
+// מבנה עיקרי / state:
+//   • specs          — רשימת המגמות.
+//   • generalCourses — קורסים כלליים (משותפים לכולם).
+//   • loading/error  — מצבי טעינה ושגיאה.
+//
+// הקשר במערכת:
+//   route: "/". פונה ל-GET /specializations ו-GET /courses?general=1.
+//   כולל Navbar + Sidebar (עץ הקורסים).
+// ============================================================================
+
 interface Specialization {
   id: number
   name: string
@@ -41,6 +59,7 @@ export default function HomePage() {
       .finally(() => setLoading(false))
   }, [])
 
+  // התנתקות: מנקה את ההזדהות ומנווט למסך ההתחברות.
   function handleLogout() {
     logout()
     navigate('/login')
@@ -48,6 +67,7 @@ export default function HomePage() {
 
   return (
     <div className="page">
+      {/* סרגל עליון: ברכה, כפתור ניהול (למנהל בלבד) וכפתור התנתקות */}
       <Navbar
         left={
           <>

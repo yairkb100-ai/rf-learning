@@ -2,6 +2,25 @@ import { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
 
+// ============================================================================
+// דף ניקוד ובדיקה (AdminGradingPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מסך למנהל לבדיקת תשובות פתוחות/קבצים שהוגשו במבחנים. שתי לשוניות:
+//   "ממתינים לבדיקה" — רשימת תשובות לבדיקה + טופס דירוג (מלא/חלקי/שגוי + הערות),
+//   ו-"הסטודנטים שלי" — כרטיסי הסטודנטים המשויכים למנהל עם סטטיסטיקה.
+//
+// מבנה עיקרי / state:
+//   • tab                — הלשונית הפעילה ('pending' / 'students').
+//   • pendingList / studentList — נתוני שתי הלשוניות.
+//   • selectedGrade + ratingChoice/partialScore/comments — טופס בדיקת תשובה בודדת.
+//   • finalScore         — הציון הסופי (0–100) הנגזר מבחירת הדירוג.
+//
+// הקשר במערכת:
+//   route: "/admin/grading". פונה ל-GET /admin/grading/pending, /admin/my-students,
+//   ול-POST /admin/grading/:id/submit לשמירת הניקוד.
+// ============================================================================
+
 interface PendingGrade {
   id: number
   attempt_id: number
@@ -49,10 +68,12 @@ export default function AdminGradingPage() {
     ratingChoice === 'zero' ? 0 :
     ratingChoice === 'partial' ? partialScore : null
 
+  // בכל החלפת לשונית — טוען מחדש את הנתונים המתאימים ללשונית.
   useEffect(() => {
     loadData()
   }, [tab])
 
+  // טוען את הנתונים לפי הלשונית הפעילה: תשובות ממתינות או רשימת הסטודנטים.
   async function loadData() {
     setLoading(true)
     try {
@@ -70,6 +91,8 @@ export default function AdminGradingPage() {
     }
   }
 
+  // שמירת ניקוד לתשובה שנבחרה (POST /admin/grading/:id/submit) — שולח ציון והערות,
+  // מאפס את טופס הבדיקה וטוען מחדש את הרשימה.
   async function submitGrade() {
     if (!selectedGrade) return
     if (finalScore === null) {

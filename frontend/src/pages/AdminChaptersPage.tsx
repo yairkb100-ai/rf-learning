@@ -5,6 +5,24 @@ import Navbar from '../components/Navbar'
 import RichTextEditor from '../components/RichTextEditor'
 import api from '../api/axios'
 
+// ============================================================================
+// דף ניהול פרקים (AdminChaptersPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   ניהול הפרקים של קורס (מנהל): הוספה, עריכה (עם עורך טקסט עשיר), מחיקה,
+//   שינוי סדר (מעלה/מטה), העברת פרק לקורס אחר ושכפול פרק. כן קישורים לחומר
+//   ולשאלות של כל פרק.
+//
+// מבנה עיקרי / state:
+//   • chapters   — פרקי הקורס.
+//   • allCourses — כל הקורסים (יעד להעברה/שכפול).
+//   • טופס הוספה (title/description) וטופס עריכה (editingId/editTitle/editDescription).
+//
+// הקשר במערכת:
+//   route: "/admin/courses/:courseId/chapters". פונה ל-GET/POST/PUT/DELETE של
+//   /courses/:courseId/chapters, ול-/admin/chapters/:id/move|duplicate.
+// ============================================================================
+
 interface Chapter {
   id: number
   course_id: number
@@ -37,6 +55,7 @@ export default function AdminChaptersPage() {
   const [editTitle, setEditTitle] = useState('')
   const [editDescription, setEditDescription] = useState('')
 
+  // טוען את פרקי הקורס (GET /courses/:courseId/chapters).
   function loadChapters() {
     api.get(`/courses/${courseId}/chapters`)
       .then((res) => setChapters(res.data))
@@ -58,6 +77,7 @@ export default function AdminChaptersPage() {
     return Number(choice.trim())
   }
 
+  // מעביר פרק לקורס יעד אחר (PUT /admin/chapters/:id/move).
   async function moveToCourse(ch: Chapter) {
     const target = pickTargetCourse(`העברת הפרק "${ch.title}" לקורס אחר.`)
     if (!target || target === Number(courseId)) return
@@ -69,6 +89,7 @@ export default function AdminChaptersPage() {
     }
   }
 
+  // משכפל פרק לקורס יעד (POST /admin/chapters/:id/duplicate).
   async function duplicateToCourse(ch: Chapter) {
     const target = pickTargetCourse(
       `שכפול הפרק "${ch.title}".\nהשאר מספר הקורס הנוכחי (${courseId}) לשכפול באותו קורס, או קורס אחר.`
@@ -84,6 +105,7 @@ export default function AdminChaptersPage() {
     }
   }
 
+  // הוספת פרק חדש לקורס (POST /courses/:courseId/chapters).
   async function handleAddChapter(e: FormEvent) {
     e.preventDefault()
     setError('')
@@ -117,6 +139,7 @@ export default function AdminChaptersPage() {
     setEditDescription('')
   }
 
+  // שמירת עריכת פרק קיים (PUT /courses/:courseId/chapters/:id).
   async function handleSaveEdit(id: number) {
     if (!editTitle.trim()) {
       setError('יש להזין שם פרק')
@@ -134,6 +157,7 @@ export default function AdminChaptersPage() {
     }
   }
 
+  // מחיקת פרק (DELETE /courses/:courseId/chapters/:id).
   async function handleDelete(id: number, chTitle: string) {
     if (!confirm(`למחוק את הפרק "${chTitle}"?`)) return
     try {
@@ -144,6 +168,7 @@ export default function AdminChaptersPage() {
     }
   }
 
+  // שינוי סדר פרק (מעלה/מטה) ע"י החלפת מספרי הסדר בין הפרק לשכנו.
   async function moveChapter(index: number, direction: -1 | 1) {
     const target = chapters[index + direction]
     const current = chapters[index]

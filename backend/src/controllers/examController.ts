@@ -1,3 +1,29 @@
+// ============================================================================
+// בקר שאלות ומבחנים (Exam Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מנהל את בנק השאלות של הפרקים, את הצגת המבחן לתלמיד, את הגשת המבחן וניקודו,
+//   ואת שליפת היסטוריית הניסיונות.
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • getQuestions     — GET    .../questions: כל השאלות של פרק כולל תשובות (מנהל).
+//   • getExam          — GET    .../exam: שאלות המבחן לתלמיד (ללא is_correct).
+//   • createQuestion   — POST   .../questions: יצירת שאלה + אפשרויות (מנהל, טרנזקציה).
+//   • deleteQuestion   — DELETE .../questions/:id: מחיקת שאלה (מנהל).
+//   • submitExam       — POST   .../exam/submit: הגשת מבחן, ניקוד ושמירת ניסיון.
+//   • getExamResults   — GET    .../exam/results: היסטוריית ניסיונות של התלמיד.
+//
+// לוגיקת ניקוד (submitExam):
+//   שאלות אמריקאיות (MULTIPLE_CHOICE) — נקודה מלאה על תשובה נכונה.
+//   בחירה מרובה (MULTIPLE_SELECT) — ניקוד חלקי: (נכונות-שגויות)/סך הנכונות, לא שלילי.
+//   פתוחות (FREE_TEXT) וקבצים (FILE_UPLOAD) — לא מנוקדות אוטומטית; מסמנות את
+//   הניסיון כ-PENDING_REVIEW לבדיקת מנהל. הציון הזמני מחושב מהשאלות האוטומטיות בלבד.
+//
+// הקשר במערכת:
+//   נקרא דרך chaptersRoutes. ניגש לטבלאות questions, question_options,
+//   quiz_attempts_course, quiz_attempt_answers.
+// ============================================================================
+
 import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";

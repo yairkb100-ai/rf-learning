@@ -1,3 +1,20 @@
+// ============================================================================
+// בקר מגמות (Specializations Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מטפל בפעולות ה-CRUD על מגמות (התמחויות) — צפייה ציבורית וניהול (מנהל).
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • getAllSpecializations  — GET    /api/specializations: מגמות פעילות + ספירת קורסים.
+//   • createSpecialization   — POST   /api/specializations: יצירת מגמה (מנהל).
+//   • updateSpecialization   — PUT    /api/specializations/:id: עדכון מגמה (מנהל).
+//   • deleteSpecialization   — DELETE /api/specializations/:id: מחיקת מגמה (מנהל).
+//
+// הקשר במערכת:
+//   נקרא דרך specializationsRoutes. ניגש לטבלאות specializations ו-courses.
+//   במחיקת מגמה, הקורסים המשויכים הופכים לכלליים (ON DELETE SET NULL).
+// ============================================================================
+
 import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";

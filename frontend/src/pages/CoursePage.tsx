@@ -6,6 +6,26 @@ import ContentViewer from '../components/ContentViewer'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 
+// ============================================================================
+// דף קורס (CoursePage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מציג עמוד קורס בסגנון Udemy: כותרת ראשית (Hero), חומר מבוא, תוכנית הפרקים
+//   (curriculum) והתקדמות הלומד. הלומד יכול לסמן פרקים כהושלמו ולפתוח פרק.
+//   מנהל רואה כפתור נוסף לעריכת חומר הקורס.
+//
+// מבנה עיקרי / state:
+//   • course    — פרטי הקורס.
+//   • chapters  — רשימת הפרקים.
+//   • progress  — נתוני התקדמות (אחוזים, פרקים שהושלמו).
+//   • content   — פריטי חומר המבוא של הקורס.
+//   • isAdmin   — האם המשתמש מנהל (מציג כלי עריכה).
+//
+// הקשר במערכת:
+//   route: "/courses/:courseId". פונה ל-GET של הקורס, הפרקים, ההתקדמות והתוכן,
+//   ול-POST/DELETE של /progress/:chapterId/complete לסימון השלמת פרק.
+// ============================================================================
+
 interface Chapter {
   id: number
   title: string
@@ -46,6 +66,7 @@ export default function CoursePage() {
   const [content, setContent] = useState<ContentItem[]>([])
   const [loading, setLoading] = useState(true)
 
+  // בטעינה (ובכל שינוי קורס): טוען במקביל את הקורס, הפרקים, ההתקדמות והתוכן.
   useEffect(() => {
     Promise.all([
       api.get(`/courses/${courseId}`),
@@ -63,6 +84,8 @@ export default function CoursePage() {
       .finally(() => setLoading(false))
   }, [courseId])
 
+  // מסמן/מבטל סימון פרק כהושלם (POST/DELETE ל-/progress/:chapterId/complete),
+  // ואז טוען מחדש את נתוני ההתקדמות כדי לרענן את המסך.
   async function toggleChapter(chapterId: number, isDone: boolean) {
     try {
       if (isDone) {
@@ -77,6 +100,7 @@ export default function CoursePage() {
     }
   }
 
+  // בודק אם פרק מסוים מסומן כהושלם לפי נתוני ההתקדמות.
   function isChapterDone(chapterId: number) {
     return progress?.chapters.some(
       (p) => p.chapter_id === chapterId && p.is_completed
@@ -207,6 +231,7 @@ export default function CoursePage() {
                   <button
                     className="btn-primary btn-block"
                     onClick={() => {
+                      // בוחר את הפרק הבא ללימוד: הפרק הראשון שטרם הושלם, ואם הכל הושלם — הפרק הראשון
                       const next = chapters.find((c) => !isChapterDone(c.id)) ?? chapters[0]
                       navigate(`/courses/${courseId}/chapters/${next.id}`)
                     }}

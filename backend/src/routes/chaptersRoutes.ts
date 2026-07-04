@@ -1,3 +1,29 @@
+// ============================================================================
+// נתיבי פרקים ומבחנים (Chapters Routes)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מגדיר את נתיבי הפרקים בתוך קורס, וכן את נתיבי השאלות והמבחן של כל פרק.
+//   ה-router מוגדר עם mergeParams כדי לרשת את :courseId מהנתיב האב.
+//
+// הנתיבים (מקוננים תחת /api/courses/:courseId/chapters):
+//   • GET    /                         — כל הפרקים של הקורס (פתוח)
+//   • GET    /:id                      — פרק בודד (פתוח)
+//   • POST   /                         — יצירת פרק (מנהל)
+//   • PUT    /:id                      — עדכון פרק (מנהל)
+//   • DELETE /:id                      — מחיקת פרק (מנהל)
+//   • GET    /:chapterId/questions     — שאלות הפרק (מנהל)
+//   • POST   /:chapterId/questions     — הוספת שאלה (מנהל)
+//   • DELETE /:chapterId/questions/:id — מחיקת שאלה (מנהל)
+//   • GET    /:chapterId/exam          — קבלת המבחן לתלמיד (מחובר)
+//   • POST   /:chapterId/exam/submit   — הגשת מבחן (מחובר)
+//   • GET    /:chapterId/exam/results  — תוצאות המבחן (מחובר)
+//   • use   /:chapterId/content        — נתיבי חומר הלימוד של הפרק (contentRoutes)
+//
+// הקשר במערכת:
+//   מחובר ב-server.ts תחת /api/courses/:courseId/chapters ומפנה
+//   ל-chaptersController ו-examController.
+// ============================================================================
+
 import { Router } from "express";
 import {
   getChaptersByCourse,

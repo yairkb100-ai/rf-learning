@@ -5,6 +5,24 @@ import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
 
+// ============================================================================
+// דף ניהול ראשי (AdminPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מסך הניהול המרכזי (מנהלים בלבד). מאפשר ניהול מגמות וקורסים: יצירה, שכפול,
+//   מחיקה, שיוך קורס למגמה, וכן קישורים לניהול פרקים/שאלות ולמסכי ניהול נוספים
+//   (דשבורד, משתמשים, ניקוד ובדיקה).
+//
+// מבנה עיקרי / state:
+//   • courses / specs — רשימות הקורסים והמגמות.
+//   • title/description/specId — שדות טופס הוספת קורס.
+//   • newSpecName/newSpecDesc  — שדות טופס הוספת מגמה.
+//
+// הקשר במערכת:
+//   route: "/admin". פונה ל-GET/POST/PUT/DELETE של /courses ו-/specializations,
+//   ול-POST /admin/.../duplicate לשכפול. מוגן — מפנה החוצה מי שאינו מנהל.
+// ============================================================================
+
 interface Course {
   id: number
   title: string
@@ -39,6 +57,7 @@ export default function AdminPage() {
     }
   }, [user, navigate])
 
+  // טוען את רשימת הקורסים (GET /courses).
   function loadCourses() {
     api.get('/courses')
       .then((res) => setCourses(res.data))
@@ -46,15 +65,18 @@ export default function AdminPage() {
       .finally(() => setLoading(false))
   }
 
+  // טוען את רשימת המגמות (GET /specializations).
   function loadSpecs() {
     api.get('/specializations').then((res) => setSpecs(res.data)).catch(() => {})
   }
 
+  // בטעינה ראשונית: טוען קורסים ומגמות.
   useEffect(() => {
     loadCourses()
     loadSpecs()
   }, [])
 
+  // יצירת קורס חדש (POST /courses) ואיפוס שדות הטופס לאחר הצלחה.
   async function handleAddCourse(e: FormEvent) {
     e.preventDefault()
     setError('')
@@ -104,6 +126,7 @@ export default function AdminPage() {
   }
 
   // ===== ניהול מגמות =====
+  // יצירת מגמה חדשה (POST /specializations).
   async function handleAddSpec(e: FormEvent) {
     e.preventDefault()
     setError('')
@@ -134,6 +157,7 @@ export default function AdminPage() {
     }
   }
 
+  // מחיקת מגמה (DELETE /specializations/:id). הקורסים שבה הופכים לכלליים ולא נמחקים.
   async function handleDeleteSpec(s: Specialization) {
     if (!confirm(`למחוק את המגמה "${s.name}"?\nהקורסים המשויכים אליה יהפכו לכלליים (לא יימחקו).`)) return
     try {
@@ -145,6 +169,7 @@ export default function AdminPage() {
     }
   }
 
+  // מחיקת קורס (DELETE /courses/:id) — מוחק גם את כל הפרקים והשאלות שלו.
   async function handleDeleteCourse(id: number, courseTitle: string) {
     if (!confirm(`למחוק את הקורס "${courseTitle}"? כל הפרקים והשאלות יימחקו גם.`)) return
     try {

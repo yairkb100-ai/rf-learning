@@ -6,6 +6,24 @@ import ContentViewer from '../components/ContentViewer'
 import RichTextEditor from '../components/RichTextEditor'
 import api from '../api/axios'
 
+// ============================================================================
+// דף ניהול חומר לימוד (AdminContentPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   ניהול פריטי החומר של קורס או של פרק (מנהל). מאפשר להוסיף/לערוך/למחוק פריטים
+//   מסוגים שונים: טקסט, טקסט+תמונה (RICH), תמונה, וידאו (קובץ או YouTube),
+//   מסמך (PDF/Office) וקישור. כולל תצוגה מקדימה של כל פריט.
+//
+// מבנה עיקרי / state:
+//   • base    — כתובת ה-API: אם יש chapterId — חומר פרק, אחרת חומר מבוא לקורס.
+//   • items   — פריטי החומר הקיימים.
+//   • editingId + type/title/textContent/file/image — טופס אחד המשמש להוספה ולעריכה.
+//
+// הקשר במערכת:
+//   route: "/admin/courses/:courseId/content" או ".../chapters/:chapterId/content".
+//   פונה ל-GET/POST/PUT/DELETE של base. העלאת קבצים נשלחת כ-multipart/form-data.
+// ============================================================================
+
 type ContentType = 'TEXT' | 'RICH' | 'IMAGE' | 'VIDEO' | 'PDF' | 'LINK'
 
 interface ContentItem {
@@ -53,6 +71,7 @@ export default function AdminContentPage() {
   const isFileType = FILE_TYPES.includes(type)
   const isEditing = editingId !== null
 
+  // טוען את פריטי החומר הקיימים (GET base).
   function loadContent() {
     api.get(base)
       .then((res) => setItems(res.data))
@@ -64,6 +83,7 @@ export default function AdminContentPage() {
     loadContent()
   }, [courseId, chapterId])
 
+  // מאפס את הטופס למצב הוספה נקי (כולל ניקוי שדות בחירת הקבצים ב-DOM).
   function resetForm() {
     setEditingId(null)
     setType('TEXT')
@@ -77,6 +97,7 @@ export default function AdminContentPage() {
     if (ii) ii.value = ''
   }
 
+  // טוען פריט קיים לתוך הטופס לצורך עריכה (וגולל למעלה).
   function startEdit(item: ContentItem) {
     setEditingId(item.id)
     setType(item.content_type)
@@ -89,6 +110,8 @@ export default function AdminContentPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // שמירת הטופס (הוספה או עריכה): מריץ ולידציה לפי סוג החומר, ואז שולח לשרת.
+  // כשיש קובץ/תמונה — שולח כ-FormData (multipart), אחרת כ-JSON. POST להוספה / PUT לעריכה.
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
@@ -155,6 +178,7 @@ export default function AdminContentPage() {
     }
   }
 
+  // מחיקת פריט חומר (DELETE base/:id).
   async function handleDelete(id: number) {
     if (!confirm('למחוק את החומר?')) return
     try {

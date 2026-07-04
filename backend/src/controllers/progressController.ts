@@ -1,3 +1,20 @@
+// ============================================================================
+// בקר התקדמות (Progress Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מנהל את מעקב ההתקדמות של תלמיד בקורס — חישוב אחוז ההשלמה וסימון/ביטול
+//   סימון של פרקים כהושלמו.
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • getCourseProgress     — GET    .../progress: אחוז השלמה ורשימת פרקים.
+//   • markChapterComplete   — POST   .../:chapterId/complete: סימון פרק כהושלם.
+//   • unmarkChapterComplete — DELETE .../:chapterId/complete: ביטול הסימון.
+//
+// הקשר במערכת:
+//   נקרא דרך progressRoutes (משתמש מחובר). ניגש לטבלאות chapters ו-user_progress.
+//   הסימון משתמש ב-UPSERT (ON CONFLICT) לפי (user_id, chapter_id).
+// ============================================================================
+
 import { Response } from "express";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";

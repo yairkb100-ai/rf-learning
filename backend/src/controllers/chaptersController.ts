@@ -1,3 +1,21 @@
+// ============================================================================
+// בקר פרקים (Chapters Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מטפל בפעולות ה-CRUD על פרקים בתוך קורס — צפייה (ציבורי) וניהול (מנהל).
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • getChaptersByCourse — GET    .../chapters: כל הפרקים הפעילים של הקורס.
+//   • getChapterById      — GET    .../chapters/:id: פרק בודד.
+//   • createChapter       — POST   .../chapters: יצירת פרק (מנהל).
+//   • updateChapter       — PUT    .../chapters/:id: עדכון פרק (מנהל).
+//   • deleteChapter       — DELETE .../chapters/:id: מחיקת פרק (מנהל).
+//
+// הקשר במערכת:
+//   נקרא דרך chaptersRoutes (מקונן תחת קורס). ניגש לטבלאות chapters ו-courses.
+//   פרקים לצפייה מסוננים ב-is_active = TRUE.
+// ============================================================================
+
 import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";

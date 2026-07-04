@@ -27,6 +27,26 @@ interface ExamResult {
   message: string
 }
 
+// ============================================================================
+// דף מבחן (ExamPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מציג את שאלות מבחן הפרק ומאפשר לתלמיד לענות ולהגיש. תומך בארבעה סוגי שאלות:
+//   אמריקאית (בחירה יחידה), בחירה מרובה, שאלה פתוחה (טקסט), והעלאת קובץ.
+//   לאחר הגשה מציג מסך תוצאה (עבר/נכשל/ממתין לבדיקה) עם אפשרות לנסות שוב.
+//
+// מבנה עיקרי / state:
+//   • questions      — שאלות המבחן.
+//   • selected       — לכל שאלה: מזהי האפשרויות שנבחרו (אמריקאית/בחירה מרובה).
+//   • freeText       — תשובות טקסט חופשי לפי מזהה שאלה.
+//   • uploadedFiles  — קבצים שהועלו לפי מזהה שאלה.
+//   • result         — תוצאת המבחן לאחר הגשה (או null לפני הגשה).
+//
+// הקשר במערכת:
+//   route: "/courses/:courseId/chapters/:chapterId/exam".
+//   פונה ל-GET .../exam לטעינת השאלות ו-POST .../exam/submit להגשה.
+// ============================================================================
+
 // embed ל-YouTube אם רלוונטי
 function youtubeEmbed(url: string): string | null {
   const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/)
@@ -48,6 +68,7 @@ export default function ExamPage() {
 
   const base = `/courses/${courseId}/chapters/${chapterId}`
 
+  // בטעינה: טוען את שאלות המבחן מהשרת (GET .../exam).
   useEffect(() => {
     api.get(`${base}/exam`)
       .then((res) => setQuestions(res.data))
@@ -67,10 +88,12 @@ export default function ExamPage() {
     setSelected({ ...selected, [qId]: next })
   }
 
+  // עדכון תשובת טקסט חופשי לשאלה פתוחה.
   function setText(qId: number, value: string) {
     setFreeText({ ...freeText, [qId]: value })
   }
 
+  // בודק אם ניתנה תשובה לשאלה (לפי סוגה) — משמש לספירת השאלות שנענו ולחסימת הגשה חלקית.
   function isAnswered(q: Question): boolean {
     if (q.question_type === 'FREE_TEXT') return !!(freeText[q.id] && freeText[q.id].trim())
     if (q.question_type === 'FILE_UPLOAD') return !!(uploadedFiles[q.id])
@@ -79,6 +102,8 @@ export default function ExamPage() {
 
   const answeredCount = questions.filter(isAnswered).length
 
+  // הגשת המבחן: מוודא שכל השאלות נענו, בונה payload לפי סוג כל שאלה,
+  // שולח ל-POST .../exam/submit ושומר את התוצאה שהתקבלה.
   async function handleSubmit() {
     if (answeredCount < questions.length) {
       alert('יש לענות על כל השאלות לפני הגשה')
@@ -86,6 +111,7 @@ export default function ExamPage() {
     }
     setSubmitting(true)
     try {
+      // בונה מערך תשובות: לכל שאלה נבנה שדה מתאים לסוגה (טקסט/קובץ/אפשרויות שנבחרו)
       const payload = questions.map((q) => {
         const ans: any = {
           question_id: q.id,
@@ -126,6 +152,7 @@ export default function ExamPage() {
     </div>
   )
 
+  // לאחר הגשה: מציג מסך תוצאה במקום השאלות (אייקון וסגנון לפי המצב: ממתין/עבר/נכשל).
   if (result) {
     const icon = result.pending_review ? '⏳' : result.passed ? '🎉' : '❌'
     const cls = result.pending_review ? 'pending' : result.passed ? 'passed' : 'failed'
@@ -165,6 +192,7 @@ export default function ExamPage() {
         left={<span>{answeredCount}/{questions.length} נענו</span>}
       />
       <main className="main-content">
+        {/* רשימת השאלות — לכל שאלה מוצג ממשק מענה שונה לפי סוגה (טקסט/קובץ/אמריקאית/בחירה מרובה) */}
         <div className="questions-list">
           {questions.map((q, idx) => (
             <div key={q.id} className="question-card">

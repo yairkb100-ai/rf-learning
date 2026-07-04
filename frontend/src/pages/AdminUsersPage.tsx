@@ -5,6 +5,24 @@ import Navbar from '../components/Navbar'
 import api from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 
+// ============================================================================
+// דף ניהול משתמשים (AdminUsersPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   ניהול משתמשי המערכת (מנהל). מאפשר יצירת תלמיד/מנהל חדש (עם ולידציית שם
+//   משתמש וסיסמה), איפוס סיסמה ומחיקה, וכן מעקב אחר התקדמות התלמידים בטבלה.
+//   מנהל-על (super admin) יכול גם לשייך תלמיד למנהל מסוים.
+//
+// מבנה עיקרי / state:
+//   • users (מפוצל ל-admins/students), specs, progress — נתונים מהשרת.
+//   • טופס יצירה: role, fullName, idNum, password, title, specId, assignedAdminId.
+//   • isSuperAdmin — האם המשתמש הנוכחי מנהל-על (מציג שיוך למנהל).
+//
+// הקשר במערכת:
+//   route: "/admin/users". פונה ל-GET/POST/PUT/DELETE של /admin/users,
+//   ל-/admin/students/progress ול-/specializations.
+// ============================================================================
+
 interface User {
   id: number
   full_name: string
@@ -45,6 +63,7 @@ export default function AdminUsersPage() {
   const [specId, setSpecId] = useState('')
   const [assignedAdminId, setAssignedAdminId] = useState('')  // רק למנהל כללי
 
+  // טוען את כל הנתונים לדף: משתמשים, מגמות ונתוני התקדמות תלמידים.
   function load() {
     api.get('/admin/users').then((r) => setUsers(r.data)).catch(() => setError('שגיאה בטעינת משתמשים'))
     api.get('/specializations').then((r) => setSpecs(r.data)).catch(() => {})
@@ -52,6 +71,8 @@ export default function AdminUsersPage() {
   }
   useEffect(() => { load() }, [])
 
+  // יצירת משתמש חדש: מריץ ולידציה לשם המשתמש (תבנית OA+9 ספרות) ולסיסמה
+  // (אות גדולה+קטנה+מספר, 6–8 תווים), ואז שולח ל-POST /admin/users.
   async function handleCreate(e: FormEvent) {
     e.preventDefault()
     setError(''); setOk('')
@@ -78,6 +99,7 @@ export default function AdminUsersPage() {
     }
   }
 
+  // איפוס סיסמה למשתמש (PUT /admin/users/:id/reset-password) עם ולידציית סיסמה.
   async function handleResetPassword(u: User) {
     setError(''); setOk('')
     const pw = prompt(`איפוס סיסמה ל${u.full_name} (${u.username}).\nסיסמה חדשה (אות גדולה+קטנה+מספר, 6–8 תווים):`)
@@ -93,12 +115,14 @@ export default function AdminUsersPage() {
     }
   }
 
+  // מחיקת משתמש (DELETE /admin/users/:id).
   async function handleDelete(u: User) {
     if (!confirm(`למחוק את ${u.full_name} (${u.username})?`)) return
     try { await api.delete(`/admin/users/${u.id}`); load() }
     catch (err: any) { setError(err.response?.data?.error || 'שגיאה במחיקה') }
   }
 
+  // הפרדת המשתמשים למנהלים ולתלמידים לצורך תצוגה בשתי רשימות נפרדות.
   const admins = users.filter((u) => u.role === 'ADMIN')
   const students = users.filter((u) => u.role === 'STUDENT')
 

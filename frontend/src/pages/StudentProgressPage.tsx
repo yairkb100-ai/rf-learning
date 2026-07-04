@@ -3,6 +3,24 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
 
+// ============================================================================
+// דף התקדמות תלמיד (StudentProgressPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מסך מפורט למנהל על תלמיד בודד: פרטיו, תשובות הממתינות לבדיקה (עם טופס דירוג),
+//   הפרקים שהשלים (מקובצים לפי קורס) וניסיונות המבחן שלו. כן פעולות ניהול:
+//   איפוס סיסמה ואיפוס כל נתוני התלמיד.
+//
+// מבנה עיקרי / state:
+//   • data                — פרטי התלמיד, פרקיו וניסיונות המבחן.
+//   • pending + selected  — תשובות ממתינות לבדיקה וטופס הדירוג לתשובה הנבחרת.
+//   • byCourse            — הפרקים מקובצים לפי שם קורס לתצוגה.
+//
+// הקשר במערכת:
+//   route: "/admin/students/:id". פונה ל-GET /admin/students/:id/progress,
+//   /admin/grading/pending, ול-POST/PUT של submit / reset-password / reset-data.
+// ============================================================================
+
 interface Detail {
   student: { id: number; full_name: string; username: string; specialization_name: string | null }
   chapters: { course_id: number; course_title: string; chapter_id: number; chapter_title: string; is_completed: boolean; completed_at: string | null }[]
@@ -42,6 +60,7 @@ export default function StudentProgressPage() {
     ratingChoice === 'zero' ? 0 :
     ratingChoice === 'partial' ? partialScore : null
 
+  // טוען את כל נתוני הדף: התקדמות התלמיד ותשובותיו הממתינות לבדיקה.
   function loadAll() {
     api.get(`/admin/students/${id}/progress`)
       .then((r) => setData(r.data))
@@ -53,6 +72,7 @@ export default function StudentProgressPage() {
   }
   useEffect(() => { loadAll() }, [id])
 
+  // שמירת ניקוד לתשובה שנבחרה (POST /admin/grading/:id/submit).
   async function submitGrade() {
     if (!selected || finalScore === null) { setError('יש לבחור דירוג'); return }
     try {
@@ -65,6 +85,7 @@ export default function StudentProgressPage() {
     }
   }
 
+  // איפוס סיסמת התלמיד (PUT /admin/users/:id/reset-password) עם ולידציית סיסמה.
   async function handleResetPassword() {
     if (!data) return
     setError(''); setOk('')
@@ -79,6 +100,8 @@ export default function StudentProgressPage() {
     }
   }
 
+  // איפוס כל נתוני התלמיד — התקדמות, ניסיונות ותשובות (POST /admin/students/:id/reset-data).
+  // פעולה בלתי הפיכה, ולכן מבקשת אישור.
   async function handleResetData() {
     if (!data) return
     setError(''); setOk('')

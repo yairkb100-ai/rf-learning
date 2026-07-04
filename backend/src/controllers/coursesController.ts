@@ -1,3 +1,23 @@
+// ============================================================================
+// בקר קורסים (Courses Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מטפל בפעולות ה-CRUD על קורסים — צפייה (עם סינון לפי הרשאות ומגמה)
+//   וניהול (מנהל בלבד).
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • getAllCourses  — GET    /api/courses: רשימת קורסים מסוננת לפי המשתמש.
+//   • getCourseById  — GET    /api/courses/:id: קורס בודד.
+//   • createCourse   — POST   /api/courses: יצירת קורס (מנהל).
+//   • updateCourse   — PUT    /api/courses/:id: עדכון קורס (מנהל).
+//   • deleteCourse   — DELETE /api/courses/:id: מחיקת קורס (מנהל).
+//
+// הקשר במערכת:
+//   נקרא דרך coursesRoutes. ניגש לטבלאות courses ו-users (למגמת המשתמש).
+//   getAllCourses מיישם את כללי הראות: מנהל רואה הכול; תלמיד — כללי + מגמתו;
+//   אנונימי — כללי בלבד.
+// ============================================================================
+
 import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";

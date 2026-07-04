@@ -1,3 +1,30 @@
+// ============================================================================
+// בקר ניקוד ידני ומעקב תלמידים (Grading Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מטפל בבדיקה הידנית של שאלות פתוחות וקבצים שהתלמידים הגישו, בשיוך
+//   תלמידים למנהלים, ובאיפוס נתוני תלמיד. כולל את חישוב הציון הסופי לאחר בדיקה.
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • getPendingGrading    — GET  /grading/pending: תשובות הממתינות לבדיקה.
+//   • submitGrade          — POST /grading/:gradeId/submit: שמירת ציון (טרנזקציה).
+//   • resetStudentData     — POST /students/:studentId/reset-data: איפוס נתוני תלמיד.
+//   • getGradingHistory    — GET  /grading/history/:studentId: היסטוריית ניקוד.
+//   • assignStudentToAdmin — POST /students/:studentId/assign: שיוך תלמיד למנהל.
+//   • getMyStudents        — GET  /my-students: התלמידים המשויכים למנהל.
+//
+// עזר פנים: isSuperAdmin — האם המנהל הוא מנהל-על (רואה/מנקד את כל התלמידים).
+//
+// הרשאות:
+//   מנהל-על רואה ומטפל בכל התלמידים; מנהל רגיל מוגבל לתלמידים המשויכים אליו
+//   (users.assigned_admin_id).
+//
+// הקשר במערכת:
+//   נקרא דרך adminOpsRoutes (מנהל בלבד). ניגש לטבלאות: users,
+//   quiz_attempt_answers, quiz_attempts_course, questions, courses,
+//   grading_history, grading_queue, user_progress.
+// ============================================================================
+
 import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";

@@ -4,6 +4,24 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
 
+// ============================================================================
+// דף ניהול שאלות (AdminQuestionsPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   ניהול שאלות המבחן של פרק (מנהל). מאפשר לבחור פרק, להוסיף שאלה חדשה מכל
+//   סוג (אמריקאית / בחירה מרובה / פתוחה / העלאת קובץ), להגדיר תשובות ותשובה
+//   נכונה, רמז, וידאו ותשובת מודל, ולמחוק שאלות קיימות.
+//
+// מבנה עיקרי / state:
+//   • chapters + chapterId — רשימת הפרקים והפרק הנבחר (מה-URL או הראשון).
+//   • questions            — שאלות הפרק הנבחר.
+//   • טופס: qType, questionText, hint, videoUrl, modelAnswer, options.
+//
+// הקשר במערכת:
+//   route: "/admin/courses/:courseId/questions" או ".../chapters/:chapterId/questions".
+//   פונה ל-GET/POST/DELETE של /courses/:courseId/chapters/:chapterId/questions.
+// ============================================================================
+
 type QuestionType = 'MULTIPLE_CHOICE' | 'MULTIPLE_SELECT' | 'FREE_TEXT' | 'FILE_UPLOAD'
 
 interface Option {
@@ -30,6 +48,7 @@ const TYPE_LABELS: Record<QuestionType, string> = {
   FILE_UPLOAD: 'העלאת קובץ (סטודנט מעלה קובץ)',
 }
 
+// מחזיר שתי אפשרויות תשובה ריקות — מצב התחלתי לשאלות בחירה.
 function emptyOptions(): Option[] {
   return [
     { answer_text: '', is_correct: false },
@@ -61,6 +80,7 @@ export default function AdminQuestionsPage() {
   const isChoice = qType === 'MULTIPLE_CHOICE' || qType === 'MULTIPLE_SELECT'
   const chapterTitle = chapters.find((c) => String(c.id) === chapterId)?.title || ''
 
+  // טוען את שאלות הפרק הנבחר (GET base/questions).
   function loadQuestions() {
     if (!chapterId) { setQuestions([]); setLoading(false); return }
     setLoading(true)
@@ -80,10 +100,12 @@ export default function AdminQuestionsPage() {
       .catch(() => setError('שגיאה בטעינת הפרקים'))
   }, [courseId])
 
+  // בכל שינוי פרק נבחר — טוען מחדש את שאלותיו.
   useEffect(() => {
     loadQuestions()
   }, [chapterId])
 
+  // עדכון אפשרות תשובה בטופס. באמריקאית סימון תשובה כנכונה מבטל את שאר הסימונים.
   function updateOption(index: number, field: keyof Option, value: string | boolean) {
     const newOptions = [...options]
     // באמריקאית — סימון נכונה אחת מבטל את האחרות
@@ -113,6 +135,8 @@ export default function AdminQuestionsPage() {
     setOptions(emptyOptions())
   }
 
+  // הוספת שאלה חדשה: מריץ ולידציה לפי סוג השאלה (לפחות 2 תשובות, תשובה נכונה
+  // מסומנת וכו'), בונה payload ושולח ל-POST base/questions.
   async function handleAddQuestion(e: FormEvent) {
     e.preventDefault()
     setError('')
@@ -159,6 +183,7 @@ export default function AdminQuestionsPage() {
     }
   }
 
+  // מחיקת שאלה (DELETE base/questions/:id).
   async function handleDeleteQuestion(id: number) {
     if (!confirm('למחוק את השאלה?')) return
     try {

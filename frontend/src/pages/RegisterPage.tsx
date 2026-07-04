@@ -4,6 +4,22 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 
+// ============================================================================
+// דף הרשמה (RegisterPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   טופס יצירת חשבון חדש (שם, אימייל, תעודת זהות, סיסמה). בהצלחה מחבר את
+//   המשתמש אוטומטית ומנווט לדף הבית. כולל קישור חזרה לדף ההתחברות.
+//   הערה: דף זה אינו מנותב כברירת מחדל ב-App.tsx (נותב ישירות רק /login).
+//
+// מבנה עיקרי / state:
+//   • form            — כל שדות ההרשמה באובייקט אחד.
+//   • error / loading — הודעת שגיאה ומצב שליחה.
+//
+// הקשר במערכת:
+//   פונה ל-POST /auth/register. בהצלחה קורא ל-login (שומר טוקנים) ומנווט ל-"/".
+// ============================================================================
+
 export default function RegisterPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -17,10 +33,12 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // עדכון גנרי של שדה בטופס לפי שם ה-input (name).
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
+  // שליחת הטופס ל-POST /auth/register. בהצלחה מחבר את המשתמש ומנווט לדף הבית.
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')

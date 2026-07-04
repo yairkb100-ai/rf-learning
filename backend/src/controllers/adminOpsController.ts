@@ -1,3 +1,24 @@
+// ============================================================================
+// בקר פעולות מנהל — שכפול והעברת תוכן (Admin Ops Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מרכז פעולות ניהול מורכבות של שכפול והעברת תוכן לימודי — מגמות, קורסים
+//   ופרקים — כולל כל התוכן והשאלות התלויים בהם. כל פעולה רצה בטרנזקציה.
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • duplicateCourse         — POST /api/admin/courses/:id/duplicate
+//   • moveChapter             — PUT  /api/admin/chapters/:id/move
+//   • duplicateChapter        — POST /api/admin/chapters/:id/duplicate
+//   • duplicateSpecialization — POST /api/admin/specializations/:id/duplicate
+//
+// עזרי פנים: copyChapterChildren (תוכן+שאלות של פרק), copyCourse (קורס לעומק).
+//
+// הקשר במערכת:
+//   נקרא דרך adminOpsRoutes (מנהל בלבד). ניגש לטבלאות: specializations,
+//   courses, chapters, learning_content, questions, question_options.
+//   כל השכפולים עוטפים BEGIN/COMMIT ומבצעים ROLLBACK בכשל.
+// ============================================================================
+
 import { Response } from "express";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";

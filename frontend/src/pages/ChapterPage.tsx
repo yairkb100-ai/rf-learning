@@ -5,6 +5,23 @@ import Sidebar from '../components/Sidebar'
 import ContentViewer, { sanitizeHtml, looksLikeHtml } from '../components/ContentViewer'
 import api from '../api/axios'
 
+// ============================================================================
+// דף פרק (ChapterPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מציג את תוכן הפרק הנבחר: תיאור הפרק (טקסט או HTML), רשימת פריטי חומר
+//   הלימוד, וכפתור מעבר למבחן הפרק (אם קיימות שאלות לפרק).
+//
+// מבנה עיקרי / state:
+//   • chapter      — פרטי הפרק.
+//   • content      — פריטי חומר הלימוד של הפרק.
+//   • hasQuestions — האם לפרק יש מבחן (משפיע על הצגת כפתורי המבחן).
+//
+// הקשר במערכת:
+//   route: "/courses/:courseId/chapters/:chapterId". פונה ל-GET של הפרק,
+//   התוכן והמבחן. משתמש ב-sanitizeHtml/looksLikeHtml להצגת תיאור עשיר בבטחה.
+// ============================================================================
+
 interface Chapter {
   id: number
   title: string
@@ -27,6 +44,8 @@ export default function ChapterPage() {
   const [hasQuestions, setHasQuestions] = useState(false)
   const [loading, setLoading] = useState(true)
 
+  // בטעינה (ובכל שינוי פרק): טוען במקביל את פרטי הפרק, את חומר הלימוד ואת שאלות
+  // המבחן. עבור התוכן והמבחן — כשל בקריאה מטופל בשקט (מחזיר רשימה ריקה).
   useEffect(() => {
     Promise.all([
       api.get(`/courses/${courseId}/chapters/${chapterId}`),

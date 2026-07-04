@@ -1,10 +1,33 @@
+// ============================================================================
+// בקר ניהול משתמשים (Admin Users Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מרכז את כל הפעולות שמנהל מבצע על משתמשים במערכת.
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • listUsers            — שליפת רשימת המשתמשים (עם סינון לפי תפקיד)
+//   • updateUser           — עדכון פרטי משתמש קיים
+//   • deleteUser           — מחיקת משתמש
+//   • resetPassword        — איפוס סיסמה למשתמש
+//   • studentsProgressSummary / studentProgressDetail — מעקב התקדמות תלמידים
+//   • dashboardStats       — נתונים מצטברים למסך הדשבורד
+//
+// הקשר במערכת:
+//   כל הפונקציות כאן נקראות דרך הנתיבים ב-adminOpsRoutes.ts, שכבר מוודאים
+//   שהמשתמש מחובר ובעל תפקיד מנהל (authenticate + requireAdmin). לכן בתוך
+//   הקובץ הזה מניחים שהקורא הוא מנהל מאומת.
+//
+// טבלאות עיקריות: users, specializations, quiz_attempts_course, user_progress.
+// ============================================================================
+
 import { Response } from "express";
 import bcrypt from "bcryptjs";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";
 import { PASSWORD_RE } from "./authController";
 
-// GET /api/admin/users?role=STUDENT|ADMIN  - רשימת משתמשים (מנהל בלבד)
+// GET /api/admin/users?role=STUDENT|ADMIN  — מחזיר רשימת משתמשים (מנהל בלבד).
+// אפשר לסנן לפי תפקיד; כולל את שם המגמה ואת שם מי שיצר את המשתמש.
 export async function listUsers(req: AuthRequest, res: Response) {
   const { role } = req.query;
   try {

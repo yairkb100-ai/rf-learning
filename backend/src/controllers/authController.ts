@@ -1,3 +1,25 @@
+// ============================================================================
+// בקר אימות (Auth Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מטפל בכל תהליכי ההזדהות: הרשמה, התחברות, חידוש token, התנתקות, וכן
+//   יצירת משתמשים בידי מנהל. אחראי על יצירת ואימות טוקני JWT.
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • register        — POST /api/auth/register: הרשמה עצמית של תלמיד.
+//   • adminCreateUser — POST /api/admin/users: מנהל יוצר תלמיד או מנהל.
+//   • login           — POST /api/auth/login: התחברות והנפקת טוקנים.
+//   • refresh         — POST /api/auth/refresh: חידוש access token.
+//   • logout          — POST /api/auth/logout: התנתקות.
+//   • PASSWORD_RE     — קבוע regex לוולידציית סיסמה (בשימוש גם ב-adminUsersController).
+//
+// עזרי פנים: validateCredentials, generateTokens, createUser.
+//
+// הקשר במערכת:
+//   ניגש לטבלת users. הטוקנים נחתמים מול JWT_SECRET / REFRESH_TOKEN_SECRET
+//   ומאומתים ב-authMiddleware. שם המשתמש בתבנית OA+ת"ז.
+// ============================================================================
+
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -15,6 +37,7 @@ const USERNAME_RE = /^OA\d{9}$/;
 // כללי סיסמה: אות גדולה + אות קטנה + מספר, אורך 6–8 תווים.
 export const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,8}$/;
 
+// עזר פנימי: בודק תקינות שם משתמש וסיסמה. מחזיר הודעת שגיאה בעברית, או null אם תקין.
 function validateCredentials(username: string, password: string): string | null {
   if (!USERNAME_RE.test(username)) {
     return 'שם המשתמש חייב להיות בתבנית OA ואחריו 9 ספרות (לדוגמה OA123456789)';
@@ -25,6 +48,8 @@ function validateCredentials(username: string, password: string): string | null 
   return null;
 }
 
+// עזר פנימי: מייצר זוג טוקנים — access token (קצר-מועד, כולל userId+role)
+// ו-refresh token (ארוך-מועד, כולל userId בלבד).
 function generateTokens(userId: number, role: string) {
   const accessToken = jwt.sign({ userId, role }, ACCESS_SECRET, {
     expiresIn: ACCESS_EXPIRES,
@@ -140,7 +165,8 @@ export async function adminCreateUser(req: AuthRequest, res: Response) {
   res.status(201).json({ user: result.user, message: requestedRole === "ADMIN" ? "מנהל נוצר בהצלחה" : "תלמיד נוצר בהצלחה" });
 }
 
-// כניסה עם שם משתמש (OA+ת"ז) + סיסמה
+// POST /api/auth/login — כניסה עם שם משתמש (OA+ת"ז) + סיסמה.
+// מאמת מול הסיסמה המוצפנת (bcrypt) ומחזיר את פרטי המשתמש וזוג טוקנים.
 export async function login(req: Request, res: Response) {
   // תומך גם בשדה username וגם בשדה national_id (תאימות לאחור — מומר ל-OA+ת"ז)
   const rawUsername = req.body.username || (req.body.national_id ? `OA${req.body.national_id}` : "");
@@ -183,6 +209,8 @@ export async function login(req: Request, res: Response) {
   }
 }
 
+// POST /api/auth/refresh — מקבל refresh token, מאמת אותו ומנפיק זוג טוקנים חדש.
+// מאפשר להאריך את ההתחברות בלי הזנת סיסמה מחדש.
 export async function refresh(req: Request, res: Response) {
   const { refreshToken } = req.body;
 
@@ -210,6 +238,8 @@ export async function refresh(req: Request, res: Response) {
   }
 }
 
+// POST /api/auth/logout — התנתקות. הטוקנים חסרי-מצב (stateless), ולכן
+// המחיקה בפועל מתבצעת בצד הלקוח; כאן רק מוחזרת הודעת אישור.
 export function logout(_req: Request, res: Response) {
   res.json({ message: "התנתקת בהצלחה" });
 }

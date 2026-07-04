@@ -1,3 +1,23 @@
+// ============================================================================
+// בקר חומר לימוד (Content Controller)
+// ----------------------------------------------------------------------------
+// תפקיד הקובץ:
+//   מטפל בבלוקי חומר הלימוד (learning_content) — טקסט עשיר (RICH), קישורים,
+//   ותמונות/וידאו/קבצים שהועלו. חומר יכול להיות ברמת הקורס (מבוא) או ברמת פרק.
+//
+// מה יש כאן (הפונקציות המיוצאות):
+//   • getCourseContent    — GET    .../content: שליפת חומר (של פרק או של קורס).
+//   • addCourseContent    — POST   .../content: הוספת בלוק תוכן (מנהל, כולל קובץ).
+//   • updateCourseContent — PUT    .../content/:id: עריכה + החלפת קובץ (מנהל).
+//   • deleteCourseContent — DELETE .../content/:id: מחיקה + ניקוי קבצים (מנהל).
+//
+// עזר פנים: unlinkUpload — מחיקה שקטה של קובץ שהועלה מהדיסק.
+//
+// הקשר במערכת:
+//   נקרא דרך contentRoutes. ניגש לטבלת learning_content. ההעלאות מגיעות
+//   מ-multer (config/upload) בשדות "file" ו-"image", ונשמרות תחת /uploads.
+// ============================================================================
+
 import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";

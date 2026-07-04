@@ -1,5 +1,19 @@
 import { useEffect, useRef } from 'react'
 
+// ============================================================================
+// עורך טקסט עשיר (RichTextEditor)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   עורך WYSIWYG פשוט לכתיבת תוכן מעוצב (HTML) ללא ספריות חיצוניות.
+//   מבוסס על contentEditable ו-document.execCommand. מקבל value (HTML)
+//   ומחזיר שינויים דרך onChange. משמש במסכי הניהול ליצירת תוכן לימודי עשיר.
+//
+// props:
+//   • value       — ה-HTML הנוכחי המוצג בעורך.
+//   • onChange     — נקרא בכל שינוי ומחזיר את ה-HTML המעודכן.
+//   • placeholder  — טקסט מציין מקום כשהעורך ריק.
+// ============================================================================
+
 // עורך טקסט עשיר פשוט מבוסס contentEditable (ללא ספריות חיצוניות).
 // שומר ומחזיר HTML. תומך בהדגשה, נטוי, קו תחתון, גדלים, יישור,
 // רשימות (ממוספרת/תבליטים), כותרת, וצבע טקסט.
@@ -23,12 +37,14 @@ export default function RichTextEditor({
     }
   }, [value])
 
+  // מריץ פקודת עיצוב (הדגשה/יישור/רשימה וכו') על הטקסט הנבחר ומדווח על השינוי.
   function exec(command: string, arg?: string) {
     ref.current?.focus()
     document.execCommand(command, false, arg)
     emit()
   }
 
+  // מדווח החוצה (onChange) את תוכן ה-HTML הנוכחי של העורך.
   function emit() {
     if (ref.current) onChange(ref.current.innerHTML)
   }

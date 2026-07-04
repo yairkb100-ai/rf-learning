@@ -5,6 +5,22 @@ import Navbar from '../components/Navbar'
 import Sidebar from '../components/Sidebar'
 import api from '../api/axios'
 
+// ============================================================================
+// דף מגמה (SpecializationPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מציג את פרטי מגמה בודדת (שם ותיאור) ואת רשימת הקורסים המשויכים אליה.
+//   לחיצה על קורס מנווטת לדף הקורס.
+//
+// מבנה עיקרי / state:
+//   • spec    — פרטי המגמה הנוכחית (נמצאת לפי specializationId מה-URL).
+//   • courses — קורסי המגמה.
+//
+// הקשר במערכת:
+//   route: "/specializations/:specializationId". פונה ל-GET /specializations
+//   ו-GET /courses?specialization_id=...
+// ============================================================================
+
 interface Specialization {
   id: number
   name: string
@@ -26,6 +42,8 @@ export default function SpecializationPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // בטעינה (ובכל שינוי מגמה ב-URL): טוען במקביל את כל המגמות ואת קורסי המגמה,
+  // ומאתר מתוך המגמות את המגמה המבוקשת לפי המזהה שב-URL.
   useEffect(() => {
     Promise.all([
       api.get('/specializations'),
@@ -39,6 +57,7 @@ export default function SpecializationPage() {
       .finally(() => setLoading(false))
   }, [specializationId])
 
+  // התנתקות: מנקה את ההזדהות ומנווט למסך ההתחברות.
   function handleLogout() {
     logout()
     navigate('/login')

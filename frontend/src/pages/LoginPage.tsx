@@ -5,6 +5,22 @@ import { useAuth } from '../context/AuthContext'
 import ThemeToggle from '../components/ThemeToggle'
 import api from '../api/axios'
 
+// ============================================================================
+// דף התחברות (LoginPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   טופס כניסה למערכת. המשתמש מזין שם משתמש וסיסמה, ובהצלחה מנותב לדף הבית.
+//   כולל כפתור החלפת עיצוב. זהו הדף היחיד שאינו דורש התחברות מוקדמת.
+//
+// מבנה עיקרי / state:
+//   • username / password — שדות הטופס.
+//   • error / loading     — הודעת שגיאה ומצב שליחה.
+//
+// הקשר במערכת:
+//   route: "/login". פונה ל-POST /auth/login. בהצלחה קורא ל-login מקונטקסט
+//   ההזדהות (שומר טוקנים) ומנווט ל-"/".
+// ============================================================================
+
 export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -13,6 +29,8 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // שליחת הטופס: שולח שם משתמש (מנורמל לאותיות גדולות) וסיסמה ל-POST /auth/login.
+  // בהצלחה שומר את ההזדהות ומנווט לדף הבית; אחרת מציג הודעת שגיאה.
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')

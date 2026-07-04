@@ -19,11 +19,31 @@ import AdminGradingPage from './pages/AdminGradingPage'
 import StudentProgressPage from './pages/StudentProgressPage'
 import './App.css'
 
+// ============================================================================
+// רכיב השורש של האפליקציה (App Root)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מגדיר את שלד האפליקציה: ספקי ה-Context (עיצוב והזדהות), הניתוב (Routing)
+//   בין כל הדפים, וה-Footer הקבוע בתחתית.
+//
+// מבנה עיקרי:
+//   • ThemeProvider — מספק מצב עיצוב (בהיר/כהה) לכל האפליקציה.
+//   • AuthProvider  — מספק מצב הזדהות (משתמש מחובר, כניסה/יציאה).
+//   • BrowserRouter + Routes — טבלת הניתוב בין כל הדפים.
+//   • PrivateRoute — עוטף דפים שדורשים התחברות; מפנה ל-/login אם המשתמש אינו מחובר.
+//
+// הקשר במערכת:
+//   הדפים מחולקים לשניים: דפי לומד (בית, התמחות, קורס, פרק, מבחן)
+//   ודפי ניהול (admin) — לוח בקרה, ניהול משתמשים, בדיקת מבחנים, ניהול תוכן ושאלות.
+//   כל נתיב לא מוכר (*) מנותב חזרה לדף הבית.
+// ============================================================================
+
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
+          {/* טבלת הניתוב: כל Route ממפה כתובת URL לדף. רוב הדפים עטופים ב-PrivateRoute (דורש התחברות) */}
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />

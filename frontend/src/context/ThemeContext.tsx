@@ -15,13 +15,32 @@ interface ThemeContextType {
   toggleTheme: () => void
 }
 
+// ============================================================================
+// קונטקסט העיצוב (Theme Context)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מנהל את ערכת הנושא (בהיר/כהה) עבור כל האפליקציה ומשמר אותה בין ביקורים.
+//
+// מה ה-context מספק:
+//   • theme       — ערכת הנושא הנוכחית ('light' או 'dark').
+//   • setTheme    — קובע ערכת נושא מפורשת.
+//   • toggleTheme — מחליף בין בהיר לכהה (משמש את כפתור הירח ב-Navbar/ThemeToggle).
+//
+// הקשר במערכת:
+//   נטען ב-App.tsx ועוטף את כל הדפים. שינוי ה-theme מעדכן את התכונה
+//   data-theme על אלמנט ה-<html>, וה-CSS מגיב לכך ומחליף צבעים.
+// ============================================================================
+
 const ThemeContext = createContext<ThemeContextType | null>(null)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  // ערך התחלתי: נטען מ-localStorage אם נשמר בעבר, אחרת ברירת מחדל 'light'.
   const [theme, setThemeState] = useState<Theme>(() => {
     return (localStorage.getItem('theme') as Theme) || 'light'
   })
 
+  // בכל שינוי theme: מעדכן את התכונה data-theme על אלמנט השורש (ל-CSS)
+  // ושומר את הבחירה ב-localStorage לביקורים הבאים.
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem('theme', theme)
@@ -43,6 +62,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   )
 }
 
+// Hook נוח לצריכת קונטקסט העיצוב. זורק שגיאה אם נעשה בו שימוש מחוץ ל-ThemeProvider.
 export function useTheme() {
   const ctx = useContext(ThemeContext)
   if (!ctx) throw new Error('useTheme must be used within ThemeProvider')

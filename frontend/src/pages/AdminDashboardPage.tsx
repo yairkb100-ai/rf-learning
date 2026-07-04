@@ -3,6 +3,22 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
 
+// ============================================================================
+// דף דשבורד ניהול (AdminDashboardPage)
+// ----------------------------------------------------------------------------
+// תפקיד:
+//   מציג תמונת מצב כללית של המערכת למנהל: מספרי תלמידים/מנהלים/קורסים/מגמות,
+//   ממוצעי השלמה וציונים, מספר מבחנים הממתינים לבדיקה, וטבלת הקורסים הקשים
+//   ביותר (הציון הממוצע הנמוך).
+//
+// מבנה עיקרי:
+//   • Stats — טיפוס נתוני הסטטיסטיקה שמתקבלים מהשרת.
+//   • Kpi   — רכיב תצוגה של כרטיס מדד בודד (עם הדגשה כשיש התראה).
+//
+// הקשר במערכת:
+//   route: "/admin/dashboard". פונה ל-GET /admin/dashboard.
+// ============================================================================
+
 interface Stats {
   total_students: number
   total_admins: number
@@ -28,6 +44,7 @@ export default function AdminDashboardPage() {
   const [s, setS] = useState<Stats | null>(null)
   const [error, setError] = useState('')
 
+  // בטעינה: טוען את נתוני הדשבורד מהשרת (GET /admin/dashboard).
   useEffect(() => {
     api.get('/admin/dashboard')
       .then((r) => setS(r.data))
