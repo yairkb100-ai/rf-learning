@@ -128,12 +128,18 @@ export default function StudentProgressPage() {
                 <p className="empty-state">אין תשובות הממתינות לבדיקה לתלמיד זה 🎉</p>
               ) : selected ? (
                 <div className="grading-form">
-                  <p><strong>קורס:</strong> {selected.course_title}</p>
-                  <p><strong>שאלה:</strong> {selected.question_text}</p>
-                  {selected.model_answer && <p><strong>תשובת מודל:</strong> {selected.model_answer}</p>}
+                  <p className="spec-count">קורס: {selected.course_title}</p>
+                  <div className="question-box">
+                    <span className="question-label">השאלה</span>
+                    <p className="question-body">{selected.question_text}</p>
+                  </div>
+                  {selected.model_answer && (
+                    <p style={{ margin: '8px 0' }}><strong>תשובת מודל:</strong> {selected.model_answer}</p>
+                  )}
                   {selected.question_type === 'FREE_TEXT' && (
-                    <div className="answer-box" style={{ background: '#fff', padding: 10, borderInlineStart: '4px solid #a435f0', margin: '8px 0' }}>
-                      {selected.free_text_answer}
+                    <div className="student-answer-box">
+                      <span className="question-label">תשובת התלמיד</span>
+                      <p className="answer-body">{selected.free_text_answer}</p>
                     </div>
                   )}
                   {selected.question_type === 'FILE_UPLOAD' && (
@@ -168,14 +174,17 @@ export default function StudentProgressPage() {
                   </div>
                 </div>
               ) : (
-                <ul className="progress-list">
+                <div className="pending-grade-list">
                   {pending.map((g) => (
-                    <li key={g.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
-                      <span>{g.question_type === 'FREE_TEXT' ? '📝' : '📎'} {g.question_text} <span className="spec-count">({g.course_title})</span></span>
+                    <div key={g.id} className="pending-grade-item">
+                      <div className="pending-grade-text">
+                        <span className="spec-count">{g.question_type === 'FREE_TEXT' ? '📝 שאלה פתוחה' : '📎 קובץ'} · {g.course_title}</span>
+                        <p className="question-body">{g.question_text}</p>
+                      </div>
                       <button className="btn-primary" onClick={() => { setSelected(g); setRatingChoice(null); setPartialScore(50); setComments('') }}>בדוק</button>
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               )}
             </section>
 

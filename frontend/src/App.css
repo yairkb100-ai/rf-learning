@@ -1771,3 +1771,53 @@ input[type="file"] {
 .file-input:checked + .file-label {
   background: var(--success);
 }
+
+/* דף בדיקת תשובות תלמיד — שאלה ותשובה ברורות בשני מצבי התצוגה */
+.question-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-inline-start: 4px solid var(--primary, #a435f0);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 10px 0;
+}
+.student-answer-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-inline-start: 4px solid var(--success, #2e7d32);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 10px 0;
+}
+.question-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.question-body, .answer-body {
+  color: var(--text);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.pending-grade-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pending-grade-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.pending-grade-text { flex: 1; min-width: 0; }
+.pending-grade-item .btn-primary { flex-shrink: 0; }
