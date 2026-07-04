@@ -17,16 +17,18 @@ export async function getPendingGrading(req: AuthRequest, res: Response) {
 
   try {
     const superAdmin = await isSuperAdmin(adminId);
-    // מנהל כללי רואה את כל התור; מנהל רגיל רק את הפריטים שהוקצו אליו
-    const scopeClause = superAdmin ? "" : "gq.admin_id = $1 AND ";
+    // מנהל כללי רואה הכל; מנהל רגיל רק תלמידים המשויכים אליו
+    const scopeClause = superAdmin ? "" : "AND u.assigned_admin_id = $1 ";
     const params = superAdmin ? [] : [adminId];
 
+    // קוראים ישירות מהתשובות שממתינות לבדיקה (needs_grading = TRUE) —
+    // זהו מקור האמת. מזהה הפריט לבדיקה הוא id של השורה ב-quiz_attempt_answers.
     const result = await pool.query(
       `SELECT
-        gq.id,
-        gq.attempt_id,
-        gq.question_id,
-        gq.student_id,
+        qaa.id,
+        qaa.attempt_id,
+        qaa.question_id,
+        qa.user_id AS student_id,
         u.full_name AS student_name,
         u.national_id,
         c.title AS course_title,
@@ -36,16 +38,15 @@ export async function getPendingGrading(req: AuthRequest, res: Response) {
         qaa.free_text_answer,
         qaa.file_path,
         qaa.file_name,
-        gq.created_at,
-        gq.status
-      FROM grading_queue gq
-      JOIN users u ON gq.student_id = u.id
-      JOIN quiz_attempts_course qa ON gq.attempt_id = qa.id
+        qa.submitted_at AS created_at,
+        qaa.grading_status AS status
+      FROM quiz_attempt_answers qaa
+      JOIN quiz_attempts_course qa ON qaa.attempt_id = qa.id
+      JOIN users u ON qa.user_id = u.id
       JOIN courses c ON qa.course_id = c.id
-      JOIN questions q ON gq.question_id = q.id
-      JOIN quiz_attempt_answers qaa ON qaa.attempt_id = gq.attempt_id AND qaa.question_id = gq.question_id
-      WHERE ${scopeClause}gq.status IN ('PENDING', 'IN_PROGRESS')
-      ORDER BY gq.created_at ASC`,
+      JOIN questions q ON qaa.question_id = q.id
+      WHERE qaa.needs_grading = TRUE ${scopeClause}
+      ORDER BY qa.submitted_at ASC`,
       params
     );
 
@@ -74,46 +75,41 @@ export async function submitGrade(req: AuthRequest, res: Response) {
   try {
     await client.query("BEGIN");
 
-    // קבל את הdetails של grading_queue
-    const gqResult = await client.query(
-      `SELECT attempt_id, question_id, student_id, admin_id FROM grading_queue WHERE id = $1`,
+    // קבל את פרטי התשובה הממתינה (gradeId הוא id של quiz_attempt_answers)
+    const ansResult = await client.query(
+      `SELECT qaa.id, qaa.attempt_id, qaa.question_id, qaa.points_awarded, qaa.max_points,
+              qa.user_id AS student_id, u.assigned_admin_id
+       FROM quiz_attempt_answers qaa
+       JOIN quiz_attempts_course qa ON qaa.attempt_id = qa.id
+       JOIN users u ON qa.user_id = u.id
+       WHERE qaa.id = $1`,
       [gradeId]
     );
 
-    if (gqResult.rows.length === 0) {
-      res.status(404).json({ error: "פריט grading לא נמצא" });
+    if (ansResult.rows.length === 0) {
+      res.status(404).json({ error: "פריט לבדיקה לא נמצא" });
       return;
     }
 
-    const { attempt_id, question_id, student_id, admin_id: queue_admin } = gqResult.rows[0];
+    const { attempt_id, question_id, student_id, assigned_admin_id, max_points } = ansResult.rows[0];
 
-    if (Number(queue_admin) !== adminId && !(await isSuperAdmin(adminId))) {
+    // הרשאה: מנהל כללי, או המנהל שהתלמיד משויך אליו
+    if (Number(assigned_admin_id) !== adminId && !(await isSuperAdmin(adminId))) {
       res.status(403).json({ error: "אינך מורשה לבדוק פריט זה" });
       return;
     }
 
-    // קבל את הניקוד הישן
-    const oldScore = await client.query(
-      `SELECT points_awarded FROM quiz_attempt_answers WHERE attempt_id = $1 AND question_id = $2`,
-      [attempt_id, question_id]
-    );
-
-    const oldPoints = oldScore.rows[0]?.points_awarded || 0;
-    const newPoints = score; // score הוא 0-100, נממיר ל-0-1 scale
+    const oldPoints = ansResult.rows[0].points_awarded || 0;
+    // score הוא 0-100 (אחוז); ממירים לנקודות בפועל לפי max_points של השאלה
+    const newPoints = (Number(score) / 100) * Number(max_points || 1);
 
     // עדכן את הניקוד בquiz_attempt_answers
     await client.query(
       `UPDATE quiz_attempt_answers
        SET points_awarded = $1, grading_status = 'GRADED', graded_by = $2, graded_at = CURRENT_TIMESTAMP,
            admin_comments = $3, needs_grading = FALSE
-       WHERE attempt_id = $4 AND question_id = $5`,
-      [newPoints, adminId, comments || null, attempt_id, question_id]
-    );
-
-    // עדכן את grading_queue
-    await client.query(
-      `UPDATE grading_queue SET status = 'GRADED' WHERE id = $1`,
-      [gradeId]
+       WHERE id = $4`,
+      [newPoints, adminId, comments || null, gradeId]
     );
 
     // שמור בgrading_history
@@ -158,6 +154,53 @@ export async function submitGrade(req: AuthRequest, res: Response) {
     await client.query("COMMIT");
 
     res.json({ message: "הניקוד נשמר בהצלחה", gradeId });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error(err);
+    res.status(500).json({ error: "שגיאת שרת" });
+  } finally {
+    client.release();
+  }
+}
+
+// POST /api/admin/students/:studentId/reset-data - איפוס נתוני התלמיד
+// (התקדמות פרקים, ניסיונות מבחן, ותשובות). לא נוגע בפרטי המשתמש עצמו.
+export async function resetStudentData(req: AuthRequest, res: Response) {
+  const adminId = req.user!.userId;
+  const { studentId } = req.params;
+
+  const client = await pool.connect();
+  try {
+    // הרשאה: מנהל כללי, או המנהל שהתלמיד משויך אליו
+    const stu = await client.query(
+      "SELECT assigned_admin_id, role FROM users WHERE id = $1",
+      [studentId]
+    );
+    if (stu.rows.length === 0 || stu.rows[0].role !== "STUDENT") {
+      res.status(404).json({ error: "תלמיד לא נמצא" });
+      return;
+    }
+    if (Number(stu.rows[0].assigned_admin_id) !== adminId && !(await isSuperAdmin(adminId))) {
+      res.status(403).json({ error: "אינך מורשה לאפס נתוני תלמיד זה" });
+      return;
+    }
+
+    await client.query("BEGIN");
+    // מחיקת תשובות המבחן (לפי הניסיונות של התלמיד)
+    await client.query(
+      `DELETE FROM quiz_attempt_answers WHERE attempt_id IN
+        (SELECT id FROM quiz_attempts_course WHERE user_id = $1)`,
+      [studentId]
+    );
+    // מחיקת רשומות עזר בתור/היסטוריה אם קיימות
+    await client.query("DELETE FROM grading_queue WHERE student_id = $1", [studentId]);
+    await client.query("DELETE FROM grading_history WHERE student_id = $1", [studentId]);
+    // מחיקת ניסיונות המבחן וההתקדמות
+    await client.query("DELETE FROM quiz_attempts_course WHERE user_id = $1", [studentId]);
+    await client.query("DELETE FROM user_progress WHERE user_id = $1", [studentId]);
+    await client.query("COMMIT");
+
+    res.json({ message: "נתוני התלמיד אופסו בהצלחה" });
   } catch (err) {
     await client.query("ROLLBACK");
     console.error(err);

@@ -79,6 +79,19 @@ export default function StudentProgressPage() {
     }
   }
 
+  async function handleResetData() {
+    if (!data) return
+    setError(''); setOk('')
+    if (!confirm(`לאפס את כל הנתונים של ${data.student.full_name}?\nיימחקו: התקדמות הפרקים, ניסיונות המבחן והתשובות. פעולה זו אינה הפיכה.`)) return
+    try {
+      await api.post(`/admin/students/${data.student.id}/reset-data`)
+      setOk('נתוני התלמיד אופסו בהצלחה')
+      loadAll()
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'שגיאה באיפוס הנתונים')
+    }
+  }
+
   // קיבוץ פרקים לפי קורס
   const byCourse: Record<string, Detail['chapters']> = {}
   data?.chapters.forEach((c) => {
@@ -101,7 +114,10 @@ export default function StudentProgressPage() {
                   <p dir="ltr">{data.student.username}</p>
                   <p className="spec-count">מגמה: {data.student.specialization_name || 'ללא'}</p>
                 </div>
-                <button className="btn-outline" onClick={handleResetPassword}>🔑 אפס סיסמה</button>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <button className="btn-outline" onClick={handleResetPassword}>🔑 אפס סיסמה</button>
+                  <button className="btn-danger" onClick={handleResetData}>🗑️ אפס נתונים</button>
+                </div>
               </div>
             </section>
 

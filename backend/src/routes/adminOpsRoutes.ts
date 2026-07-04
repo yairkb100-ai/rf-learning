@@ -21,6 +21,7 @@ import {
   getGradingHistory,
   assignStudentToAdmin,
   getMyStudents,
+  resetStudentData,
 } from "../controllers/gradingController";
 import { authenticate, requireAdmin } from "../middleware/authMiddleware";
 
@@ -44,6 +45,7 @@ router.get("/students/progress", studentsProgressSummary);
 router.get("/students/:id/progress", studentProgressDetail);
 router.get("/my-students", getMyStudents);
 router.post("/students/:studentId/assign", assignStudentToAdmin);
+router.post("/students/:studentId/reset-data", resetStudentData);
 router.get("/grading/history/:studentId", getGradingHistory);
 
 // ניקוד שאלות פתוחות וקבצים
