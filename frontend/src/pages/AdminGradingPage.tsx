@@ -37,9 +37,17 @@ export default function AdminGradingPage() {
 
   // grading form
   const [selectedGrade, setSelectedGrade] = useState<PendingGrade | null>(null)
-  const [score, setScore] = useState(0)
+  // דירוג: null=טרם נבחר, 'full'=100, 'partial'=25/50/75, 'zero'=0
+  const [ratingChoice, setRatingChoice] = useState<'full' | 'partial' | 'zero' | null>(null)
+  const [partialScore, setPartialScore] = useState<number>(50)
   const [comments, setComments] = useState('')
   const [submittingGrade, setSubmittingGrade] = useState(false)
+
+  // הציון הסופי (0-100) לפי בחירת הדירוג — נשמר כמספר לשקלול הרגיל
+  const finalScore =
+    ratingChoice === 'full' ? 100 :
+    ratingChoice === 'zero' ? 0 :
+    ratingChoice === 'partial' ? partialScore : null
 
   useEffect(() => {
     loadData()
@@ -64,19 +72,20 @@ export default function AdminGradingPage() {
 
   async function submitGrade() {
     if (!selectedGrade) return
-    if (score < 0 || score > 100) {
-      alert('הציון חייב להיות בין 0 ל-100')
+    if (finalScore === null) {
+      alert('יש לבחור דירוג לתשובה')
       return
     }
 
     setSubmittingGrade(true)
     try {
       await api.post(`/api/admin/grading/${selectedGrade.id}/submit`, {
-        score,
+        score: finalScore,
         comments,
       })
       setSelectedGrade(null)
-      setScore(0)
+      setRatingChoice(null)
+      setPartialScore(50)
       setComments('')
       loadData()
       alert('הניקוד נשמר בהצלחה!')
@@ -145,16 +154,49 @@ export default function AdminGradingPage() {
                     </div>
 
                     <div className="grade-input-group">
-                      <label>
-                        ניקוד (0-100):
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={score}
-                          onChange={(e) => setScore(Number(e.target.value))}
-                        />
-                      </label>
+                      <label>דירוג התשובה:</label>
+                      <div className="rating-buttons">
+                        <button
+                          type="button"
+                          className={`rating-btn full ${ratingChoice === 'full' ? 'selected' : ''}`}
+                          onClick={() => setRatingChoice('full')}
+                        >
+                          ✅ תשובה מלאה (100%)
+                        </button>
+                        <button
+                          type="button"
+                          className={`rating-btn partial ${ratingChoice === 'partial' ? 'selected' : ''}`}
+                          onClick={() => setRatingChoice('partial')}
+                        >
+                          ➗ תשובה חלקית
+                        </button>
+                        <button
+                          type="button"
+                          className={`rating-btn zero ${ratingChoice === 'zero' ? 'selected' : ''}`}
+                          onClick={() => setRatingChoice('zero')}
+                        >
+                          ❌ תשובה שגויה (0%)
+                        </button>
+                      </div>
+
+                      {ratingChoice === 'partial' && (
+                        <label>
+                          אחוז נכונות:
+                          <select
+                            value={partialScore}
+                            onChange={(e) => setPartialScore(Number(e.target.value))}
+                          >
+                            <option value={25}>25%</option>
+                            <option value={50}>50%</option>
+                            <option value={75}>75%</option>
+                          </select>
+                        </label>
+                      )}
+
+                      {finalScore !== null && (
+                        <p className="final-score-preview">ניקוד סופי: <strong>{finalScore}</strong> מתוך 100</p>
+                      )}
+
                       <label>
                         הערות:
                         <textarea
@@ -174,7 +216,7 @@ export default function AdminGradingPage() {
                       >
                         {submittingGrade ? 'שומר...' : 'שמור ניקוד'}
                       </button>
-                      <button className="btn-outline" onClick={() => setSelectedGrade(null)}>
+                      <button className="btn-outline" onClick={() => { setSelectedGrade(null); setRatingChoice(null) }}>
                         ביטול
                       </button>
                     </div>
@@ -198,7 +240,8 @@ export default function AdminGradingPage() {
                           className="btn-primary"
                           onClick={() => {
                             setSelectedGrade(item)
-                            setScore(0)
+                            setRatingChoice(null)
+                            setPartialScore(50)
                             setComments('')
                           }}
                         >
@@ -323,13 +366,46 @@ export default function AdminGradingPage() {
         }
 
         .grade-input-group input,
-        .grade-input-group textarea {
+        .grade-input-group textarea,
+        .grade-input-group select {
           padding: 10px;
           border: 1px solid #ddd;
           border-radius: 5px;
           font-size: 1rem;
           font-family: inherit;
         }
+
+        .rating-buttons {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        .rating-btn {
+          flex: 1;
+          min-width: 140px;
+          padding: 14px 10px;
+          border: 2px solid #ddd;
+          border-radius: 8px;
+          background: white;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 600;
+          transition: all 0.2s;
+        }
+
+        .rating-btn:hover { border-color: #a435f0; }
+
+        .rating-btn.full.selected { background: #e6f7ec; border-color: #2e7d32; color: #2e7d32; }
+        .rating-btn.partial.selected { background: #fff8e1; border-color: #f9a825; color: #b8860b; }
+        .rating-btn.zero.selected { background: #fdecea; border-color: #c62828; color: #c62828; }
+
+        .final-score-preview {
+          margin: 6px 0;
+          font-size: 1.05rem;
+          color: #1c1d1f;
+        }
+        .final-score-preview strong { color: #a435f0; font-size: 1.2rem; }
 
         .form-actions {
           display: flex;
