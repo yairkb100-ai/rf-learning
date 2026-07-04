@@ -47,8 +47,9 @@ async function createUser(opts: {
   title?: string;
   specialization_id?: number | null;
   creatorId?: number | null;
+  assigned_admin_id?: number | null;
 }): Promise<{ ok: true; user: any } | { ok: false; status: number; error: string }> {
-  const { full_name, username, password, role, title, specialization_id, creatorId } = opts;
+  const { full_name, username, password, role, title, specialization_id, creatorId, assigned_admin_id } = opts;
 
   if (!full_name || !username || !password) {
     return { ok: false, status: 400, error: "שם מלא, שם משתמש וסיסמה חובה" };
@@ -73,10 +74,10 @@ async function createUser(opts: {
 
   const password_hash = await bcrypt.hash(password, 10);
   const result = await pool.query(
-    `INSERT INTO users (full_name, national_id, username, password_hash, role, title, specialization_id, created_by)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING id, full_name, national_id, username, role, title, specialization_id`,
-    [full_name, national_id, username, password_hash, role, role === "ADMIN" ? title!.trim() : null, specialization_id ?? null, creatorId ?? null]
+    `INSERT INTO users (full_name, national_id, username, password_hash, role, title, specialization_id, created_by, assigned_admin_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+     RETURNING id, full_name, national_id, username, role, title, specialization_id, assigned_admin_id`,
+    [full_name, national_id, username, password_hash, role, role === "ADMIN" ? title!.trim() : null, specialization_id ?? null, creatorId ?? null, role === "STUDENT" ? (assigned_admin_id ?? null) : null]
   );
   return { ok: true, user: result.rows[0] };
 }
@@ -106,8 +107,20 @@ export async function register(req: Request, res: Response) {
 // POST /api/admin/users — מנהל יוצר תלמיד או מנהל (שרשרת הרשאות).
 // יצירת מנהל מותרת רק למנהל מחובר. נשמר created_by.
 export async function adminCreateUser(req: AuthRequest, res: Response) {
-  const { full_name, username, password, role, title, specialization_id } = req.body;
+  const { full_name, username, password, role, title, specialization_id, assigned_admin_id } = req.body;
   const requestedRole = role === "ADMIN" ? "ADMIN" : "STUDENT";
+  const creatorId = req.user!.userId;
+
+  // שיוך התלמיד למנהל: מנהל כללי בוחר מהטופס; מנהל רגיל — התלמיד משויך אליו עצמו
+  let assignedAdmin: number | null = null;
+  if (requestedRole === "STUDENT") {
+    const creatorSuper = await pool.query(
+      "SELECT is_super_admin FROM users WHERE id = $1",
+      [creatorId]
+    );
+    const isSuper = creatorSuper.rows[0]?.is_super_admin === true;
+    assignedAdmin = isSuper ? (assigned_admin_id ? Number(assigned_admin_id) : null) : creatorId;
+  }
 
   const result = await createUser({
     full_name,
@@ -116,7 +129,8 @@ export async function adminCreateUser(req: AuthRequest, res: Response) {
     role: requestedRole,
     title,
     specialization_id,
-    creatorId: req.user!.userId,
+    creatorId,
+    assigned_admin_id: assignedAdmin,
   });
 
   if (!result.ok) {
@@ -139,7 +153,7 @@ export async function login(req: Request, res: Response) {
 
   try {
     const result = await pool.query(
-      "SELECT id, full_name, national_id, username, role, password_hash FROM users WHERE username = $1",
+      "SELECT id, full_name, national_id, username, role, is_super_admin, password_hash FROM users WHERE username = $1",
       [rawUsername]
     );
 
@@ -159,7 +173,7 @@ export async function login(req: Request, res: Response) {
     const { accessToken, refreshToken } = generateTokens(user.id, user.role);
 
     res.json({
-      user: { id: user.id, full_name: user.full_name, national_id: user.national_id, username: user.username, role: user.role },
+      user: { id: user.id, full_name: user.full_name, national_id: user.national_id, username: user.username, role: user.role, is_super_admin: user.is_super_admin },
       accessToken,
       refreshToken,
     });

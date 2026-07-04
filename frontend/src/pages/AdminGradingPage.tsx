@@ -57,10 +57,10 @@ export default function AdminGradingPage() {
     setLoading(true)
     try {
       if (tab === 'pending') {
-        const res = await api.get('/api/admin/grading/pending')
+        const res = await api.get('/admin/grading/pending')
         setPendingList(res.data)
       } else {
-        const res = await api.get('/api/admin/my-students')
+        const res = await api.get('/admin/my-students')
         setStudentList(res.data)
       }
     } catch (err: any) {
@@ -79,7 +79,7 @@ export default function AdminGradingPage() {
 
     setSubmittingGrade(true)
     try {
-      await api.post(`/api/admin/grading/${selectedGrade.id}/submit`, {
+      await api.post(`/admin/grading/${selectedGrade.id}/submit`, {
         score: finalScore,
         comments,
       })

@@ -1,10 +1,12 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import type { ReactNode } from 'react'
 
 interface User {
   id: number
   role: string
   full_name: string
   national_id: string
+  is_super_admin?: boolean
 }
 
 interface AuthContextType {

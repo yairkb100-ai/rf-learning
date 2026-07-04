@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
+import { useAuth } from '../context/AuthContext'
 
 interface User {
   id: number
@@ -27,6 +28,8 @@ interface ProgressRow {
 
 export default function AdminUsersPage() {
   const navigate = useNavigate()
+  const { user: currentUser } = useAuth()
+  const isSuperAdmin = currentUser?.is_super_admin === true
   const [users, setUsers] = useState<User[]>([])
   const [specs, setSpecs] = useState<Spec[]>([])
   const [progress, setProgress] = useState<ProgressRow[]>([])
@@ -40,6 +43,7 @@ export default function AdminUsersPage() {
   const [password, setPassword] = useState('')
   const [title, setTitle] = useState('')
   const [specId, setSpecId] = useState('')
+  const [assignedAdminId, setAssignedAdminId] = useState('')  // רק למנהל כללי
 
   function load() {
     api.get('/admin/users').then((r) => setUsers(r.data)).catch(() => setError('שגיאה בטעינת משתמשים'))
@@ -64,9 +68,10 @@ export default function AdminUsersPage() {
         role,
         title: role === 'ADMIN' ? title : undefined,
         specialization_id: role === 'STUDENT' && specId ? Number(specId) : undefined,
+        assigned_admin_id: role === 'STUDENT' && isSuperAdmin && assignedAdminId ? Number(assignedAdminId) : undefined,
       })
       setOk(`נוצר בהצלחה: ${idNum}`)
-      setFullName(''); setIdNum(''); setPassword(''); setTitle(''); setSpecId('')
+      setFullName(''); setIdNum(''); setPassword(''); setTitle(''); setSpecId(''); setAssignedAdminId('')
       load()
     } catch (err: any) {
       setError(err.response?.data?.error || 'שגיאה ביצירת המשתמש')
@@ -138,6 +143,15 @@ export default function AdminUsersPage() {
                 <select value={specId} onChange={(e) => setSpecId(e.target.value)}>
                   <option value="">ללא מגמה (כלליים בלבד)</option>
                   {specs.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+            )}
+            {role === 'STUDENT' && isSuperAdmin && (
+              <div className="form-group">
+                <label>שיוך למנהל</label>
+                <select value={assignedAdminId} onChange={(e) => setAssignedAdminId(e.target.value)}>
+                  <option value="">ללא שיוך</option>
+                  {admins.map((a) => <option key={a.id} value={a.id}>{a.full_name} ({a.username})</option>)}
                 </select>
               </div>
             )}

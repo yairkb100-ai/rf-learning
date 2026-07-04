@@ -1,4 +1,5 @@
-import { useState, FormEvent } from 'react'
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import ThemeToggle from '../components/ThemeToggle'
@@ -7,7 +8,7 @@ import api from '../api/axios'
 export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
-  const [nationalId, setNationalId] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -17,7 +18,7 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
     try {
-      const res = await api.post('/auth/login', { national_id: nationalId, password })
+      const res = await api.post('/auth/login', { username: username.trim().toUpperCase(), password })
       login(res.data.accessToken, res.data.refreshToken, res.data.user)
       navigate('/')
     } catch (err: any) {
@@ -37,15 +38,15 @@ export default function LoginPage() {
         <h2>התחברות למערכת</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>תעודת זהות</label>
+            <label>שם משתמש</label>
             <input
               type="text"
-              value={nationalId}
-              onChange={(e) => setNationalId(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="123456789"
+              placeholder="OA123456789"
               dir="ltr"
-              maxLength={9}
+              maxLength={11}
             />
           </div>
           <div className="form-group">

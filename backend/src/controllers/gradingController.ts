@@ -2,12 +2,25 @@ import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";
 
+// האם המנהל הוא מנהל כללי (רואה ומנקד את כל התלמידים)
+async function isSuperAdmin(adminId: number): Promise<boolean> {
+  const r = await pool.query(
+    "SELECT is_super_admin FROM users WHERE id = $1",
+    [adminId]
+  );
+  return r.rows[0]?.is_super_admin === true;
+}
+
 // GET /api/admin/grading/pending - רשימת שאלות הממתינות לבדיקה
 export async function getPendingGrading(req: AuthRequest, res: Response) {
   const adminId = req.user!.userId;
 
   try {
-    // רשימה של שאלות שממתינות לבדיקה של admin זה
+    const superAdmin = await isSuperAdmin(adminId);
+    // מנהל כללי רואה את כל התור; מנהל רגיל רק את הפריטים שהוקצו אליו
+    const scopeClause = superAdmin ? "" : "gq.admin_id = $1 AND ";
+    const params = superAdmin ? [] : [adminId];
+
     const result = await pool.query(
       `SELECT
         gq.id,
@@ -31,9 +44,9 @@ export async function getPendingGrading(req: AuthRequest, res: Response) {
       JOIN courses c ON qa.course_id = c.id
       JOIN questions q ON gq.question_id = q.id
       JOIN quiz_attempt_answers qaa ON qaa.attempt_id = gq.attempt_id AND qaa.question_id = gq.question_id
-      WHERE gq.admin_id = $1 AND gq.status IN ('PENDING', 'IN_PROGRESS')
+      WHERE ${scopeClause}gq.status IN ('PENDING', 'IN_PROGRESS')
       ORDER BY gq.created_at ASC`,
-      [adminId]
+      params
     );
 
     res.json(result.rows);
@@ -74,7 +87,7 @@ export async function submitGrade(req: AuthRequest, res: Response) {
 
     const { attempt_id, question_id, student_id, admin_id: queue_admin } = gqResult.rows[0];
 
-    if (Number(queue_admin) !== adminId) {
+    if (Number(queue_admin) !== adminId && !(await isSuperAdmin(adminId))) {
       res.status(403).json({ error: "אינך מורשה לבדוק פריט זה" });
       return;
     }
@@ -160,15 +173,16 @@ export async function getGradingHistory(req: AuthRequest, res: Response) {
   const { studentId } = req.params;
 
   try {
-    // בדוק שהstudent assigned לadmin הזה
-    const assignedResult = await pool.query(
-      `SELECT id FROM users WHERE id = $1 AND assigned_admin_id = $2`,
-      [studentId, adminId]
-    );
-
-    if (assignedResult.rows.length === 0) {
-      res.status(403).json({ error: "אינך מורשה לראות סטודנט זה" });
-      return;
+    // מנהל כללי רשאי לראות כל תלמיד; מנהל רגיל רק את המשויכים אליו
+    if (!(await isSuperAdmin(adminId))) {
+      const assignedResult = await pool.query(
+        `SELECT id FROM users WHERE id = $1 AND assigned_admin_id = $2`,
+        [studentId, adminId]
+      );
+      if (assignedResult.rows.length === 0) {
+        res.status(403).json({ error: "אינך מורשה לראות סטודנט זה" });
+        return;
+      }
     }
 
     const result = await pool.query(
