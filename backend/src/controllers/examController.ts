@@ -3,7 +3,7 @@ import { pool } from "../config/db";
 import { AuthRequest } from "../middleware/authMiddleware";
 
 // סוגי שאלות נתמכים
-type QuestionType = "MULTIPLE_CHOICE" | "MULTIPLE_SELECT" | "FREE_TEXT";
+type QuestionType = "MULTIPLE_CHOICE" | "MULTIPLE_SELECT" | "FREE_TEXT" | "FILE_UPLOAD";
 
 // GET /api/courses/:courseId/chapters/:chapterId/questions - כל השאלות של פרק (מנהל)
 export async function getQuestions(req: AuthRequest, res: Response) {
@@ -198,12 +198,14 @@ export async function deleteQuestion(req: AuthRequest, res: Response) {
 export async function submitExam(req: AuthRequest, res: Response) {
   const userId = req.user!.userId;
   const { courseId, chapterId } = req.params;
-  // answers: [{ question_id, selected_option_ids?: number[], free_text?: string }]
+  // answers: [{ question_id, selected_option_ids?: number[], free_text?: string, file_path?: string, file_name?: string }]
   const { answers } = req.body as {
     answers?: {
       question_id: number;
       selected_option_ids?: number[];
       free_text?: string;
+      file_path?: string;
+      file_name?: string;
     }[];
   };
 
@@ -307,6 +309,23 @@ export async function submitExam(req: AuthRequest, res: Response) {
         });
         continue;
       }
+
+      if (qType === "FILE_UPLOAD") {
+        // קובץ שהעלה סטודנט — לא מנוקד אוטומטית, ממתין לבדיקה ידנית
+        needsReview = true;
+        answerRows.push({
+          question_id: q.id,
+          question_type: qType,
+          selected_option_id: null,
+          free_text_answer: null,
+          file_path: ans.file_path || null,
+          file_name: ans.file_name || null,
+          points_awarded: 0,
+          max_points: 1,
+          needs_grading: true,
+        });
+        continue;
+      }
     }
 
     // ציון זמני מבוסס רק על השאלות האוטומטיות (פתוחות נבדקות ידנית בהמשך)
@@ -326,21 +345,26 @@ export async function submitExam(req: AuthRequest, res: Response) {
     const attemptId = attemptResult.rows[0].id;
 
     for (const ar of answerRows) {
+      const gradingStatus = ar.needs_grading ? "AWAITING_REVIEW" : "AUTO_GRADED";
       await client.query(
         `INSERT INTO quiz_attempt_answers
            (attempt_id, question_id, selected_option_id, free_text_answer,
-            points_awarded, max_points, needs_grading, question_type, is_correct)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+            file_path, file_name, points_awarded, max_points, needs_grading,
+            question_type, is_correct, grading_status)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
         [
           attemptId,
           ar.question_id,
           ar.selected_option_id,
           ar.free_text_answer,
+          ar.file_path,
+          ar.file_name,
           ar.points_awarded,
           ar.max_points,
           ar.needs_grading,
           ar.question_type,
           ar.points_awarded >= ar.max_points,
+          gradingStatus,
         ]
       );
     }

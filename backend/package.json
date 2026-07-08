@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "description": "RF Learning System Backend",
   "main": "src/server.ts",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "migrate": "ts-node-dev --transpile-only src/db/migrateCli.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -18,9 +18,10 @@
 -- ============================================================
 
 
--- ===== שלב א' — הרץ את 2 השורות האלה לבד תחילה =====
+-- ===== שלב א' — הרץ את שורות ה-ALTER TYPE האלה לבד תחילה =====
 ALTER TYPE question_type ADD VALUE IF NOT EXISTS 'MULTIPLE_SELECT';
 ALTER TYPE question_type ADD VALUE IF NOT EXISTS 'FREE_TEXT';
+ALTER TYPE question_type ADD VALUE IF NOT EXISTS 'FILE_UPLOAD';
 
 
 -- ===== שלב ב' — הרץ את כל מה שמכאן ומטה =====
@@ -32,24 +33,66 @@ ALTER TABLE questions ADD COLUMN IF NOT EXISTS video_url TEXT;
 ALTER TABLE questions ADD COLUMN IF NOT EXISTS model_answer TEXT;
 CREATE INDEX IF NOT EXISTS idx_questions_chapter ON questions(chapter_id);
 
--- 3) quiz_attempt_answers: תמיכה בטקסט חופשי + בחירה מרובה + בדיקה ידנית
+-- 3) quiz_attempt_answers: תמיכה בטקסט חופשי + קבצים + בחירה מרובה + בדיקה ידנית
 ALTER TABLE quiz_attempt_answers ALTER COLUMN selected_option_id DROP NOT NULL;
 ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS free_text_answer TEXT;
+ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS file_path TEXT;
+ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS file_name TEXT;
 ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS points_awarded DECIMAL(5,2) NOT NULL DEFAULT 0;
 ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS max_points DECIMAL(5,2) NOT NULL DEFAULT 1;
 ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS needs_grading BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS question_type question_type NOT NULL DEFAULT 'MULTIPLE_CHOICE';
+ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS grading_status VARCHAR(20) NOT NULL DEFAULT 'AUTO_GRADED';
+ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS admin_comments TEXT;
+ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS graded_by BIGINT REFERENCES users(id) ON DELETE SET NULL;
+ALTER TABLE quiz_attempt_answers ADD COLUMN IF NOT EXISTS graded_at TIMESTAMP;
 
--- 4) quiz_attempts_course: סטטוס מבחן (GRADED / PENDING_REVIEW)
+-- 4) quiz_attempts_course: סטטוס מבחן (GRADED / PENDING_REVIEW / PARTIALLY_GRADED)
 ALTER TABLE quiz_attempts_course ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'GRADED';
 
--- 5) (כבר רצו, אבל לבטחון — idempotent) content עשיר + שיוך פרק
+-- 5) users: קשר Student-Admin (כל סטודנט יכול להיות assigned לadmin אחד)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS assigned_admin_id BIGINT REFERENCES users(id) ON DELETE SET NULL;
+
+-- 6) grading_queue: תור הניקוד (איזה שאלות ממתינות לבדיקה של איזה admin)
+CREATE TABLE IF NOT EXISTS grading_queue (
+  id BIGSERIAL PRIMARY KEY,
+  attempt_id BIGINT NOT NULL REFERENCES quiz_attempts_course(id) ON DELETE CASCADE,
+  question_id BIGINT NOT NULL REFERENCES questions(id),
+  student_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  admin_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  question_type question_type NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  submitted_at TIMESTAMP,
+  UNIQUE(attempt_id, question_id)
+);
+
+-- 7) grading_history: היסטוריית ניקוד (מי נתן איזה ציון מתי)
+CREATE TABLE IF NOT EXISTS grading_history (
+  id BIGSERIAL PRIMARY KEY,
+  attempt_id BIGINT NOT NULL REFERENCES quiz_attempts_course(id) ON DELETE CASCADE,
+  question_id BIGINT NOT NULL REFERENCES questions(id),
+  student_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  admin_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  old_score DECIMAL(5,2),
+  new_score DECIMAL(5,2),
+  admin_comments TEXT,
+  graded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 8) indexes לביצועים
+CREATE INDEX IF NOT EXISTS idx_grading_queue_admin_status ON grading_queue(admin_id, status);
+CREATE INDEX IF NOT EXISTS idx_grading_queue_student ON grading_queue(student_id);
+CREATE INDEX IF NOT EXISTS idx_quiz_attempt_answers_grading ON quiz_attempt_answers(grading_status, needs_grading);
+CREATE INDEX IF NOT EXISTS idx_users_assigned_admin ON users(assigned_admin_id);
+
+-- 9) (כבר רצו, אבל לבטחון — idempotent) content עשיר + שיוך פרק
 ALTER TYPE content_type ADD VALUE IF NOT EXISTS 'RICH';  -- אם נכשל "כבר קיים" — התעלם
 ALTER TABLE learning_content ADD COLUMN IF NOT EXISTS extra TEXT;
 ALTER TABLE learning_content ADD COLUMN IF NOT EXISTS chapter_id BIGINT
   REFERENCES chapters(id) ON DELETE CASCADE;
 
--- 6) (כבר רץ דרך סקריפט) FK CASCADE כדי שמחיקת קורס/פרק/שאלה תעבוד
+-- 10) (כבר רץ דרך סקריפט) FK CASCADE כדי שמחיקת קורס/פרק/שאלה תעבוד
 ALTER TABLE quiz_attempt_answers DROP CONSTRAINT IF EXISTS quiz_attempt_answers_question_id_fkey;
 ALTER TABLE quiz_attempt_answers ADD CONSTRAINT quiz_attempt_answers_question_id_fkey
   FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE;

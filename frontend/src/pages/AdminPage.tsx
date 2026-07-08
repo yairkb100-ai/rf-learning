@@ -1,4 +1,5 @@
-import { useEffect, useState, FormEvent } from 'react'
+import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
@@ -106,9 +107,12 @@ export default function AdminPage() {
   async function handleAddSpec(e: FormEvent) {
     e.preventDefault()
     setError('')
-    if (!newSpecName.trim()) return
+    if (!newSpecName.trim()) {
+      setError('יש להזין שם מגמה')
+      return
+    }
     try {
-      await api.post('/specializations', { name: newSpecName, description: newSpecDesc })
+      await api.post('/specializations', { name: newSpecName.trim(), description: newSpecDesc })
       setNewSpecName('')
       setNewSpecDesc('')
       loadSpecs()
@@ -159,6 +163,15 @@ export default function AdminPage() {
       />
 
       <main className="main-content">
+        <section className="admin-section" style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <button className="btn-primary" style={{ width: 'auto' }} onClick={() => navigate('/admin/dashboard')}>
+            📊 דשבורד
+          </button>
+          <button className="btn-primary" style={{ width: 'auto' }} onClick={() => navigate('/admin/users')}>
+            👥 ניהול משתמשים ומעקב תלמידים
+          </button>
+        </section>
+
         {/* ===== ניהול מגמות ===== */}
         <section className="admin-section">
           <h2>ניהול מגמות</h2>
@@ -179,6 +192,7 @@ export default function AdminPage() {
                 placeholder="תיאור קצר של המגמה"
               />
             </div>
+            {error && <p className="error-msg">{error}</p>}
             <button type="submit" className="btn-primary">צור מגמה</button>
           </form>
 
