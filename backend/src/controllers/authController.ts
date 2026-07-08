@@ -169,7 +169,9 @@ export async function adminCreateUser(req: AuthRequest, res: Response) {
 // מאמת מול הסיסמה המוצפנת (bcrypt) ומחזיר את פרטי המשתמש וזוג טוקנים.
 export async function login(req: Request, res: Response) {
   // תומך גם בשדה username וגם בשדה national_id (תאימות לאחור — מומר ל-OA+ת"ז)
-  const rawUsername = req.body.username || (req.body.national_id ? `OA${req.body.national_id}` : "");
+  const rawInput = req.body.username || (req.body.national_id ? `OA${req.body.national_id}` : "");
+  // התחברות לא רגישה לאותיות גדולות/קטנות: מנרמלים ל-uppercase (oa123 → OA123)
+  const rawUsername = String(rawInput).trim().toUpperCase();
   const { password } = req.body;
 
   if (!rawUsername || !password) {
@@ -178,8 +180,9 @@ export async function login(req: Request, res: Response) {
   }
 
   try {
+    // השוואה case-insensitive גם ברמת ה-SQL, לביטחון מול נתונים ישנים
     const result = await pool.query(
-      "SELECT id, full_name, national_id, username, role, is_super_admin, password_hash FROM users WHERE username = $1",
+      "SELECT id, full_name, national_id, username, role, is_super_admin, password_hash FROM users WHERE UPPER(username) = $1",
       [rawUsername]
     );
 

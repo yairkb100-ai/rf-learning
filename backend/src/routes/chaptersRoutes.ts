@@ -41,6 +41,7 @@ import {
   getExamResults,
 } from "../controllers/examController";
 import { authenticate, requireAdmin } from "../middleware/authMiddleware";
+import { upload } from "../config/upload";
 import contentRoutes from "./contentRoutes";
 
 const router = Router({ mergeParams: true });
@@ -59,6 +60,15 @@ router.get("/:chapterId/questions", authenticate, requireAdmin, getQuestions);
 router.post("/:chapterId/questions", authenticate, requireAdmin, createQuestion);
 router.delete("/:chapterId/questions/:id", authenticate, requireAdmin, deleteQuestion);
 router.get("/:chapterId/exam", authenticate, getExam);
+// העלאת קובץ תשובה למבחן: התלמיד שולח קובץ, והשרת שומר אותו תחת /uploads
+// ומחזיר את הנתיב הציבורי + השם המקורי, כדי שההגשה (submit) תשמור נתיב תקין.
+router.post("/:chapterId/exam/upload", authenticate, upload.single("file"), (req, res) => {
+  if (!req.file) {
+    res.status(400).json({ error: "לא התקבל קובץ" });
+    return;
+  }
+  res.json({ file_path: `/uploads/${req.file.filename}`, file_name: req.file.originalname });
+});
 router.post("/:chapterId/exam/submit", authenticate, submitExam);
 router.get("/:chapterId/exam/results", authenticate, getExamResults);
 

@@ -94,7 +94,7 @@ def print_summary():
 💡 כדי להפסיק את המערכת:
   - סגור את חלונות CMD/Terminal של Backend ו-Frontend
 
-📖 לעזרה: ראה SESSION_SUMMARY.md ו-STARTUP.md
+📖 לעזרה: ראה SESSION_SUMMARY.md
 """)
     print("="*50 + "\n")
 

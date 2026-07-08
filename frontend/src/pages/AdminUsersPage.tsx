@@ -48,6 +48,13 @@ export default function AdminUsersPage() {
   const navigate = useNavigate()
   const { user: currentUser } = useAuth()
   const isSuperAdmin = currentUser?.is_super_admin === true
+
+  // רק מנהל
+  useEffect(() => {
+    if (currentUser && currentUser.role !== 'ADMIN') {
+      navigate('/')
+    }
+  }, [currentUser, navigate])
   const [users, setUsers] = useState<User[]>([])
   const [specs, setSpecs] = useState<Spec[]>([])
   const [progress, setProgress] = useState<ProgressRow[]>([])

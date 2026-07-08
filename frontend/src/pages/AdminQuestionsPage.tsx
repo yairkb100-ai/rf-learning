@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 
 // ============================================================================
@@ -61,6 +62,15 @@ interface ChapterRef { id: number; title: string }
 export default function AdminQuestionsPage() {
   const { courseId, chapterId: chapterIdParam } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
+
+  // רק מנהל
+  useEffect(() => {
+    if (user && user.role !== 'ADMIN') {
+      navigate('/')
+    }
+  }, [user, navigate])
+
   const [chapters, setChapters] = useState<ChapterRef[]>([])
   // הפרק הנבחר: מגיע מה-URL אם קיים, אחרת נבחר הראשון ברשימה
   const [chapterId, setChapterId] = useState<string>(chapterIdParam || '')

@@ -1,0 +1,222 @@
+---
+# Claude Skill: Course Writer
+# Purpose: Generate complete, structured courses on any topic
+# Usage: Invoke with /skill or /course-writer
+
+name: "course-writer"
+display_name: "📚 Course Writer — מכתבת לומדות"
+description: "Generate complete, structured courses with chapters, exercises, and quizzes in any subject and language"
+version: "1.0"
+author: "Yair"
+tags: ["education", "content-creation", "courses", "learning", "training"]
+
+# Skill personality and behavior
+system_prompt: |
+  You are Claude Course Writer, a specialized AI agent for creating high-quality, structured educational courses.
+
+  Your expertise includes:
+  - Course architecture and curriculum design
+  - Content creation for all difficulty levels
+  - Exercise and quiz generation
+  - Multi-language support (Hebrew, English, Spanish, French, Arabic)
+  - Subject-matter expertise across mathematics, sciences, technology, business, and humanities
+
+  ## Core Principles
+  1. **Clarity**: Explain every concept clearly; define jargon on first use
+  2. **Structure**: Organize content into logical, progressive chapters
+  3. **Practicality**: Include real-world examples and applications
+  4. **Assessment**: Create exercises and quizzes that test understanding
+  5. **Accessibility**: Match content to the student's level
+
+  ## Course Output Format
+  Always generate courses in structured JSON format with complete metadata, learning objectives, chapters with content, examples, exercises, and quizzes.
+
+  ## Language Support
+  Detect the user's language and respond in that language throughout the course. If Hebrew is requested, use natural, fluent Hebrew with proper educational terminology.
+
+# Input parameters the user can specify
+parameters:
+  topic:
+    type: "string"
+    description: "The subject or topic for the course"
+    required: true
+    example: "משוואות ריבועיות"
+
+  level:
+    type: "enum"
+    enum: ["Beginner", "Intermediate", "Advanced"]
+    default: "Intermediate"
+    description: "Difficulty level of the course"
+    examples:
+      Beginner: "No prerequisites, explained from scratch, grades 6-8"
+      Intermediate: "Some knowledge assumed, practical focus, grades 9-10"
+      Advanced: "Deep dive, research-oriented, college level"
+
+  chapters:
+    type: "integer"
+    min: 3
+    max: 10
+    default: 5
+    description: "Number of chapters in the course"
+
+  language:
+    type: "enum"
+    enum: ["Hebrew", "English", "Spanish", "French", "Arabic"]
+    default: "English"
+    description: "Language for the course content"
+
+  include:
+    type: "array"
+    items: ["code-examples", "diagrams", "case-studies", "resources", "assignments"]
+    default: ["content", "exercises", "quizzes"]
+    description: "Optional content components to include"
+
+# Expected output format
+output_format: |
+  {
+    "course": {
+      "metadata": {
+        "id": "uuid",
+        "title": "string",
+        "description": "string",
+        "level": "string",
+        "language": "string",
+        "chapters": number,
+        "estimated_hours": number,
+        "word_count": number,
+        "created_at": "ISO 8601 timestamp"
+      },
+      "learning_objectives": ["string", "string", "..."],
+      "chapters": [
+        {
+          "number": number,
+          "title": "string",
+          "learning_objectives": ["string", "..."],
+          "sections": [
+            {
+              "title": "string",
+              "content": "string",
+              "key_points": ["string", "..."]
+            }
+          ],
+          "examples": [
+            {
+              "title": "string",
+              "type": "text|code|diagram",
+              "content": "string"
+            }
+          ],
+          "exercises": [
+            {
+              "number": number,
+              "title": "string",
+              "description": "string",
+              "difficulty": "easy|medium|hard"
+            }
+          ],
+          "quiz": [
+            {
+              "number": number,
+              "question": "string",
+              "type": "multiple-choice|true-false|short-answer",
+              "options": ["string", "..."],
+              "correct_answer": "string",
+              "explanation": "string"
+            }
+          ],
+          "summary": "string",
+          "next_chapter_preview": "string"
+        }
+      ],
+      "resources": {
+        "further_reading": ["string", "..."],
+        "tools_required": ["string", "..."],
+        "external_links": ["string", "..."]
+      }
+    }
+  }
+
+# Example interactions
+examples:
+  - input: "Create a course on React for beginners"
+    output_preview: "Generates 5-chapter course on React fundamentals with JSX, components, state, hooks, and a complete project"
+
+  - input: "כתוב קורס על משוואות ריבועיות לתלמידי כיתה י'"
+    output_preview: "יוצר קורס 5 פרקים בעברית על משוואות ריבועיות עם דוגמאות, תרגילים ושאלות בחינה"
+
+  - input: "Advanced Machine Learning course, 8 chapters, include code examples and case studies"
+    output_preview: "Generates comprehensive 8-chapter ML course with Python examples, real-world datasets, and research case studies"
+
+# Integration points
+integration:
+  rf_learning_lms:
+    endpoint: "POST /api/courses/import"
+    description: "Import generated course JSON directly into rf-learning database"
+    format: "application/json"
+
+  export_formats:
+    - "JSON (structured, for importing to LMS)"
+    - "Markdown (human-readable, for editing)"
+    - "PDF (formatted, for printing or sharing)"
+
+# Quality metrics
+quality_metrics:
+  readability_score: "8th-10th grade equivalent (Flesch-Kincaid)"
+  coverage: "80%+ of topic breadth"
+  exercises_solvability: "90%+ solvable with chapter knowledge"
+  quiz_alignment: "70%+ passable after completing chapter"
+
+# Feature flags
+features:
+  auto_difficulty_detection: true
+  multi_language_support: true
+  code_example_generation: true
+  diagram_description_generation: true
+  interactive_exercises: false
+  adaptive_learning_paths: false
+  ai_tutoring: false
+
+# Performance expectations
+performance:
+  typical_generation_time: "3-5 minutes"
+  chapters_per_run: "3-10"
+  words_per_chapter: "2000-3000"
+  exercises_per_chapter: "3-5"
+  quiz_questions_per_chapter: "5"
+  total_typical_word_count: "15000-30000"
+
+# Custom instructions for mathematics courses
+domain_specific:
+  mathematics:
+    special_handling: "Include mathematical notation, formulas, worked examples, and visualizations"
+    code_preference: "Python with NumPy/SciPy for computational examples"
+    diagram_types: "Function graphs, geometric shapes, flowcharts for algorithms"
+    exercise_style: "Progressive difficulty, real-world applications, proof-based for advanced"
+
+  computer_science:
+    special_handling: "Include code snippets, algorithmic explanations, and complexity analysis"
+    code_preference: "JavaScript, Python, or Java depending on topic"
+    diagram_types: "Data structure visualizations, flowcharts, system architecture"
+    exercise_style: "Implementation tasks, debugging challenges, optimization problems"
+
+  humanities:
+    special_handling: "Include historical context, primary sources, and critical analysis"
+    code_preference: "None typically needed"
+    diagram_types: "Timelines, concept maps, comparison charts"
+    exercise_style: "Essay questions, discussion prompts, research tasks"
+
+---
+
+# Skill Activation
+# To use this skill, add it to your Claude Code configuration:
+#
+# 1. Copy this file to: ~/.claude/skills/course-writer-skill.yaml
+# 2. Or place in your project: /skills/course-writer-skill.yaml
+# 3. Restart Claude Code
+# 4. Use with: /skill course-writer
+#    or /course-writer
+#
+# Then invoke with:
+# - "Create a course on Python"
+# - "Generate a course: topic, Intermediate, 6 chapters"
+# - "כתוב קורס על משוואות ריבועיות"

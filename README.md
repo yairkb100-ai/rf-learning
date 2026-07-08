@@ -82,9 +82,10 @@ See: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - Local Network Section
 
 ## 📚 Documentation
 
-- [SYSTEM_BOOK_FINAL.pdf](./SYSTEM_BOOK_FINAL.pdf) - מדריך המערכת המלא
-- [DEPLOYMENT_GUIDE.pdf](./DEPLOYMENT_GUIDE.pdf) - Deployment options
-- [GITHUB_DEPLOYMENT.pdf](./GITHUB_DEPLOYMENT.pdf) - Free GitHub deployment
+- [SYSTEM_BOOK_FINAL.md](./SYSTEM_BOOK_FINAL.md) - מדריך המערכת המלא
+- [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - Deployment options
+- [GITHUB_DEPLOYMENT.md](./GITHUB_DEPLOYMENT.md) - Free GitHub deployment
+- [HOW_TO_START.md](./HOW_TO_START.md) - הוראות הפעלה
 
 ## 📂 Project Structure
 
@@ -141,8 +142,8 @@ Two full courses included:
 ## 📞 Support
 
 For issues, check:
-1. SYSTEM_BOOK_FINAL.pdf - Troubleshooting section
-2. DEPLOYMENT_GUIDE.pdf - Common issues
+1. SYSTEM_BOOK_FINAL.md - Troubleshooting section
+2. DEPLOYMENT_GUIDE.md - Common issues
 3. GitHub Issues
 
 ## 📄 License

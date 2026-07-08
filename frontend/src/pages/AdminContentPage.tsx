@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import ContentViewer from '../components/ContentViewer'
 import RichTextEditor from '../components/RichTextEditor'
+import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 
 // ============================================================================
@@ -50,10 +51,18 @@ const FILE_TYPES: ContentType[] = ['IMAGE', 'VIDEO', 'PDF']
 export default function AdminContentPage() {
   const { courseId, chapterId } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
   // אם יש chapterId — מנהלים חומר של פרק; אחרת מבוא של הקורס
   const base = chapterId
     ? `/courses/${courseId}/chapters/${chapterId}/content`
     : `/courses/${courseId}/content`
+
+  // רק מנהל
+  useEffect(() => {
+    if (user && user.role !== 'ADMIN') {
+      navigate('/')
+    }
+  }, [user, navigate])
 
   const [items, setItems] = useState<ContentItem[]>([])
   const [loading, setLoading] = useState(true)

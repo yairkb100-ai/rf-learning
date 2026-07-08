@@ -111,26 +111,30 @@ export default function ExamPage() {
     }
     setSubmitting(true)
     try {
-      // בונה מערך תשובות: לכל שאלה נבנה שדה מתאים לסוגה (טקסט/קובץ/אפשרויות שנבחרו)
-      const payload = questions.map((q) => {
-        const ans: any = {
-          question_id: q.id,
-        }
+      // בונה מערך תשובות: לכל שאלה נבנה שדה מתאים לסוגה (טקסט/קובץ/אפשרויות שנבחרו).
+      // עבור שאלות קובץ — מעלים קודם את הקובץ לשרת ומקבלים נתיב ציבורי (/uploads/...),
+      // כדי שהמנהל יוכל באמת להוריד את הקובץ בזמן הבדיקה.
+      const payload = []
+      for (const q of questions) {
+        const ans: any = { question_id: q.id }
 
         if (q.question_type === 'FREE_TEXT') {
           ans.free_text = freeText[q.id] || ''
         } else if (q.question_type === 'FILE_UPLOAD') {
           const file = uploadedFiles[q.id]
           if (file) {
-            ans.file_path = file.name
-            ans.file_name = file.name
+            const fd = new FormData()
+            fd.append('file', file)
+            const up = await api.post(`${base}/exam/upload`, fd)
+            ans.file_path = up.data.file_path   // נתיב ציבורי אמיתי בשרת
+            ans.file_name = up.data.file_name
           }
         } else {
           ans.selected_option_ids = selected[q.id] || []
         }
 
-        return ans
-      })
+        payload.push(ans)
+      }
       const res = await api.post(`${base}/exam/submit`, { answers: payload })
       setResult(res.data)
     } catch (err: any) {

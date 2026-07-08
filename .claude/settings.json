@@ -2,7 +2,22 @@
   "permissions": {
     "allow": [
       "Bash(node -e ' *)",
-      "Bash(node run_migrations.js)"
+      "Bash(node run_migrations.js)",
+      "Bash(awk '{print $5\" bytes\"}')",
+      "Bash(xxd)",
+      "Bash(npm run *)",
+      "Bash(git commit *)",
+      "Bash(curl -s -m 5 -X POST http://localhost:3000/api/auth/login -H \"Content-Type: application/json\" -d '{\"username\":\"OA000000000\",\"password\":\"Admin123\"}')",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\('is_super_admin בתשובה:', j.user?.is_super_admin\\)}\\)\")",
+      "Bash(npx tsc *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"backend exit: $?\")",
+      "Bash(curl -s -m 3 -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(curl -s -m 3 -o /dev/null -w \"%{http_code}\" http://localhost:3000/health)",
+      "Bash(grep -nA6 \"\\\\.grading-form\" frontend/src/App.css)",
+      "Bash(grep -nA6 \"\\\\.admin-section\\\\b\" frontend/src/App.css)",
+      "Bash(node shot.js)",
+      "Bash(sed -i 's#/admin/students/3#/admin/students/14#' shot.js)"
     ]
   }
 }

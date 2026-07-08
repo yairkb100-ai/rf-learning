@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Sidebar from '../components/Sidebar'
-import ContentViewer from '../components/ContentViewer'
+import ContentViewer, { sanitizeHtml, looksLikeHtml } from '../components/ContentViewer'
+import RichTextEditor from '../components/RichTextEditor'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 
@@ -65,6 +66,10 @@ export default function CoursePage() {
   const [progress, setProgress] = useState<Progress | null>(null)
   const [content, setContent] = useState<ContentItem[]>([])
   const [loading, setLoading] = useState(true)
+  // עריכת תיאור הקורס (מנהל בלבד) — עורך במקום ישירות ב-Hero
+  const [editingDesc, setEditingDesc] = useState(false)
+  const [descDraft, setDescDraft] = useState('')
+  const [savingDesc, setSavingDesc] = useState(false)
 
   // בטעינה (ובכל שינוי קורס): טוען במקביל את הקורס, הפרקים, ההתקדמות והתוכן.
   useEffect(() => {
@@ -100,6 +105,27 @@ export default function CoursePage() {
     }
   }
 
+  // פותח את עורך התיאור עם הערך הנוכחי של הקורס.
+  function startEditDesc() {
+    setDescDraft(course?.description || '')
+    setEditingDesc(true)
+  }
+
+  // שומר את תיאור הקורס (PUT /courses/:id) ומרענן את התצוגה במקום.
+  async function saveDesc() {
+    setSavingDesc(true)
+    try {
+      await api.put(`/courses/${courseId}`, { description: descDraft })
+      setCourse((c) => (c ? { ...c, description: descDraft } : c))
+      setEditingDesc(false)
+    } catch (err) {
+      console.error(err)
+      alert('שגיאה בשמירת התיאור')
+    } finally {
+      setSavingDesc(false)
+    }
+  }
+
   // בודק אם פרק מסוים מסומן כהושלם לפי נתוני ההתקדמות.
   function isChapterDone(chapterId: number) {
     return progress?.chapters.some(
@@ -125,7 +151,42 @@ export default function CoursePage() {
           <div className="course-hero-main">
             {course.level && <span className="course-level-badge">{course.level}</span>}
             <h1 className="course-hero-title">{course.title}</h1>
-            <p className="course-hero-desc">{course.description}</p>
+
+            {/* תיאור הקורס — למנהל יש עריכה במקום עם עורך טקסט עשיר */}
+            {editingDesc ? (
+              <div className="course-hero-desc-edit">
+                <RichTextEditor
+                  value={descDraft}
+                  onChange={setDescDraft}
+                  placeholder="כתוב כאן את תיאור הקורס..."
+                />
+                <div className="admin-chapter-actions" style={{ marginTop: 10 }}>
+                  <button className="btn-primary" onClick={saveDesc} disabled={savingDesc}>
+                    {savingDesc ? 'שומר...' : 'שמור תיאור'}
+                  </button>
+                  <button className="btn-outline" onClick={() => setEditingDesc(false)} disabled={savingDesc}>
+                    ביטול
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {course.description && looksLikeHtml(course.description) ? (
+                  <div
+                    className="course-hero-desc content-html"
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(course.description) }}
+                  />
+                ) : (
+                  <p className="course-hero-desc">{course.description}</p>
+                )}
+                {isAdmin && (
+                  <button className="btn-outline course-hero-edit-btn" onClick={startEditDesc}>
+                    ✏ ערוך תיאור
+                  </button>
+                )}
+              </>
+            )}
+
             {progress && (
               <div className="course-hero-meta">
                 <span>📚 {progress.total_chapters} פרקים</span>

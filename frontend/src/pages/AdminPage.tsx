@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
+import RichTextEditor from '../components/RichTextEditor'
 import api from '../api/axios'
 
 // ============================================================================
@@ -49,6 +50,10 @@ export default function AdminPage() {
   const [newSpecDesc, setNewSpecDesc] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  // עריכת מלל המבוא (description) של קורס קיים — עורך במקום בשורת הקורס
+  const [editingDescId, setEditingDescId] = useState<number | null>(null)
+  const [descDraft, setDescDraft] = useState('')
+  const [savingDesc, setSavingDesc] = useState(false)
 
   // רק מנהל
   useEffect(() => {
@@ -105,6 +110,27 @@ export default function AdminPage() {
       loadCourses()
     } catch {
       setError('שגיאה בעדכון מגמת הקורס')
+    }
+  }
+
+  // פותח את עורך מלל המבוא של קורס עם הערך הקיים
+  function startEditDesc(course: Course) {
+    setEditingDescId(course.id)
+    setDescDraft(course.description || '')
+    setError('')
+  }
+
+  // שומר את מלל המבוא (PUT /courses/:id) ומרענן את רשימת הקורסים
+  async function saveDesc(courseId: number) {
+    setSavingDesc(true)
+    try {
+      await api.put(`/courses/${courseId}`, { description: descDraft })
+      setEditingDescId(null)
+      loadCourses()
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'שגיאה בשמירת המבוא')
+    } finally {
+      setSavingDesc(false)
     }
   }
 
@@ -288,7 +314,33 @@ export default function AdminPage() {
               <div key={course.id} className="admin-course-item">
                 <div className="admin-course-info">
                   <h3>{course.title}</h3>
-                  <p>{course.description}</p>
+                  {editingDescId === course.id ? (
+                    <div className="admin-desc-edit">
+                      <RichTextEditor
+                        value={descDraft}
+                        onChange={setDescDraft}
+                        placeholder="כתוב כאן את מלל המבוא לקורס..."
+                      />
+                      <div className="admin-chapter-actions" style={{ marginTop: 8 }}>
+                        <button
+                          className="btn-primary"
+                          onClick={() => saveDesc(course.id)}
+                          disabled={savingDesc}
+                        >
+                          {savingDesc ? 'שומר...' : 'שמור מבוא'}
+                        </button>
+                        <button
+                          className="btn-outline"
+                          onClick={() => setEditingDescId(null)}
+                          disabled={savingDesc}
+                        >
+                          ביטול
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p>{course.description}</p>
+                  )}
                   <label className="admin-course-spec">
                     מגמה:
                     <select
@@ -307,31 +359,37 @@ export default function AdminPage() {
                     className="btn-outline"
                     onClick={() => navigate(`/admin/courses/${course.id}/chapters`)}
                   >
-                    פרקים
+                    📚 פרקים
                   </button>
                   <button
                     className="btn-outline"
-                    onClick={() => navigate(`/admin/courses/${course.id}/chapters`)}
+                    onClick={() => startEditDesc(course)}
                   >
-                    חומר לימוד
+                    ✏ ערוך מבוא (מלל)
+                  </button>
+                  <button
+                    className="btn-outline"
+                    onClick={() => navigate(`/admin/courses/${course.id}/content`)}
+                  >
+                    📎 קבצים וחומר לימוד
                   </button>
                   <button
                     className="btn-outline"
                     onClick={() => navigate(`/admin/courses/${course.id}/questions`)}
                   >
-                    ניהול שאלות
+                    ❓ ניהול שאלות
                   </button>
                   <button
                     className="btn-secondary"
                     onClick={() => handleDuplicateCourse(course)}
                   >
-                    שכפל
+                    ⧉ שכפל
                   </button>
                   <button
                     className="btn-danger"
                     onClick={() => handleDeleteCourse(course.id, course.title)}
                   >
-                    מחק
+                    🗑 מחק
                   </button>
                 </div>
               </div>

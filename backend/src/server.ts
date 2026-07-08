@@ -31,6 +31,7 @@ import adminOpsRoutes from "./routes/adminOpsRoutes";
 import chaptersRoutes from "./routes/chaptersRoutes";
 import progressRoutes from "./routes/progressRoutes";
 import contentRoutes from "./routes/contentRoutes";
+import meRoutes from "./routes/meRoutes";
 
 dotenv.config();
 
@@ -93,6 +94,7 @@ app.use("/api/courses", coursesRoutes);
 app.use("/api/courses/:courseId/chapters", chaptersRoutes);
 app.use("/api/courses/:courseId/progress", progressRoutes);
 app.use("/api/courses/:courseId/content", contentRoutes);
+app.use("/api/me", meRoutes);
 
 // מריץ מיגרציות אוטומטית לפני עליית השרת; נכשל בריצה במקום לעלות על סכמה שבורה
 runMigrations()

@@ -9,6 +9,10 @@
 //   • getCourseProgress     — GET    .../progress: אחוז השלמה ורשימת פרקים.
 //   • markChapterComplete   — POST   .../:chapterId/complete: סימון פרק כהושלם.
 //   • unmarkChapterComplete — DELETE .../:chapterId/complete: ביטול הסימון.
+//   • getMyOverview         — GET    /api/me/progress: סיכום התקדמות התלמיד
+//                             בכל הקורסים (סרגל התקדמות אישי).
+//   • getMyFeedback         — GET    /api/me/feedback: הערות המנהל על התשובות
+//                             הפתוחות/קבצים שנבדקו לתלמיד.
 //
 // הקשר במערכת:
 //   נקרא דרך progressRoutes (משתמש מחובר). ניגש לטבלאות chapters ו-user_progress.
@@ -108,6 +112,85 @@ export async function unmarkChapterComplete(req: AuthRequest, res: Response) {
       [userId, chapterId]
     );
     res.json({ message: "סימון הושלם בוטל" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "שגיאת שרת" });
+  }
+}
+
+// GET /api/me/progress - סיכום ההתקדמות האישית של התלמיד בכל הקורסים.
+// לכל קורס: סך הפרקים הפעילים, כמה מהם הושלמו, ואחוז ההשלמה (לסרגל התקדמות).
+// מחזיר רק קורסים שיש בהם פרקים פעילים.
+export async function getMyOverview(req: AuthRequest, res: Response) {
+  const userId = req.user!.userId;
+
+  try {
+    const result = await pool.query(
+      `SELECT
+         c.id            AS course_id,
+         c.title         AS course_title,
+         COUNT(ch.id)                                              AS total_chapters,
+         COUNT(up.chapter_id) FILTER (WHERE up.is_completed)       AS completed_chapters
+       FROM courses c
+       JOIN chapters ch ON ch.course_id = c.id AND ch.is_active = TRUE
+       LEFT JOIN user_progress up
+              ON up.chapter_id = ch.id AND up.user_id = $1
+       GROUP BY c.id, c.title
+       HAVING COUNT(ch.id) > 0
+       ORDER BY c.title`,
+      [userId]
+    );
+
+    // מחשבים אחוז השלמה בצד השרת כדי שהלקוח יקבל ערך מוכן לתצוגה
+    const courses = result.rows.map((r) => {
+      const total = Number(r.total_chapters);
+      const done = Number(r.completed_chapters);
+      return {
+        course_id: r.course_id,
+        course_title: r.course_title,
+        total_chapters: total,
+        completed_chapters: done,
+        percent: total > 0 ? Math.round((done / total) * 100) : 0,
+      };
+    });
+
+    res.json(courses);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "שגיאת שרת" });
+  }
+}
+
+// GET /api/me/feedback - הערות המנהל על התשובות שנבדקו לתלמיד.
+// מחזיר כל תשובה פתוחה/קובץ שכבר נבדקה (needs_grading = FALSE) ויש עליה הערה
+// או ניקוד, יחד עם טקסט השאלה, שם הקורס, הניקוד וההערה שכתב המנהל.
+export async function getMyFeedback(req: AuthRequest, res: Response) {
+  const userId = req.user!.userId;
+
+  try {
+    const result = await pool.query(
+      `SELECT
+         qaa.id,
+         c.title        AS course_title,
+         q.question_text,
+         qaa.free_text_answer,
+         qaa.file_name,
+         qaa.points_awarded,
+         qaa.max_points,
+         qaa.admin_comments,
+         qa.submitted_at
+       FROM quiz_attempt_answers qaa
+       JOIN quiz_attempts_course qa ON qaa.attempt_id = qa.id
+       JOIN questions q ON qaa.question_id = q.id
+       JOIN courses c ON qa.course_id = c.id
+       WHERE qa.user_id = $1
+         AND qaa.needs_grading = FALSE
+         AND qaa.admin_comments IS NOT NULL
+       ORDER BY qa.submitted_at DESC`,
+      [userId]
+    );
+
+    res.json(result.rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "שגיאת שרת" });

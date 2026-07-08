@@ -72,6 +72,9 @@ export default function HomePage() {
         left={
           <>
             <span>שלום, {user?.full_name}</span>
+            <button className="btn-secondary" onClick={() => navigate('/my-progress')}>
+              📊 ההתקדמות שלי
+            </button>
             {user?.role === 'ADMIN' && (
               <button className="btn-secondary" onClick={() => navigate('/admin')}>
                 ניהול

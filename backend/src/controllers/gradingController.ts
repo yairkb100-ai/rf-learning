@@ -114,6 +114,7 @@ export async function submitGrade(req: AuthRequest, res: Response) {
     );
 
     if (ansResult.rows.length === 0) {
+      await client.query("ROLLBACK");
       res.status(404).json({ error: "פריט לבדיקה לא נמצא" });
       return;
     }
@@ -122,6 +123,7 @@ export async function submitGrade(req: AuthRequest, res: Response) {
 
     // הרשאה: מנהל כללי, או המנהל שהתלמיד משויך אליו
     if (Number(assigned_admin_id) !== adminId && !(await isSuperAdmin(adminId))) {
+      await client.query("ROLLBACK");
       res.status(403).json({ error: "אינך מורשה לבדוק פריט זה" });
       return;
     }
@@ -264,12 +266,14 @@ export async function getGradingHistory(req: AuthRequest, res: Response) {
         gh.old_score,
         gh.new_score,
         gh.admin_comments,
-        gh.graded_at
+        gh.graded_at,
+        a.full_name AS admin_name
       FROM grading_history gh
       JOIN questions q ON gh.question_id = q.id
-      WHERE gh.student_id = $1 AND gh.admin_id = $2
+      JOIN users a ON a.id = gh.admin_id
+      WHERE gh.student_id = $1
       ORDER BY gh.graded_at DESC`,
-      [studentId, adminId]
+      [studentId]
     );
 
     res.json(result.rows);
@@ -279,27 +283,37 @@ export async function getGradingHistory(req: AuthRequest, res: Response) {
   }
 }
 
-// POST /api/admin/students/:studentId/assign - הקצה סטודנט לadmin
+// POST /api/admin/students/:studentId/assign - הקצה סטודנט למנהל
+// body: { admin_id? } - למנהל-על בלבד: מאפשר לשייך תלמיד לכל מנהל שנבחר.
+// מנהל רגיל אינו רשאי להקצות תלמידים (זה היה מאפשר לו "לגנוב" תלמיד ששייך למנהל אחר).
 export async function assignStudentToAdmin(req: AuthRequest, res: Response) {
   const adminId = req.user!.userId;
   const { studentId } = req.params;
+  const { admin_id } = req.body as { admin_id?: number };
 
   try {
-    // בדוק שesoteric הוא admin
-    const adminCheck = await pool.query(
-      `SELECT id FROM users WHERE id = $1 AND role = 'ADMIN'`,
-      [adminId]
-    );
-
-    if (adminCheck.rows.length === 0) {
-      res.status(403).json({ error: "רק admins יכולים להקצות סטודנטים" });
+    // רק מנהל-על רשאי לשייך תלמידים למנהלים (כולל לעצמו)
+    if (!(await isSuperAdmin(adminId))) {
+      res.status(403).json({ error: "רק מנהל כללי יכול להקצות סטודנטים" });
       return;
     }
 
-    // עדכן את assigned_admin_id
+    const targetAdminId = admin_id ? Number(admin_id) : adminId;
+
+    // ודא שהיעד הוא באמת מנהל
+    const adminCheck = await pool.query(
+      `SELECT id FROM users WHERE id = $1 AND role = 'ADMIN'`,
+      [targetAdminId]
+    );
+    if (adminCheck.rows.length === 0) {
+      res.status(400).json({ error: "המנהל היעד לא נמצא" });
+      return;
+    }
+
+    // עדכן את assigned_admin_id — ודא שהיעד הוא תלמיד
     const result = await pool.query(
-      `UPDATE users SET assigned_admin_id = $1 WHERE id = $2 RETURNING id, full_name`,
-      [adminId, studentId]
+      `UPDATE users SET assigned_admin_id = $1 WHERE id = $2 AND role = 'STUDENT' RETURNING id, full_name`,
+      [targetAdminId, studentId]
     );
 
     if (result.rows.length === 0) {
@@ -324,7 +338,7 @@ export async function getMyStudents(req: AuthRequest, res: Response) {
         u.id,
         u.full_name,
         u.national_id,
-        u.email,
+        u.username,
         COUNT(DISTINCT qa.attempt_id) as total_attempts,
         COUNT(DISTINCT CASE WHEN qa.needs_grading = TRUE THEN qa.attempt_id END) as pending_grading
       FROM users u

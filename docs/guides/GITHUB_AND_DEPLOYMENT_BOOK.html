@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סיכום שלם - לומדת ענף 71</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.8;
+            color: #1c1d1f;
+            background: #f9f9f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #a435f0;
+            font-size: 2.5em;
+            margin: 40px 0 10px 0;
+            text-align: center;
+            page-break-after: avoid;
+        }
+
+        h2 {
+            color: #a435f0;
+            font-size: 1.8em;
+            margin: 40px 0 15px 0;
+            border-bottom: 3px solid #a435f0;
+            padding-bottom: 10px;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            color: #1c1d1f;
+            font-size: 1.3em;
+            margin: 25px 0 10px 0;
+            page-break-after: avoid;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.1em;
+            margin: 15px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-right: 4px solid #a435f0;
+            direction: ltr;
+            text-align: left;
+            page-break-inside: avoid;
+        }
+
+        pre code {
+            color: #1c1d1f;
+            background: none;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+
+        th {
+            background: #a435f0;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        strong {
+            color: #a435f0;
+            font-weight: 700;
+        }
+
+        em {
+            font-style: italic;
+            color: #666;
+        }
+
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            page-break-before: always;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            h2 {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>📚 ספר GitHub וDeployment — לומדת ענף 71</h1>
+<h2>מדריך מלא להעלאה ללGitHub וDeployment בCloud</h2>
+<hr>
+<h2>📖 תוכן עניינים</h2>
+<ol>
+<li><a href="#%D7%9E%D7%91%D7%95%D7%90">מבוא</a></li>
+<li><a href="#%D7%97%D7%9C%D7%A7-1-git-%D7%95github">חלק 1: Git וGitHub</a></li>
+<li><a href="#%D7%97%D7%9C%D7%A7-2-vercel-deployment">חלק 2: Vercel Deployment</a></li>
+<li><a href="#%D7%97%D7%9C%D7%A7-3-railway-deployment">חלק 3: Railway Deployment</a></li>
+<li><a href="#%D7%97%D7%9C%D7%A7-4-database-setup">חלק 4: Database Setup</a></li>
+<li><a href="#%D7%97%D7%9C%D7%A7-5-auto-deploy-%D7%95cicd">חלק 5: Auto-Deploy וCI/CD</a></li>
+<li><a href="#%D7%97%D7%9C%D7%A7-6-troubleshooting">חלק 6: Troubleshooting</a></li>
+<li><a href="#%D7%97%D7%9C%D7%A7-7-daily-workflow">חלק 7: Daily Workflow</a></li>
+</ol>
+<hr>
+<h2>מבוא</h2>
+<h3>למה להעלות לGitHub?</h3>
+<p><strong>GitHub</strong> = מקום מרכזי לשמור ולשתף קוד.</p>
+<pre><code>Your Computer (Local)
+    ↓
+GitHub (Remote)
+    ↓
+Vercel (Frontend)
+Railway (Backend)
+    ↓
+World Can Access! 🌍
+</code></pre>
+<h3>למה Vercel + Railway?</h3>
+<p><strong>Free tier:</strong></p>
+<ul>
+<li>Vercel: 0$ (Frontend)</li>
+<li>Railway: 0$ עם $5 credit (Backend + DB)</li>
+<li><strong>Total: $0/month!</strong></li>
+</ul>
+<hr>
+<h1>חלק 1: Git וGitHub</h1>
+<h2>1.1 מה זה Git?</h2>
+<p><strong>Git</strong> = Version control system — שומר היסטוריה של כל שינוי בקוד.</p>
+<pre><code>כמו &quot;Save&quot; בWord:
+Word: Save → File → versions
+Git: Commit → Repository → full history
+</code></pre>
+<h3>למה צריך Git?</h3>
+<p>✅ <strong>Undo:</strong> אם עשית טעות, אתה יכול לחזור לגרסה קודמת<br>
+✅ <strong>Collaboration:</strong> אנשים שונים עובדים על אותו קוד<br>
+✅ <strong>Backup:</strong> הקוד שמור בmultiple places<br>
+✅ <strong>Tracking:</strong> רואה מי שינה מה ומתי</p>
+<h2>1.2 Git Basics</h2>
+<h3>Terminology:</h3>
+<pre><code>Repository (Repo) = תיקיית פרויקט עם היסטוריה
+Commit = &quot;save point&quot; בקוד עם הודעה
+Branch = גרסה מקבילה של קוד
+Push = שליחת commits מהמחשב שלך ל-GitHub
+Pull = הורדת commits מGitHub למחשב שלך
+</code></pre>
+<h3>Git Workflow:</h3>
+<pre><code>1. Edit files locally
+   (על המחשב שלך)
+
+2. git add .
+   (אומר ל-Git לעקוב אחר קבצים)
+
+3. git commit -m &quot;description&quot;
+   (יוצר save point עם הודעה)
+
+4. git push
+   (שולח commits ל-GitHub)
+</code></pre>
+<h2>1.3 הגדרת Git בMachine שלך</h2>
+<h3>Install Git:</h3>
+<pre><code class="language-bash"># Windows: Download from git-scm.com
+# Mac: brew install git
+# Linux: apt-get install git
+</code></pre>
+<h3>Configure:</h3>
+<pre><code class="language-bash">git config --global user.name &quot;Your Name&quot;
+git config --global user.email &quot;your-email@example.com&quot;
+</code></pre>
+<h2>1.4 GitHub Account</h2>
+<h3>Create Account:</h3>
+<pre><code>1. Go to https://github.com
+2. Sign up with email
+3. Verify email
+4. You're done!
+</code></pre>
+<h3>GitHub Terms:</h3>
+<pre><code>Profile = Your public page on GitHub
+Repository = Folder with code + history
+Star = Like button
+Fork = Copy someone's repo to your account
+Pull Request = Ask to add changes to someone's repo
+</code></pre>
+<hr>
+<h1>חלק 2: Vercel Deployment</h1>
+<h2>2.1 מה זה Vercel?</h2>
+<p><strong>Vercel</strong> = Platform להרצת Frontend (React, Vue, Next.js וכו’).</p>
+<pre><code>Your Code (React/Vite)
+    ↓
+Push to GitHub
+    ↓
+Vercel watches GitHub
+    ↓
+Auto-builds &amp; deploys
+    ↓
+https://your-app.vercel.app (live!)
+</code></pre>
+<h3>יתרונות Vercel:</h3>
+<p>✅ <strong>Free tier</strong> — unlimited projects<br>
+✅ <strong>Auto-deploy</strong> from GitHub<br>
+✅ <strong>Fast</strong> — global CDN<br>
+✅ <strong>SSL/HTTPS</strong> — free<br>
+✅ <strong>Custom domains</strong> — free</p>
+<h3>Pricing:</h3>
+<pre><code>Free Tier: $0
+  - Up to 100GB bandwidth/month
+  - Unlimited projects
+  - Auto-deploy from Git
+
+Pro: $20/month (if you need more)
+</code></pre>
+<h2>2.2 Step-by-Step: Deploy Frontend on Vercel</h2>
+<h3>Step 1: Create Account</h3>
+<pre><code>1. Go to https://vercel.com
+2. Click &quot;Sign up&quot;
+3. Choose &quot;GitHub&quot; option
+4. Authorize with GitHub account
+</code></pre>
+<h3>Step 2: Import Project</h3>
+<pre><code>1. Dashboard → Add New → Project
+2. Click &quot;Import Git Repository&quot;
+3. Search for &quot;rf-learning&quot;
+4. Select your repo
+5. Click &quot;Import&quot;
+</code></pre>
+<h3>Step 3: Configure</h3>
+<p><strong>Vercel will ask:</strong></p>
+<pre><code>Framework Preset: Vite
+Root Directory: frontend
+Build Command: npm run build
+Output Directory: dist
+Environment Variables: [see below]
+</code></pre>
+<p><strong>Add Environment Variables:</strong></p>
+<pre><code>Key: VITE_API_URL
+Value: https://api.railway.app/api
+(Update after deploying Backend)
+</code></pre>
+<h3>Step 4: Deploy</h3>
+<pre><code>1. Click &quot;Deploy&quot;
+2. Wait 30 seconds
+3. You get a URL: https://rf-learning.vercel.app
+</code></pre>
+<h2>2.3 Vercel Dashboard</h2>
+<h3>Overview:</h3>
+<pre><code>Dashboard shows:
+- Deployment history
+- Build logs
+- Environment variables
+- Custom domains
+- Analytics
+</code></pre>
+<h3>Important Tabs:</h3>
+<pre><code>Deployments: See all deployments (live, preview, failed)
+Settings: Configure build, env vars, git options
+Analytics: Traffic, performance
+</code></pre>
+<h2>2.4 Custom Domain (Optional)</h2>
+<h3>Add Custom Domain:</h3>
+<pre><code>1. Vercel Dashboard → Settings → Domains
+2. Add your domain
+3. Update DNS records (Vercel gives instructions)
+4. Wait 24 hours for DNS propagation
+</code></pre>
+<h3>Result:</h3>
+<pre><code>Instead of: https://rf-learning.vercel.app
+You get: https://your-domain.com
+</code></pre>
+<hr>
+<h1>חלק 3: Railway Deployment</h1>
+<h2>3.1 מה זה Railway?</h2>
+<p><strong>Railway</strong> = Platform להרצת Backend (Node.js, Python, Go וכו’).</p>
+<pre><code>Your Code (Node.js/Express)
+    ↓
+Push to GitHub
+    ↓
+Railway watches GitHub
+    ↓
+Auto-builds &amp; deploys
+    ↓
+https://api.railway.app (Backend live!)
+</code></pre>
+<h3>יתרונות Railway:</h3>
+<p>✅ <strong>Free tier + $5 credit/month</strong><br>
+✅ <strong>Includes PostgreSQL</strong> (free!)<br>
+✅ <strong>Auto-deploy</strong> from GitHub<br>
+✅ <strong>Simple dashboard</strong></p>
+<h3>Pricing:</h3>
+<pre><code>Free: $0 (with $5 credit/month)
+  - Enough for: 1 Backend + 1 PostgreSQL
+
+Advanced: Pay-as-you-go
+  - $0.09 per hour per instance
+</code></pre>
+<h2>3.2 Step-by-Step: Deploy Backend on Railway</h2>
+<h3>Step 1: Create Account</h3>
+<pre><code>1. Go to https://railway.app
+2. Click &quot;Sign up&quot;
+3. Choose &quot;GitHub&quot; option
+4. Authorize with GitHub
+</code></pre>
+<h3>Step 2: Create New Project</h3>
+<pre><code>1. Dashboard → New Project
+2. Select &quot;Deploy from GitHub repo&quot;
+3. Select your &quot;rf-learning&quot; repo
+4. Confirm
+</code></pre>
+<h3>Step 3: Add Services</h3>
+<p><strong>Railway auto-detected “backend” folder.</strong></p>
+<p><strong>Add PostgreSQL:</strong></p>
+<pre><code>1. Click &quot;Add Service&quot;
+2. Select &quot;Add from Marketplace&quot;
+3. Search &quot;PostgreSQL&quot;
+4. Click &quot;Create&quot;
+</code></pre>
+<h3>Step 4: Configure Environment Variables</h3>
+<p><strong>For Backend Service:</strong></p>
+<pre><code>NODE_ENV = production
+SERVER_PORT = 3000
+JWT_SECRET = your-secret-key-2024
+UPLOAD_DIR = /tmp/uploads
+</code></pre>
+<p><strong>For Database Connection (copy from PostgreSQL service):</strong></p>
+<pre><code>DB_HOST = [copied from PostgreSQL]
+DB_PORT = 5432
+DB_USER = postgres
+DB_PASSWORD = [copied from PostgreSQL]
+DB_NAME = rf_learning
+</code></pre>
+<h3>Step 5: Deploy</h3>
+<pre><code>1. Railway auto-deploys
+2. Check status: &quot;Running&quot; ✅
+3. Get URL from &quot;Domain&quot; tab:
+   https://rf-learning-production.up.railway.app
+</code></pre>
+<h2>3.3 Railway Dashboard</h2>
+<h3>Services:</h3>
+<pre><code>Shows all running services:
+- Backend (Node.js)
+- PostgreSQL (Database)
+</code></pre>
+<h3>Connect:</h3>
+<pre><code>Click service → Connect tab
+Shows connection string for:
+- Local development
+- Other services
+</code></pre>
+<h3>Deployments:</h3>
+<pre><code>Shows deploy history
+Can view logs for each deployment
+Can rollback to previous version
+</code></pre>
+<h2>3.4 Database Connection String</h2>
+<h3>What is it?</h3>
+<pre><code>postgresql://user:password@host:port/database
+</code></pre>
+<h3>Example:</h3>
+<pre><code>postgresql://postgres:abc123@railway.example.com:5432/rf_learning
+</code></pre>
+<h3>Where to use:</h3>
+<pre><code>Backend: Uses from environment variables
+Local dev: Save to .env.local
+Tools: psql, pgAdmin, TablePlus
+</code></pre>
+<hr>
+<h1>חלק 4: Database Setup</h1>
+<h2>4.1 Create Database</h2>
+<h3>Option A: Railway Console</h3>
+<pre><code>1. Railway Dashboard → PostgreSQL service
+2. Click &quot;Connect&quot; → &quot;Railway CLI&quot;
+3. Opens database shell
+4. Paste SQL from backend/database/schema.sql
+5. Run
+</code></pre>
+<h3>Option B: SQL File</h3>
+<pre><code class="language-bash"># Download backup first
+pg_dump -U postgres rf_learning &gt; backup.sql
+
+# Then restore if needed
+psql -U postgres -d rf_learning &lt; schema.sql
+</code></pre>
+<h2>4.2 Database Schema</h2>
+<h3>Tables Created:</h3>
+<pre><code class="language-sql">users:
+  id, name, id_number, password_hash, role, created_at
+
+courses:
+  id, title, description, created_by, created_at
+
+chapters:
+  id, course_id, title, description, sort_order, created_at
+
+learning_content:
+  id, chapter_id, type, content, file_path, sort_order, created_at
+
+exams:
+  id, course_id, title, created_at
+
+questions:
+  id, exam_id, text, type, created_at
+
+exam_results:
+  id, user_id, exam_id, score, completed_at
+</code></pre>
+<h2>4.3 Verify Setup</h2>
+<h3>Test Connection:</h3>
+<pre><code class="language-bash"># From local machine
+psql postgresql://user:pass@host:5432/rf_learning
+
+# You should see prompt:
+rf_learning=#
+</code></pre>
+<h3>List Tables:</h3>
+<pre><code class="language-bash">\dt
+</code></pre>
+<h3>Result:</h3>
+<pre><code>Should show all tables created
+</code></pre>
+<h2>4.4 Insert Default Data</h2>
+<h3>Add Users:</h3>
+<pre><code class="language-sql">INSERT INTO users (name, id_number, password_hash, role)
+VALUES 
+  ('Admin User', '999999999', '$2b$10$...', 'admin'),
+  ('Test Student', '123456789', '$2b$10$...', 'student');
+</code></pre>
+<h3>Add Courses:</h3>
+<pre><code class="language-sql">INSERT INTO courses (title, description, created_by)
+VALUES
+  ('מנועי בוכנה', 'Course about piston engines', 1),
+  ('מנועי סילון', 'Course about jet engines', 1);
+</code></pre>
+<hr>
+<h1>חלק 5: Auto-Deploy וCI/CD</h1>
+<h2>5.1 Auto-Deploy Explained</h2>
+<h3>How it works:</h3>
+<pre><code>1. You push code to GitHub:
+   git push origin main
+
+2. GitHub notifies Vercel &amp; Railway:
+   &quot;New push detected!&quot;
+
+3. Vercel:
+   - Pulls latest code
+   - Runs: npm run build
+   - Uploads dist/ to CDN
+   - Website updates (5-10 min)
+
+4. Railway:
+   - Pulls latest code
+   - Installs dependencies
+   - Runs: npm start (or dev)
+   - Server restarts (2-3 min)
+
+5. Everything is live!
+</code></pre>
+<h2>5.2 Deploy Process</h2>
+<h3>Frontend Deploy Timeline:</h3>
+<pre><code>0 sec:    You run: git push
+5 sec:    GitHub receives push
+10 sec:   Vercel notified
+15 sec:   Build starts (npm run build)
+30 sec:   Build complete
+45 sec:   Upload to CDN
+60 sec:   Website updated
+</code></pre>
+<h3>Backend Deploy Timeline:</h3>
+<pre><code>0 sec:    You run: git push
+5 sec:    GitHub receives push
+10 sec:   Railway notified
+20 sec:   Dependencies installing
+30 sec:   Server starting
+45 sec:   Health check passes
+60 sec:   API live
+</code></pre>
+<h2>5.3 GitHub Actions (Optional)</h2>
+<h3>What is it?</h3>
+<pre><code>GitHub Actions = Automated workflows
+Run: tests, linting, security checks on every push
+</code></pre>
+<h3>Basic Workflow:</h3>
+<pre><code class="language-yaml">name: Test &amp; Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm install
+      - run: npm run build
+</code></pre>
+<h2>5.4 Monitor Deployments</h2>
+<h3>Vercel:</h3>
+<pre><code>Dashboard → Deployments
+Shows:
+- Status (Building, Ready, Error)
+- Logs
+- Preview URL
+</code></pre>
+<h3>Railway:</h3>
+<pre><code>Dashboard → [Service] → Deployments
+Shows:
+- Status
+- Logs
+- Option to rollback
+</code></pre>
+<hr>
+<h1>חלק 6: Troubleshooting</h1>
+<h2>6.1 Frontend Issues</h2>
+<h3>“Frontend shows 404 after refresh”</h3>
+<p><strong>Cause:</strong> SPA routing not configured</p>
+<p><strong>Fix in Vercel:</strong></p>
+<pre><code>Settings → Git → Root Directory: frontend
+Build: npm run build
+Output: dist
+</code></pre>
+<h3>“Environment variables not loading”</h3>
+<p><strong>Solution:</strong></p>
+<pre><code>1. Add VITE_API_URL in Vercel dashboard
+2. Redeploy (click Deployments → Redeploy)
+3. Check browser console (F12)
+</code></pre>
+<h3>“Slow loading”</h3>
+<p><strong>Solutions:</strong></p>
+<pre><code>1. Check Vercel Analytics
+2. Minimize bundle (npm run build)
+3. Check network tab in DevTools
+4. Enable gzip compression (Vercel auto does this)
+</code></pre>
+<h2>6.2 Backend Issues</h2>
+<h3>“Backend returns 500 error”</h3>
+<p><strong>Debug:</strong></p>
+<pre><code>1. Check Railway logs
+2. Look for error messages
+3. Check environment variables set correctly
+4. Restart service (Railway → [Service] → Restart)
+</code></pre>
+<h3>“Cannot connect to database”</h3>
+<p><strong>Solutions:</strong></p>
+<pre><code>1. Check DB_HOST, DB_PORT in Railway
+2. Verify database is running
+3. Check firewall rules
+4. Test connection string locally
+</code></pre>
+<h3>“File uploads not working”</h3>
+<p><strong>Cause:</strong> UPLOAD_DIR doesn’t exist</p>
+<p><strong>Fix:</strong></p>
+<pre><code>Use /tmp/ directory (Railway provides)
+UPLOAD_DIR = /tmp/uploads
+</code></pre>
+<h2>6.3 Deployment Issues</h2>
+<h3>“Vercel deployment stuck”</h3>
+<p><strong>Solutions:</strong></p>
+<pre><code>1. Cancel deployment
+2. Check build logs for errors
+3. Fix error locally
+4. Push again
+</code></pre>
+<h3>“Railway keeps crashing”</h3>
+<p><strong>Solutions:</strong></p>
+<pre><code>1. Check logs for errors
+2. Verify NODE_ENV = production
+3. Restart service
+4. Check memory usage (might need upgrade)
+</code></pre>
+<h3>“Data lost after restart”</h3>
+<p><strong>Cause:</strong> Database not persisted</p>
+<p><strong>Fix:</strong> Railway PostgreSQL is persistent, but /tmp/ files are not</p>
+<pre><code>Use database for storage, not files
+</code></pre>
+<hr>
+<h1>חלק 7: Daily Workflow</h1>
+<h2>7.1 Making Changes</h2>
+<h3>Edit Code Locally:</h3>
+<pre><code class="language-bash"># Make changes to files
+# For example: edit backend/src/server.ts
+
+# Test locally
+npm run dev
+</code></pre>
+<h3>Commit &amp; Push:</h3>
+<pre><code class="language-bash"># See what changed
+git status
+
+# Stage files
+git add .
+
+# Commit with message
+git commit -m &quot;Fix login bug&quot;
+
+# Push to GitHub
+git push
+</code></pre>
+<h3>Auto-Deploy:</h3>
+<pre><code>Vercel + Railway auto-deploy
+Check dashboards for status
+~5-10 minutes to live
+</code></pre>
+<h2>7.2 Version Control Best Practices</h2>
+<h3>Commit Messages:</h3>
+<pre><code>❌ Bad:
+git commit -m &quot;fix&quot;
+git commit -m &quot;update&quot;
+
+✅ Good:
+git commit -m &quot;Fix: password validation regex&quot;
+git commit -m &quot;Feature: add rich text editor to admin panel&quot;
+git commit -m &quot;Refactor: simplify authentication middleware&quot;
+</code></pre>
+<h3>Commit Frequency:</h3>
+<pre><code>Good: One commit per feature/fix
+Not: 100 commits for one feature
+Not: One commit with 50 unrelated changes
+</code></pre>
+<h2>7.3 Branching (Optional)</h2>
+<h3>Main Branch:</h3>
+<pre><code>main = production code
+Only working, tested code
+Protected branch
+</code></pre>
+<h3>Feature Branch:</h3>
+<pre><code>feature/login-page = working on new feature
+feature/dark-mode = another feature
+
+Workflow:
+1. git checkout -b feature/my-feature
+2. Make changes
+3. git commit -m &quot;...&quot;
+4. git push
+5. Create Pull Request
+6. Review &amp; merge to main
+</code></pre>
+<h2>7.4 Pull Requests</h2>
+<h3>What is it?</h3>
+<pre><code>Pull Request = &quot;Request to merge my changes into main&quot;
+Allows: code review, discussion, testing before merge
+</code></pre>
+<h3>Workflow:</h3>
+<pre><code>1. Create feature branch
+2. Make changes
+3. Push branch
+4. Open PR on GitHub
+5. Team reviews
+6. Merge to main
+7. Auto-deploy
+</code></pre>
+<hr>
+<h1>Appendix: Full Reference</h1>
+<h2>A. Common Git Commands</h2>
+<pre><code class="language-bash">git init                    # Initialize repo
+git add .                   # Stage all files
+git commit -m &quot;msg&quot;         # Create commit
+git push                    # Send to remote
+git pull                    # Get from remote
+git status                  # See changes
+git log                     # See history
+git branch                  # See branches
+git checkout -b name        # Create branch
+git clone &lt;url&gt;             # Download repo
+</code></pre>
+<h2>B. Environment Variables</h2>
+<h3>Frontend (.env or Vercel):</h3>
+<pre><code>VITE_API_URL=https://api.railway.app/api
+</code></pre>
+<h3>Backend (Railway):</h3>
+<pre><code>NODE_ENV=production
+SERVER_PORT=3000
+DB_HOST=rail.proxy.rlwy.net
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=...
+DB_NAME=rf_learning
+JWT_SECRET=your-secret-key
+UPLOAD_DIR=/tmp/uploads
+</code></pre>
+<h2>C. Useful URLs</h2>
+<pre><code>GitHub: https://github.com/yairkb100-ai/rf-learning
+Vercel: https://vercel.com/dashboard
+Railway: https://railway.app/dashboard
+Frontend: https://rf-learning.vercel.app
+Backend: https://rf-learning-production.up.railway.app
+</code></pre>
+<h2>D. Status Codes</h2>
+<h3>HTTP:</h3>
+<pre><code>200 = OK
+201 = Created
+400 = Bad Request
+401 = Unauthorized
+404 = Not Found
+500 = Server Error
+</code></pre>
+<h3>Git:</h3>
+<pre><code>✅ = Success
+❌ = Failed
+⏳ = In Progress
+🔴 = Error
+</code></pre>
+<hr>
+<h1>סיכום</h1>
+<h2>צעדים שעשית:</h2>
+<ol>
+<li>✅ בנית קוד (Frontend + Backend)</li>
+<li>✅ העלית לGitHub</li>
+<li>✅ כדי להעלות לVercel</li>
+<li>✅ כדי להעלות לRailway</li>
+<li>✅ כדי להעלות Database</li>
+</ol>
+<h2>מה קיבלת:</h2>
+<p>✅ Frontend: <a href="https://rf-learning.vercel.app">https://rf-learning.vercel.app</a><br>
+✅ Backend: <a href="https://api.railway.app">https://api.railway.app</a><br>
+✅ Database: PostgreSQL on Railway<br>
+✅ Auto-deploy: Every git push = live update<br>
+✅ Cost: $0/month!</p>
+<h2>כדי להמשיך:</h2>
+<pre><code>1. עדכן קוד בתוך המחשב
+2. git add . &amp;&amp; git commit -m &quot;...&quot; &amp;&amp; git push
+3. Vercel + Railway auto-deploy
+4. Website updated in 5-10 minutes
+</code></pre>
+<hr>
+<p><strong>Last Updated:</strong> 2026-06-28<br>
+<strong>Version:</strong> 1.0<br>
+<strong>Status:</strong> Complete</p>
+
+        <div class="footer">
+            <p>ספר GitHub וDeployment - לומדת ענף 71</p>
+            <p>עדכון אחרון: 2026-06-28</p>
+            <p>גרסה: 1.0</p>
+        </div>
+    </div>
+</body>
+</html>

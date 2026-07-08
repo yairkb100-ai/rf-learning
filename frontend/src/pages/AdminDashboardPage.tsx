@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 
 // ============================================================================
@@ -41,8 +42,16 @@ function Kpi({ label, value, alert }: { label: string; value: React.ReactNode; a
 
 export default function AdminDashboardPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [s, setS] = useState<Stats | null>(null)
   const [error, setError] = useState('')
+
+  // רק מנהל
+  useEffect(() => {
+    if (user && user.role !== 'ADMIN') {
+      navigate('/')
+    }
+  }, [user, navigate])
 
   // בטעינה: טוען את נתוני הדשבורד מהשרת (GET /admin/dashboard).
   useEffect(() => {
