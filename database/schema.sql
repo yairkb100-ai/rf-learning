@@ -1,9 +1,7 @@
 -- RF Learning System - Database Schema
 
-CREATE DATABASE rf_learning;
-\c rf_learning;
-
--- ENUMs
+-- CREATE DATABASE rf_learning;  (managed platforms create the DB; run manually for local setup)\c rf_learning;
+-- \c rf_learning;  (psql-only meta-command; not supported via pg driver)-- ENUMs
 CREATE TYPE user_role AS ENUM ('ADMIN', 'INSTRUCTOR', 'STUDENT');
 CREATE TYPE user_theme AS ENUM ('LIGHT', 'DARK');
 CREATE TYPE content_type AS ENUM ('TEXT', 'IMAGE', 'VIDEO', 'PDF', 'LINK');
