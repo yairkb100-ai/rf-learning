@@ -7,8 +7,8 @@ RUN cd backend && npm install
 COPY backend/tsconfig.json ./backend/tsconfig.json
 COPY backend/src ./backend/src
 COPY database ./database
+COPY backend/uploads ./backend/uploads
 RUN cd backend && npm run build
-RUN mkdir -p /app/backend/uploads
 WORKDIR /app/backend
 EXPOSE 3000
 CMD ["npm", "start"]
