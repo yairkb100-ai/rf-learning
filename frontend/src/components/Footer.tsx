@@ -3,7 +3,7 @@
 export default function Footer() {
   return (
     <footer className="app-credit-footer">
-      נוצר על ידי יאיר כהנא
+      Built by Yairos
     </footer>
   )
 }

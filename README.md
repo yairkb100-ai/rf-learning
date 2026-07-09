@@ -63,6 +63,11 @@ Password: password123
 
 ## 📦 Deployment
 
+### 🌟 Ready to Deploy? 
+
+**See: [DEPLOYMENT_INSTRUCTIONS.md](./DEPLOYMENT_INSTRUCTIONS.md)**  
+Step-by-step guide to make your app live in 20 minutes!
+
 ### Option 1: Vercel + Railway (FREE!)
 
 ```bash
@@ -70,22 +75,23 @@ git push origin main
 # Auto-deploys to Vercel + Railway
 ```
 
-See: [GITHUB_DEPLOYMENT.md](./GITHUB_DEPLOYMENT.md)
+See: [docs/guides/GITHUB_DEPLOYMENT.md](./docs/guides/GITHUB_DEPLOYMENT.md)
 
 ### Option 2: DigitalOcean ($5/month)
 
-See: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
+See: [docs/guides/DEPLOYMENT_GUIDE.md](./docs/guides/DEPLOYMENT_GUIDE.md)
 
 ### Option 3: Local Network (Free)
 
-See: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - Local Network Section
+See: [docs/guides/DEPLOYMENT_GUIDE.md](./docs/guides/DEPLOYMENT_GUIDE.md) - Local Network Section
 
 ## 📚 Documentation
 
-- [SYSTEM_BOOK_FINAL.md](./SYSTEM_BOOK_FINAL.md) - מדריך המערכת המלא
-- [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - Deployment options
-- [GITHUB_DEPLOYMENT.md](./GITHUB_DEPLOYMENT.md) - Free GitHub deployment
-- [HOW_TO_START.md](./HOW_TO_START.md) - הוראות הפעלה
+- **[DEPLOYMENT_INSTRUCTIONS.md](./DEPLOYMENT_INSTRUCTIONS.md)** ⭐ - הוראות העלאה מלאות (התחל כאן!)
+- [docs/summaries/SYSTEM_BOOK_FINAL.md](./docs/summaries/SYSTEM_BOOK_FINAL.md) - מדריך המערכת המלא
+- [docs/guides/DEPLOYMENT_GUIDE.md](./docs/guides/DEPLOYMENT_GUIDE.md) - Deployment options
+- [docs/guides/GITHUB_DEPLOYMENT.md](./docs/guides/GITHUB_DEPLOYMENT.md) - Free GitHub deployment
+- [docs/guides/HOW_TO_START.md](./docs/guides/HOW_TO_START.md) - הוראות הפעלה
 
 ## 📂 Project Structure
 
@@ -135,27 +141,4 @@ Two full courses included:
    - Technical specifications
 
 2. **מנועי סילון** (Jet Engines)
-   - 5 chapters with deep technical content
-   - Brayton cycle explanation
-   - Performance comparison
-
-## 📞 Support
-
-For issues, check:
-1. SYSTEM_BOOK_FINAL.md - Troubleshooting section
-2. DEPLOYMENT_GUIDE.md - Common issues
-3. GitHub Issues
-
-## 📄 License
-
-MIT License - Feel free to use, modify, distribute
-
-## 👤 Author
-
-Created with ❤️ for educational purposes
-
----
-
-**Last Updated:** 2026-06-28  
-**Version:** 1.0  
-**Status:** Production Ready
+   - 5 c
