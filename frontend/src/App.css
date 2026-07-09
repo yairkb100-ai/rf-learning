@@ -9,15 +9,15 @@
   --text: #1c1d1f;
   --text-muted: #6a6f73;
   --heading: #1c1d1f;
-  --primary: #a435f0;
-  --primary-hover: #8710d8;
+  --primary: #0d9488;
+  --primary-hover: #0f766e;
   --border: #d1d7dc;
   --navbar-bg: #ffffff;
   --navbar-text: #1c1d1f;
   --success: #1e8e3e;
   --success-bg: #e6f4ea;
   --danger: #c4382a;
-  --accent-bg: #f3e8fc;
+  --accent-bg: #e6fbf7;
   --shadow: rgba(0, 0, 0, 0.12);
   --glow: 0 1px 2px rgba(0, 0, 0, 0.08);
   --glow-strong: 0 2px 6px rgba(0, 0, 0, 0.12);
@@ -34,15 +34,15 @@
   --text: #f0f0f0;
   --text-muted: #a6a6a6;
   --heading: #ffffff;
-  --primary: #c088f5;
-  --primary-hover: #d4aefa;
+  --primary: #2dd4bf;
+  --primary-hover: #5eead4;
   --border: #4a4d4f;
   --navbar-bg: #1c1d1f;
   --navbar-text: #f0f0f0;
   --success: #4ade80;
   --success-bg: rgba(74, 222, 128, 0.15);
   --danger: #f87171;
-  --accent-bg: rgba(192, 136, 245, 0.15);
+  --accent-bg: rgba(45, 212, 191, 0.15);
   --shadow: rgba(0, 0, 0, 0.5);
   --glow: 0 1px 3px rgba(0, 0, 0, 0.4);
   --glow-strong: 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -1847,7 +1847,7 @@ input[type="file"] {
   padding: 18px 20px;
   margin: 14px 0;
 }
-.question-box { border-inline-start: 5px solid #a435f0; }
+.question-box { border-inline-start: 5px solid #0d9488; }
 .student-answer-box { border-inline-start: 5px solid #1e8e3e; }
 
 .question-label {
