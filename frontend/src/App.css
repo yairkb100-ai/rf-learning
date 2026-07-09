@@ -1981,3 +1981,57 @@ input[type="file"] {
 }
 /* הכפתור לא נמתח על כל הרוחב — רק לגודל התוכן שלו */
 .grading-item .btn-primary { flex: 0 0 auto; width: auto; white-space: nowrap; align-self: center; }
+
+
+  /* ===== רספונסיבי — נייד (מסכים צרים) ===== */
+html, body { max-width: 100%; overflow-x: hidden; }
+
+@media (max-width: 640px) {
+    .navbar {
+          padding: 10px 14px;
+          flex-wrap: wrap;
+          row-gap: 8px;
+    }
+    .navbar-start {
+          gap: 10px;
+    }
+    .logo {
+          font-size: 1.05rem;
+    }
+    .navbar-subtitle {
+          font-size: 0.75rem;
+    }
+    .nav-right {
+          flex-wrap: wrap;
+          gap: 8px;
+          font-size: 0.85rem;
+          width: 100%;
+          justify-content: flex-start;
+    }
+    .nav-right .btn-secondary,
+    .nav-right .btn-outline,
+    .nav-right .btn-primary {
+          padding: 7px 12px;
+          font-size: 0.85rem;
+    }
+    .main-content {
+          padding: 18px 14px;
+    }
+    .main-content h2 {
+          font-size: 1.25rem;
+    }
+    .courses-grid {
+          grid-template-columns: 1fr;
+          gap: 14px;
+    }
+    .auth-card {
+          padding: 24px 20px;
+          max-width: 100%;
+    }
+    .course-hero {
+          padding: 18px 16px;
+    }
+    .course-hero-title {
+          font-size: 1.3rem;
+    }
+}
