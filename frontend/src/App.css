@@ -2044,3 +2044,96 @@ html, body { max-width: 100%; overflow-x: hidden; }
           font-size: 1.3rem;
     }
 }
+
+
+/* ===== רספונסיביות כוללת — תוספות רוחביות לכל האתר ===== */
+
+/* רשת בטיחות: תמונות/וידאו/טבלאות לעולם לא רחבים מהמסך */
+img, svg, video, iframe {
+    max-width: 100%;
+}
+
+/* קו הגנה גלובלי: אם מגיע מחרוזת ארוכה בלי רווחים (למשל טקסט שהוזן ללא רווחים),
+   שוברים אותה במקום לגרום לגלילה אופקית של כל העמוד */
+body {
+    overflow-wrap: anywhere;
+}
+
+/* אלמנטים שהם ילדי flex/grid צריכים min-width:0 כדי שהטקסט שבתוכם יוכל
+   להצטמצם ולהתגלגל לשורה הבאה במקום לדחוף את שאר השורה החוצה */
+.chapter-info,
+.admin-chapter-info,
+.option-text-input {
+    min-width: 0;
+}
+
+/* טבלאות — גלילה אופקית פנימית במקום שבירת פריסת העמוד */
+.data-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+    .data-table {
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
+          -webkit-overflow-scrolling: touch;
+    }
+
+  .chapter-item,
+    .admin-chapter-item,
+    .pending-grade-item,
+    .grading-item,
+    .file-upload-box {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+    }
+    .chapter-item .chapter-item-actions,
+    .admin-chapter-item .admin-chapter-actions {
+          justify-content: flex-start;
+    }
+    .pending-grade-item .btn-primary,
+    .grading-item .btn-primary {
+          width: 100%;
+    }
+
+  .admin-question-header {
+        flex-direction: column;
+        align-items: stretch;
+  }
+
+  .result-actions {
+        flex-wrap: wrap;
+  }
+    .result-actions .btn-primary,
+    .result-actions .btn-outline {
+          width: 100%;
+    }
+
+  .content-item {
+        padding: 18px 16px;
+  }
+    .admin-section {
+          padding: 18px 16px;
+    }
+    .question-card {
+          padding: 16px;
+    }
+    .exam-result {
+          padding: 28px 20px;
+    }
+    .chapter-item,
+    .admin-chapter-item {
+          padding: 14px 16px;
+    }
+    .curriculum-row {
+          padding: 12px 14px;
+    }
+    .kpi-grid {
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          gap: 10px;
+    }
+}
