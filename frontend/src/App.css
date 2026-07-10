@@ -1986,3 +1986,37 @@ input[type="file"] {
   margin: 2px 0 0;
 }
 /* הכפתור לא נמתח על כל הרוחב — רק לגודל התו
+
+/* ===== Mobile navbar refinement (<=640px) ===== */
+@media (max-width: 640px) {
+    .navbar {
+          flex-wrap: wrap;
+          row-gap: 8px;
+          padding: 10px 12px;
+    }
+    .navbar-start { min-width: 0; }
+    .navbar-titles { min-width: 0; }
+    .logo {
+          font-size: 1rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+    }
+    .navbar-subtitle { display: none; }
+    .nav-right {
+          width: 100%;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          gap: 8px;
+          font-size: 0.85rem;
+    }
+    .nav-right button,
+    .nav-right .btn-outline,
+    .nav-right .btn-secondary,
+    .nav-right .btn-primary {
+          padding: 6px 10px;
+          font-size: 0.8rem;
+    }
+    .main-content { padding: 20px 12px; }
+    .main-content h2 { font-size: 1.25rem; }
+}
