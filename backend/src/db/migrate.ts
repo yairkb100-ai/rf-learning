@@ -46,8 +46,7 @@ export async function runMigrations(): Promise<void> {
   const files = fs
     .readdirSync(MIGRATIONS_DIR)
     .filter((f) => f.endsWith(".sql") && !SKIP_FILES.has(f))
-    .sort(); // schema.sql < migration_fix... < migration_stage3... — סדר אלפביתי תקין
-
+    .sort((a, b) => (a === "schema.sql" ? -1 : b === "schema.sql" ? 1 : a.localeCompare(b))); // schema.sql first, then alphabetical
   const appliedRes = await pool.query("SELECT filename FROM schema_migrations");
   const applied = new Set<string>(appliedRes.rows.map((r) => r.filename));
 
