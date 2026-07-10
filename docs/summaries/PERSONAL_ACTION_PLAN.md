@@ -306,7 +306,7 @@ git push
    https://github.com/settings/tokens
    ```
 
-2. **מצא את ה-token `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`**
+2. **מצא את ה-token שיצרת (מתחיל ב-`ghp_`) ומחק אותו**
 
 3. **לחץ: "Delete"**
 

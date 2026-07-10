@@ -141,4 +141,27 @@ Two full courses included:
    - Technical specifications
 
 2. **מנועי סילון** (Jet Engines)
-   - 5 c
+   - 5 chapters with deep technical content
+   - Brayton cycle explanation
+   - Performance comparison
+
+## 📞 Support
+
+For issues, check:
+1. SYSTEM_BOOK_FINAL.md - Troubleshooting section
+2. DEPLOYMENT_GUIDE.md - Common issues
+3. GitHub Issues
+
+## 📄 License
+
+MIT License - Feel free to use, modify, distribute
+
+## 👤 Author
+
+Created with ❤️ for educational purposes
+
+---
+
+**Last Updated:** 2026-06-28  
+**Version:** 1.0  
+**Status:** Production Ready
