@@ -2020,3 +2020,22 @@ input[type="file"] {
     .main-content { padding: 20px 12px; }
     .main-content h2 { font-size: 1.25rem; }
 }
+
+/* ===== Mobile drawer fixes: opaque bg, proper layering, whole hamburger ===== */
+.sidebar { background: var(--surface); }
+.sidebar-toggle {
+    background: var(--surface);
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+@media (max-width: 820px) {
+    .sidebar-toggle { display: flex; }
+    .sidebar {
+          background: var(--surface);
+          z-index: 120;
+    }
+    .sidebar-overlay { z-index: 110; }
+}
